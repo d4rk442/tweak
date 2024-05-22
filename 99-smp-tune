@@ -1,0 +1,69 @@
+#!/bin/sh
+
+INTERRUPT=$(ls /proc/irq/ | sed '/default/d')
+
+for i in ${INTERRUPT}; do
+	if [[ $(sed 's/^[ \t]*//' /proc/interrupts | grep "^$i:" | awk '{print $9}' | grep -c "usb3") != 0 ]]; then
+		echo e > /proc/irq/$i/smp_affinity
+	elif [[ $(sed 's/^[ \t]*//' /proc/interrupts | grep "^$i:" | awk '{print $9}' | grep -c "nss_queue1") != 0 ]]; then
+		echo 2 > /proc/irq/$i/smp_affinity
+	elif [[ $(sed 's/^[ \t]*//' /proc/interrupts | grep "^$i:" | awk '{print $9}' | grep -c "nss_queue2") != 0 ]]; then
+		echo 4 > /proc/irq/$i/smp_affinity
+	elif [[ $(sed 's/^[ \t]*//' /proc/interrupts | grep "^$i:" | awk '{print $9}' | grep -c "nss_queue3") != 0 ]]; then
+		echo 8 > /proc/irq/$i/smp_affinity
+	elif [[ $(sed 's/^[ \t]*//' /proc/interrupts | grep "^$i:" | awk '{print $9}' | grep -c "arch_mem_timer") != 0 ]]; then
+		echo 2 > /proc/irq/$i/smp_affinity
+	elif [[ $(sed 's/^[ \t]*//' /proc/interrupts | grep "^$i:" | awk '{print $9}' | grep -c "host2rxdma-monitor-ring1") != 0 ]]; then
+		echo 8 > /proc/irq/$i/smp_affinity
+	elif [[ $(sed 's/^[ \t]*//' /proc/interrupts | grep "^$i:" | awk '{print $9}' | grep -c "host2rxdma-monitor-ring2") != 0 ]]; then
+		echo 4 > /proc/irq/$i/smp_affinity
+	elif [[ $(sed 's/^[ \t]*//' /proc/interrupts | grep "^$i:" | awk '{print $9}' | grep -c "host2rxdma-monitor-ring3") != 0 ]]; then
+		echo 2 > /proc/irq/$i/smp_affinity
+	elif [[ $(sed 's/^[ \t]*//' /proc/interrupts | grep "^$i:" | awk '{print $9}' | grep -c "rxdma2host-monitor-destination-mac1") != 0 ]]; then
+		echo 8 > /proc/irq/$i/smp_affinity
+	elif [[ $(sed 's/^[ \t]*//' /proc/interrupts | grep "^$i:" | awk '{print $9}' | grep -c "rxdma2host-monitor-destination-mac2") != 0 ]]; then
+		echo 4 > /proc/irq/$i/smp_affinity
+	elif [[ $(sed 's/^[ \t]*//' /proc/interrupts | grep "^$i:" | awk '{print $9}' | grep -c "rxdma2host-monitor-destination-mac3") != 0 ]]; then
+		echo 2 > /proc/irq/$i/smp_affinity
+	elif [[ $(sed 's/^[ \t]*//' /proc/interrupts | grep "^$i:" | awk '{print $9}' | grep -c "ppdu-end-interrupts-mac1") != 0 ]]; then
+		echo 8 > /proc/irq/$i/smp_affinity
+	elif [[ $(sed 's/^[ \t]*//' /proc/interrupts | grep "^$i:" | awk '{print $9}' | grep -c "ppdu-end-interrupts-mac2") != 0 ]]; then
+		echo 4 > /proc/irq/$i/smp_affinity
+	elif [[ $(sed 's/^[ \t]*//' /proc/interrupts | grep "^$i:" | awk '{print $9}' | grep -c "ppdu-end-interrupts-mac3") != 0 ]]; then
+		echo 2 > /proc/irq/$i/smp_affinity
+	elif [[ $(sed 's/^[ \t]*//' /proc/interrupts | grep "^$i:" | awk '{print $9}' | grep -c "rxdma2host-monitor-status-ring-mac1") != 0 ]]; then
+		echo 8 > /proc/irq/$i/smp_affinity
+	elif [[ $(sed 's/^[ \t]*//' /proc/interrupts | grep "^$i:" | awk '{print $9}' | grep -c "rxdma2host-monitor-status-ring-mac2") != 0 ]]; then
+		echo 4 > /proc/irq/$i/smp_affinity
+	elif [[ $(sed 's/^[ \t]*//' /proc/interrupts | grep "^$i:" | awk '{print $9}' | grep -c "rxdma2host-monitor-status-ring-mac3") != 0 ]]; then
+		echo 2 > /proc/irq/$i/smp_affinity
+	elif [[ $(sed 's/^[ \t]*//' /proc/interrupts | grep "^$i:" | awk '{print $9}' | grep -c "wbm2host-tx-completions-ring4") != 0 ]]; then
+		echo 8 > /proc/irq/$i/smp_affinity
+	else
+		echo f > /proc/irq/$i/smp_affinity 2>/dev/null
+	fi
+done
+
+IFACE=$(ls /sys/class/net)
+
+for i in ${IFACE}; do
+        ethtool -K $i gro on 2>/dev/null
+        if [[ -e /sys/class/net/$i/queues/rx-0/rps_cpus ]]; then
+        	if [[ $i = "wwan0" ]]; then
+                        echo f > /sys/class/net/$i/queues/rx-0/rps_cpus
+              elif [[ $i = "wwan0_1" ]]; then
+                        echo f > /sys/class/net/$i/queues/rx-0/rps_cpus
+              elif [[ $i = "eth0" ]]; then
+                        echo f > /sys/class/net/$i/queues/rx-0/rps_cpus
+              elif [[ $i = "eth4" ]]; then
+                        echo f > /sys/class/net/$i/queues/rx-0/rps_cpus
+              elif [[ $i = "br-lan" ]]; then
+                        echo f > /sys/class/net/$i/queues/rx-0/rps_cpus
+              else
+        		echo f > /sys/class/net/$i/queues/rx-0/rps_cpus
+        	fi
+        fi
+        if [[ -e /sys/class/net/$i/queues/rx-0/rps_flow_cnt ]]; then
+                echo 0 > /sys/class/net/$i/queues/rx-0/rps_flow_cnt
+        fi
+done
