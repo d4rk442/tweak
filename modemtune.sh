@@ -75,6 +75,7 @@ nameserver ::1
 DNS
 
 echo -e "BYPASS TTL64"
+rm -rf /overlay/upper/etc/ttl.user
 cat > /overlay/upper/etc/ttl.user <<-TTLETC
 # TTL Setting
 #
@@ -99,6 +100,7 @@ ip6tables -t mangle -A PREROUTING -j TTL --ttl-set 64
 #endTTL
 TTLETC
 
+rm -rf /overlay/upper/etc/ttl.user.bk
 cat > /overlay/upper/etc/ttl.user.bk <<-TTLBK
 # TTL Setting
 #
@@ -123,6 +125,7 @@ ip6tables -t mangle -A PREROUTING -j TTL --ttl-set 64
 #endTTL
 TTLBK
 
+rm -rf /etc/ttl.user
 cat > /etc/ttl.user <<-TTLUSER
 # TTL Setting
 #
@@ -147,6 +150,7 @@ ip6tables -t mangle -A PREROUTING -j TTL --ttl-set 64
 #endTTL
 TTLUSER
 
+rm -rf /etc/ttl.user.bk
 cat > /etc/ttl.user.bk <<-TTLUSERBK
 # TTL Setting
 #
@@ -171,6 +175,7 @@ ip6tables -t mangle -A PREROUTING -j TTL --ttl-set 64
 #endTTL
 TTLUSERBK
 
+rm -rf /overlay/upper/etc/firewall.user
 cat > /overlay/upper/etc/firewall.user <<-FFE
 #!/bin/sh
 iptables -t mangle -I POSTROUTING -o wwan0 -j TTL --ttl-set 64
@@ -191,6 +196,7 @@ ip6tables -t mangle -I PREROUTING -i br-lan -j TTL --ttl-set 64
 ip6tables -t mangle -A PREROUTING -j TTL --ttl-set 64
 FFE
 
+rm -rf /etc/firewall.user
 cat > /etc/firewall.user <<-FFW
 #!/bin/sh
 iptables -t mangle -I POSTROUTING -o wwan0 -j TTL --ttl-set 64
@@ -336,6 +342,7 @@ config interface 'wan1'
         option ttl '64'
 NETTY1
 
+rm -rf /etc/config/network
 cat > /etc/config/network <<-NETTY
 config interface 'loopback'
         option ifname 'lo'
@@ -386,6 +393,7 @@ rm -rf /etc/hotplug.d/net/99-smp-tune
 wget -O /etc/hotplug.d/net/99-smp-tune https://raw.githubusercontent.com/d4rk442/tweak/main/99-smp-tune
 
 echo -e "BYPASS IRQBALANCE"
+rm -rf /etc/config/irqbalance
 cat > /etc/config/irqbalance <<-IRQ
 config irqbalance 'irqbalance'
              option enable '1'
