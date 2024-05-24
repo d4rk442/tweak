@@ -261,27 +261,40 @@ FFW
 echo -e "TWEAK SYSCTL"
 rm -rf /etc/sysctl.conf
 cat > /etc/sysctl.conf <<-SYS1
-net.ipv4.conf.all.accept_redirects = 0
-net.ipv4.conf.all.send_redirects = 0
-net.ipv4.conf.all.secure_redirects = 0
-net.ipv4.tcp_max_syn_backlog = 4096
-net.ipv4.tcp_keepalive_time = 60
-net.ipv4.tcp_keepalive_intvl = 15
+net.ipv4.ip_default_ttl=64
+net.ipv6.conf.all.hop_limit = 64
+fs.file-max = 1000000
+fs.inotify.max_user_instances = 8192
+net.ipv4.tcp_syncookies = 1
+net.ipv4.tcp_fin_timeout = 30
+net.ipv4.tcp_tw_reuse = 1
+net.ipv4.ip_local_port_range = 1024 65535
+net.ipv4.tcp_max_tw_buckets = 6000
+net.ipv4.route.gc_timeout = 100
+net.ipv4.tcp_synack_retries = 1
+net.ipv4.tcp_mtu_probing=1
+net.core.netdev_max_backlog = 32768
 net.ipv4.tcp_timestamps = 0
 net.ipv4.tcp_no_metrics_save = 1
 net.ipv4.tcp_rfc1337 = 1
-net.ipv4.ip_local_port_range = 1024 65535
-net.netfilter.nf_conntrack_max = 16384
 net.ipv4.tcp_synack_retries = 3
-net.ipv4.tcp_sack = 0
-net.ipv4.tcp_dsack = 0
-net.ipv4.tcp_fack = 0
 net.ipv4.tcp_retries2 = 6
 net.ipv4.tcp_keepalive_probes = 4
 net.ipv4.icmp_echo_ignore_all = 1
+net.netfilter.nf_conntrack_max=65535
+net.ipv4.tcp_max_syn_backlog = 4096
 net.core.somaxconn = 8192
 net.ipv4.tcp_max_orphans = 8192
-net.ipv4.tcp_fin_timeout = 10
+net.core.rmem_max=67108864
+net.core.wmem_max=67108864
+net.core.rmem_default=256960
+net.core.wmem_default=256960
+net.ipv4.tcp_rmem=4096 87380 33554432
+net.ipv4.tcp_wmem=4096 65536 33554432
+net.ipv4.tcp_mem=131072  262144  524288
+net.ipv4.udp_rmem_min = 16384
+net.ipv4.udp_wmem_min = 16384
+net.ipv4.udp_mem = 65536 131072 262144
 net.netfilter.nf_conntrack_generic_timeout = 60
 net.netfilter.nf_conntrack_tcp_timeout_close_wait = 30
 net.netfilter.nf_conntrack_tcp_timeout_established = 600
@@ -307,27 +320,38 @@ rm -rf /overlay/upper/etc/sysctl.d/99-tweaker.conf
 cat > /overlay/upper/etc/sysctl.d/99-tweaker.conf <<-SYS
 net.ipv4.ip_default_ttl=64
 net.ipv6.conf.all.hop_limit = 64
-net.ipv4.conf.all.accept_redirects = 0
-net.ipv4.conf.all.send_redirects = 0
-net.ipv4.conf.all.secure_redirects = 0
-net.ipv4.tcp_max_syn_backlog = 4096
-net.ipv4.tcp_keepalive_time = 60
-net.ipv4.tcp_keepalive_intvl = 15
+fs.file-max = 1000000
+fs.inotify.max_user_instances = 8192
+net.ipv4.tcp_syncookies = 1
+net.ipv4.tcp_fin_timeout = 30
+net.ipv4.tcp_tw_reuse = 1
+net.ipv4.ip_local_port_range = 1024 65535
+net.ipv4.tcp_max_tw_buckets = 6000
+net.ipv4.route.gc_timeout = 100
+net.ipv4.tcp_synack_retries = 1
+net.ipv4.tcp_mtu_probing=1
+net.core.netdev_max_backlog = 32768
 net.ipv4.tcp_timestamps = 0
 net.ipv4.tcp_no_metrics_save = 1
 net.ipv4.tcp_rfc1337 = 1
-net.ipv4.ip_local_port_range = 1024 65535
-net.netfilter.nf_conntrack_max = 16384
 net.ipv4.tcp_synack_retries = 3
-net.ipv4.tcp_sack = 0
-net.ipv4.tcp_dsack = 0
-net.ipv4.tcp_fack = 0
 net.ipv4.tcp_retries2 = 6
 net.ipv4.tcp_keepalive_probes = 4
 net.ipv4.icmp_echo_ignore_all = 1
+net.netfilter.nf_conntrack_max=65535
+net.ipv4.tcp_max_syn_backlog = 4096
 net.core.somaxconn = 8192
 net.ipv4.tcp_max_orphans = 8192
-net.ipv4.tcp_fin_timeout = 10
+net.core.rmem_max=67108864
+net.core.wmem_max=67108864
+net.core.rmem_default=256960
+net.core.wmem_default=256960
+net.ipv4.tcp_rmem=4096 87380 33554432
+net.ipv4.tcp_wmem=4096 65536 33554432
+net.ipv4.tcp_mem=131072  262144  524288
+net.ipv4.udp_rmem_min = 16384
+net.ipv4.udp_wmem_min = 16384
+net.ipv4.udp_mem = 65536 131072 262144
 net.netfilter.nf_conntrack_generic_timeout = 60
 net.netfilter.nf_conntrack_tcp_timeout_close_wait = 30
 net.netfilter.nf_conntrack_tcp_timeout_established = 600
@@ -445,6 +469,7 @@ cat > /etc/rc.local <<-RCD
 #!/bin/sh -e
 # rc.local
 # By default this script does nothing.
+/etc/init.d/irqbalance start
 exit 0
 RCD
 chmod +x /etc/rc.local
