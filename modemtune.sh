@@ -281,6 +281,107 @@ cat > /overlay/upper/etc/sysctl.d/99-tweaker.conf <<-SYS
 SYS
 sysctl -p
 
+echo -e "TUNING NETWORK"
+rm -rf /overlay/upper/etc/config/network
+cat > /overlay/upper/etc/config/network <<-NETTY1
+config interface 'loopback'
+        option ifname 'lo'
+        option proto 'static'
+        option ipaddr '127.0.0.1'
+        option netmask '255.0.0.0'
+
+config globals 'globals'
+        option ula_prefix 'fd0d:1c3a:2ae7::/48'
+
+config interface 'lan'
+        option type 'bridge'
+        option ifname 'eth0 eth1 eth2 eth3 eth4'
+        option proto 'static'
+        option ipaddr '192.168.1.1'
+        option netmask '255.255.255.0'
+        option multicast_querier '0'
+        option igmp_snooping '0'
+        option ip6assign '60'
+        option force_link '1'
+
+config interface 'wan'
+        option ifname 'wwan0_1'
+        option proto 'dhcp'
+        option dns '1.1.1.1 1.0.0.1'
+        option metric '1'
+        option ttl '64'
+
+config interface 'wan6'
+        option ifname 'wwan0_1'
+        option proto 'dhcpv6'
+        option ttl '64'
+
+config interface 'wan1'
+        option proto 'dhcp'
+        option _orig_bridge 'false'
+        option metric '10'
+        option ttl '64'
+NETTY1
+
+rm -rf /etc/config/network
+cat > /etc/config/network <<-NETTY
+config interface 'loopback'
+        option ifname 'lo'
+        option proto 'static'
+        option ipaddr '127.0.0.1'
+        option netmask '255.0.0.0'
+
+config globals 'globals'
+        option ula_prefix 'fd0d:1c3a:2ae7::/48'
+
+config interface 'lan'
+        option type 'bridge'
+        option ifname 'eth0 eth1 eth2 eth3 eth4'
+        option proto 'static'
+        option ipaddr '192.168.1.1'
+        option netmask '255.255.255.0'
+        option multicast_querier '0'
+        option igmp_snooping '0'
+        option ip6assign '60'
+        option force_link '1'
+
+config interface 'wan'
+        option ifname 'wwan0_1'
+        option proto 'dhcp'
+        option dns '1.1.1.1 1.0.0.1'
+        option metric '1'
+        option ttl '64'
+
+config interface 'wan6'
+        option ifname 'wwan0_1'
+        option proto 'dhcpv6'
+        option ttl '64'
+
+config interface 'wan1'
+        option proto 'dhcp'
+        option _orig_bridge 'false'
+        option metric '10'
+        option ttl '64'
+NETTY
+
+echo -e "BYPASS SMP-TUNE"
+rm -rf /overlay/upper/etc/hotplug.d/net/20-smp-tune
+rm -rf /overlay/upper/etc/hotplug.d/net/99-smp-tune
+wget -O /overlay/upper/etc/hotplug.d/net/99-smp-tune https://raw.githubusercontent.com/d4rk442/tweak/main/99-smp-tune
+
+rm -rf /etc/hotplug.d/net/20-smp-tune
+rm -rf /etc/hotplug.d/net/99-smp-tune
+wget -O /etc/hotplug.d/net/99-smp-tune https://raw.githubusercontent.com/d4rk442/tweak/main/99-smp-tune
+
+echo -e "BYPASS IRQBALANCE"
+rm -rf /etc/config/irqbalance
+cat > /etc/config/irqbalance <<-IRQ
+config irqbalance 'irqbalance'
+             option enable '1'
+
+             option interval '1'
+IRQ
+
 rm -rf /etc/rc.local
 cat > /etc/rc.local <<-RCD
 #sysctl -w net.ipv6.conf.all.disable_ipv6=1
@@ -551,106 +652,6 @@ echo 2 > /proc/irq/50/smp_affinity
 exit 0
 RCD
 
-echo -e "TUNING NETWORK"
-rm -rf /overlay/upper/etc/config/network
-cat > /overlay/upper/etc/config/network <<-NETTY1
-config interface 'loopback'
-        option ifname 'lo'
-        option proto 'static'
-        option ipaddr '127.0.0.1'
-        option netmask '255.0.0.0'
-
-config globals 'globals'
-        option ula_prefix 'fd0d:1c3a:2ae7::/48'
-
-config interface 'lan'
-        option type 'bridge'
-        option ifname 'eth0 eth1 eth2 eth3 eth4'
-        option proto 'static'
-        option ipaddr '192.168.1.1'
-        option netmask '255.255.255.0'
-        option multicast_querier '0'
-        option igmp_snooping '0'
-        option ip6assign '60'
-        option force_link '1'
-
-config interface 'wan'
-        option ifname 'wwan0_1'
-        option proto 'dhcp'
-        option dns '1.1.1.1 1.0.0.1'
-        option metric '1'
-        option ttl '64'
-
-config interface 'wan6'
-        option ifname 'wwan0_1'
-        option proto 'dhcpv6'
-        option ttl '64'
-
-config interface 'wan1'
-        option proto 'dhcp'
-        option _orig_bridge 'false'
-        option metric '10'
-        option ttl '64'
-NETTY1
-
-rm -rf /etc/config/network
-cat > /etc/config/network <<-NETTY
-config interface 'loopback'
-        option ifname 'lo'
-        option proto 'static'
-        option ipaddr '127.0.0.1'
-        option netmask '255.0.0.0'
-
-config globals 'globals'
-        option ula_prefix 'fd0d:1c3a:2ae7::/48'
-
-config interface 'lan'
-        option type 'bridge'
-        option ifname 'eth0 eth1 eth2 eth3 eth4'
-        option proto 'static'
-        option ipaddr '192.168.1.1'
-        option netmask '255.255.255.0'
-        option multicast_querier '0'
-        option igmp_snooping '0'
-        option ip6assign '60'
-        option force_link '1'
-
-config interface 'wan'
-        option ifname 'wwan0_1'
-        option proto 'dhcp'
-        option dns '1.1.1.1 1.0.0.1'
-        option metric '1'
-        option ttl '64'
-
-config interface 'wan6'
-        option ifname 'wwan0_1'
-        option proto 'dhcpv6'
-        option ttl '64'
-
-config interface 'wan1'
-        option proto 'dhcp'
-        option _orig_bridge 'false'
-        option metric '10'
-        option ttl '64'
-NETTY
-
-echo -e "BYPASS SMP-TUNE"
-rm -rf /overlay/upper/etc/hotplug.d/net/20-smp-tune
-rm -rf /overlay/upper/etc/hotplug.d/net/99-smp-tune
-wget -O /overlay/upper/etc/hotplug.d/net/99-smp-tune https://raw.githubusercontent.com/d4rk442/tweak/main/99-smp-tune
-
-rm -rf /etc/hotplug.d/net/20-smp-tune
-rm -rf /etc/hotplug.d/net/99-smp-tune
-wget -O /etc/hotplug.d/net/99-smp-tune https://raw.githubusercontent.com/d4rk442/tweak/main/99-smp-tune
-
-echo -e "BYPASS IRQBALANCE"
-rm -rf /etc/config/irqbalance
-cat > /etc/config/irqbalance <<-IRQ
-config irqbalance 'irqbalance'
-             option enable '1'
-
-             option interval '1'
-IRQ
 echo -e "FINISH SCRIPT REBOOT............"
 
 rm -rf /root/*
