@@ -371,18 +371,15 @@ config interface 'wan'
         option ifname 'wwan0_1'
         option proto 'dhcp'
         option metric '1'
-        option ttl '64'
 
 config interface 'wan6'
         option ifname 'wwan0'
         option proto 'dhcpv6'
-        option ttl '64'
 
 config interface 'wan1'
         option proto 'dhcp'
         option _orig_bridge 'false'
         option metric '10'
-        option ttl '64'
 NETTY1
 
 rm -rf /etc/config/network
@@ -412,18 +409,15 @@ config interface 'wan'
         option ifname 'wwan0_1'
         option proto 'dhcp'
         option metric '1'
-        option ttl '64'
 
 config interface 'wan6'
         option ifname 'wwan0'
         option proto 'dhcpv6'
-        option ttl '64'
 
 config interface 'wan1'
         option proto 'dhcp'
         option _orig_bridge 'false'
         option metric '10'
-        option ttl '64'
 NETTY
 
 echo -e "BYPASS SMP-TUNE"
