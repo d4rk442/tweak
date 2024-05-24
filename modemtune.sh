@@ -261,7 +261,18 @@ FFW
 echo -e "TWEAK SYSCTL"
 rm -rf /etc/sysctl.conf
 cat > /etc/sysctl.conf <<-SYS1
-#
+net.ipv4.ip_default_ttl=64
+net.ipv6.conf.all.hop_limit = 64
+fs.file-max = 1000000
+net.ipv4.tcp_fin_timeout=15
+net.ipv4.tcp_keepalive_time=300
+net.ipv4.tcp_keepalive_probes=5
+net.ipv4.tcp_keepalive_intvl=15
+net.core.somaxconn=1000
+net.core.netdev_max_backlog=5000
+net.ipv4.tcp_max_syn_backlog=8096
+net.ipv4.tcp_slow_start_after_idle=0
+net.ipv4.tcp_tw_reuse=1
 SYS1
 
 rm -rf /overlay/upper/etc/sysctl.d/*
@@ -277,7 +288,18 @@ SYS2
 
 rm -rf /overlay/upper/etc/sysctl.d/99-tweaker.conf
 cat > /overlay/upper/etc/sysctl.d/99-tweaker.conf <<-SYS
-#
+net.ipv4.ip_default_ttl=64
+net.ipv6.conf.all.hop_limit = 64
+fs.file-max = 1000000
+net.ipv4.tcp_fin_timeout=15
+net.ipv4.tcp_keepalive_time=300
+net.ipv4.tcp_keepalive_probes=5
+net.ipv4.tcp_keepalive_intvl=15
+net.core.somaxconn=1000
+net.core.netdev_max_backlog=5000
+net.ipv4.tcp_max_syn_backlog=8096
+net.ipv4.tcp_slow_start_after_idle=0
+net.ipv4.tcp_tw_reuse=1
 SYS
 sysctl -p
 
