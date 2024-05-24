@@ -62,10 +62,6 @@ rm -rf /etc/dnsmasq.conf
 cat > /etc/dnsmasq.conf <<-DNSMASQ
 #!/usr/bin/env bash
 log-facility=-
-server=8.8.8.8
-server=8.8.4.4
-server=2001:4860:4860::8888
-server=2001:4860:4860::8888
 DNSMASQ
 
 rm -rf /etc/resolv.conf
