@@ -2,8 +2,10 @@ echo -e "START TUNING"
 
 rm -rf /etc/resolv.conf
 cat > /etc/resolv.conf <<-DNS
-nameserver 127.0.0.1
-nameserver ::1
+nameserver 8.8.8.8
+nameserver 8.8.4.4
+nameserver 2001:4860:4860::8888
+nameserver 2001:4860:4860::8844
 DNS
 
 rm -rf /etc/opkg/distfeeds.conf
@@ -68,8 +70,10 @@ DNSMASQ
 
 rm -rf /etc/resolv.conf
 cat > /etc/resolv.conf <<-DNS
-nameserver 127.0.0.1
-nameserver ::1
+nameserver 8.8.8.8
+nameserver 8.8.4.4
+nameserver 2001:4860:4860::8888
+nameserver 2001:4860:4860::8844
 DNS
 
 rm -rf /tmp/resolv.conf
@@ -361,7 +365,7 @@ config interface 'lan'
         option proto 'static'
         option ipaddr '192.168.1.1'
         option netmask '255.255.255.0'
-        option dns '8.8.8.8 8.8.4.4'
+        option dns '8.8.8.8 8.8.4.4 2001:4860:4860::8888 2001:4860:4860::8844'
         option multicast_querier '0'
         option igmp_snooping '0'
         option ip6assign '60'
@@ -402,7 +406,7 @@ config interface 'lan'
         option proto 'static'
         option ipaddr '192.168.1.1'
         option netmask '255.255.255.0'
-        option dns '8.8.8.8 8.8.4.4'
+        option dns '8.8.8.8 8.8.4.4 2001:4860:4860::8888 2001:4860:4860::8844'
         option multicast_querier '0'
         option igmp_snooping '0'
         option ip6assign '60'
