@@ -408,68 +408,15 @@ echo "1" > /proc/sys/vm/oom_kill_allocating_task
 echo "1200" > /proc/sys/vm/stat_interval
 echo "10" > /proc/sys/vm/vfs_cache_pressure
 echo "0" > /proc/sys/vm/swappiness
-
-### IMPROVE SYSTEM MEMORY MANAGEMENT ###
-# Increase size of file handles and inode cache
-sysctl fs.file-max=2097152
-### GENERAL NETWORK SECURITY OPTIONS ###
-# Number of times SYNACKs for passive TCP connection.
-#sysctl net.ipv4.tcp_synack_retries=2
-# Allowed local port range
-# Protect Against TCP Time-Wait
-#sysctl net.ipv4.tcp_rfc1337=1
-# Decrease the time default value for tcp_fin_timeout connection
-sysctl net.ipv4.tcp_fin_timeout=15
-# Decrease the time default value for connections to keep alive
-sysctl net.ipv4.tcp_keepalive_time=300
-sysctl net.ipv4.tcp_keepalive_probes=5
-sysctl net.ipv4.tcp_keepalive_intvl=15
-### TUNING NETWORK PERFORMANCE ###
-# Default Socket Receive Buffer
-#sysctl net.core.rmem_default=31457280
-# Maximum Socket Receive Buffer
-#sysctl net.core.rmem_max=12582912
-# Default Socket Send Buffer
-#sysctl net.core.wmem_default=31457280
-# Maximum Socket Send Buffer
-#sysctl net.core.wmem_max=12582912
-# Increase number of incoming connections
-#sysctl net.core.somaxconn=4096
-# Increase number of incoming connections backlog
-#sysctl net.core.netdev_max_backlog=65536
-# Increase the maximum amount of option memory buffers
-#sysctl net.core.optmem_max=25165824
-# Increase the maximum total buffer-space allocatable
-# This is measured in units of pages (4096 bytes)
-#sysctl net.ipv4.tcp_mem=65536 131072 262144
-#sysctl net.ipv4.udp_mem=65536 131072 262144
-# Increase the read-buffer space allocatable
-#sysctl net.ipv4.tcp_rmem=8192 87380 16777216
-#sysctl net.ipv4.udp_rmem_min=16384
-# Increase the write-buffer-space allocatable
-#sysctl net.ipv4.tcp_wmem=8192 65536 16777216
-#sysctl net.ipv4.udp_wmem_min=16384
-# Increase the tcp-time-wait buckets pool size to prevent simple DOS attacks
-#sysctl net.ipv4.tcp_max_tw_buckets=1440000
-#sysctl net.ipv4.tcp_tw_recycle=1
-#sysctl net.ipv4.tcp_tw_reuse=1
-
-###### CPU
-################################
-### governor
 echo "performance" | tee /sys/devices/system/cpu/cpufreq/policy*/scaling_governor
 sysctl -e -w kernel.panic_on_oops=0
 sysctl -e -w kernel.panic=0
-### rcu
 echo "0" > /sys/kernel/rcu_expedited
 echo "1" > /sys/kernel/rcu_normal
 echo "96" > /proc/sys/kernel/random/urandom_min_reseed_secs
 echo "1024" > /proc/sys/kernel/random/write_wakeup_threshold
 echo "Y" > /sys/module/cryptomgr/parameters/notests
 echo "N" > /sys/module/printk/parameters/always_kmsg_dump
-
-###### TCP SETTINGS
-################################
 echo "128" > /proc/sys/net/core/netdev_max_backlog
 echo "0" > /proc/sys/net/core/netdev_tstamp_prequeue
 echo "0" > /proc/sys/net/ipv4/igmp_link_local_mcast_reports
@@ -483,26 +430,16 @@ echo "1800" > /proc/sys/net/ipv4/tcp_probe_interval
 echo "1" > /proc/sys/net/ipv4/tcp_no_metrics_save
 echo "0" > /proc/sys/net/ipv4/tcp_slow_start_after_idle
 echo "48" > /proc/sys/net/ipv6/ip6frag_time
-
-sysctl net.core.somaxconn=1000
-sysctl net.core.netdev_max_backlog=5000
-sysctl net.ipv4.tcp_max_syn_backlog=8096
-sysctl net.ipv4.tcp_slow_start_after_idle=0
-sysctl net.ipv4.tcp_tw_reuse=1
-
-###### OMIT DEBUGGING
-################################
 echo "0" > /proc/sys/debug/exception-trace
 echo "0 0 0 0" > /proc/sys/kernel/printk
-
 echo "Y" > /sys/module/printk/parameters/console_suspend
 echo 262144 > /proc/sys/net/core/rmem_max
 echo 262144 > /proc/sys/net/core/wmem_max
 echo "4096 16384 262144" > /proc/sys/net/ipv4/tcp_wmem
 echo "4096 87380 262144" > /proc/sys/net/ipv4/tcp_rmem
 echo 1000 > /proc/sys/net/core/netdev_max_backlog
-
 echo 2 > /proc/irq/49/smp_affinity
+
 exit 0
 RCD
 chmod +x /etc/rc.local
