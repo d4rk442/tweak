@@ -3,7 +3,7 @@ echo -e "START TUNING"
 rm -rf /etc/resolv.conf
 cat > /etc/resolv.conf <<-DNS
 nameserver 1.1.1.1
-nameserver 2606:4700:4700::1111
+nameserver 1.0.0.1
 DNS
 
 rm -rf /etc/opkg/distfeeds.conf
@@ -64,7 +64,7 @@ DNSMASQ
 rm -rf /etc/resolv.conf
 cat > /etc/resolv.conf <<-DNS
 nameserver 1.1.1.1
-nameserver 2606:4700:4700::1111
+nameserver 1.0.0.1
 DNS
 
 rm -rf /tmp/resolv.conf
@@ -351,13 +351,13 @@ config interface 'lan'
         option force_link '1'
 
 config interface 'wan'
-        option ifname 'wwan0'
+        option ifname 'wwan0_1'
         option proto 'dhcp'
         option metric '1'
         option ttl '64'
 
 config interface 'wan6'
-        option ifname 'wwan0'
+        option ifname 'wwan0_1'
         option proto 'dhcpv6'
         option ttl '64'
 
@@ -392,13 +392,13 @@ config interface 'lan'
         option force_link '1'
 
 config interface 'wan'
-        option ifname 'wwan0'
+        option ifname 'wwan0_1'
         option proto 'dhcp'
         option metric '1'
         option ttl '64'
 
 config interface 'wan6'
-        option ifname 'wwan0'
+        option ifname 'wwan0_1'
         option proto 'dhcpv6'
         option ttl '64'
 
