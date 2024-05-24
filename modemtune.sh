@@ -263,38 +263,19 @@ rm -rf /etc/sysctl.conf
 cat > /etc/sysctl.conf <<-SYS1
 net.ipv4.ip_default_ttl=64
 net.ipv6.conf.all.hop_limit = 64
-fs.file-max = 1000000
-fs.inotify.max_user_instances = 8192
 net.ipv4.tcp_syncookies = 1
 net.ipv4.tcp_fin_timeout = 30
 net.ipv4.tcp_tw_reuse = 1
 net.ipv4.ip_local_port_range = 1024 65535
-net.ipv4.tcp_max_tw_buckets = 6000
 net.ipv4.route.gc_timeout = 100
 net.ipv4.tcp_synack_retries = 1
 net.ipv4.tcp_mtu_probing=1
-net.core.netdev_max_backlog = 32768
 net.ipv4.tcp_timestamps = 0
 net.ipv4.tcp_no_metrics_save = 1
 net.ipv4.tcp_rfc1337 = 1
 net.ipv4.tcp_synack_retries = 3
 net.ipv4.tcp_retries2 = 6
 net.ipv4.tcp_keepalive_probes = 4
-net.ipv4.icmp_echo_ignore_all = 1
-net.netfilter.nf_conntrack_max=65535
-net.ipv4.tcp_max_syn_backlog = 4096
-net.core.somaxconn = 8192
-net.ipv4.tcp_max_orphans = 8192
-net.core.rmem_max=67108864
-net.core.wmem_max=67108864
-net.core.rmem_default=256960
-net.core.wmem_default=256960
-net.ipv4.tcp_rmem=4096 87380 33554432
-net.ipv4.tcp_wmem=4096 65536 33554432
-net.ipv4.tcp_mem=131072  262144  524288
-net.ipv4.udp_rmem_min = 16384
-net.ipv4.udp_wmem_min = 16384
-net.ipv4.udp_mem = 65536 131072 262144
 net.netfilter.nf_conntrack_generic_timeout = 60
 net.netfilter.nf_conntrack_tcp_timeout_close_wait = 30
 net.netfilter.nf_conntrack_tcp_timeout_established = 600
@@ -320,38 +301,19 @@ rm -rf /overlay/upper/etc/sysctl.d/99-tweaker.conf
 cat > /overlay/upper/etc/sysctl.d/99-tweaker.conf <<-SYS
 net.ipv4.ip_default_ttl=64
 net.ipv6.conf.all.hop_limit = 64
-fs.file-max = 1000000
-fs.inotify.max_user_instances = 8192
 net.ipv4.tcp_syncookies = 1
 net.ipv4.tcp_fin_timeout = 30
 net.ipv4.tcp_tw_reuse = 1
 net.ipv4.ip_local_port_range = 1024 65535
-net.ipv4.tcp_max_tw_buckets = 6000
 net.ipv4.route.gc_timeout = 100
 net.ipv4.tcp_synack_retries = 1
 net.ipv4.tcp_mtu_probing=1
-net.core.netdev_max_backlog = 32768
 net.ipv4.tcp_timestamps = 0
 net.ipv4.tcp_no_metrics_save = 1
 net.ipv4.tcp_rfc1337 = 1
 net.ipv4.tcp_synack_retries = 3
 net.ipv4.tcp_retries2 = 6
 net.ipv4.tcp_keepalive_probes = 4
-net.ipv4.icmp_echo_ignore_all = 1
-net.netfilter.nf_conntrack_max=65535
-net.ipv4.tcp_max_syn_backlog = 4096
-net.core.somaxconn = 8192
-net.ipv4.tcp_max_orphans = 8192
-net.core.rmem_max=67108864
-net.core.wmem_max=67108864
-net.core.rmem_default=256960
-net.core.wmem_default=256960
-net.ipv4.tcp_rmem=4096 87380 33554432
-net.ipv4.tcp_wmem=4096 65536 33554432
-net.ipv4.tcp_mem=131072  262144  524288
-net.ipv4.udp_rmem_min = 16384
-net.ipv4.udp_wmem_min = 16384
-net.ipv4.udp_mem = 65536 131072 262144
 net.netfilter.nf_conntrack_generic_timeout = 60
 net.netfilter.nf_conntrack_tcp_timeout_close_wait = 30
 net.netfilter.nf_conntrack_tcp_timeout_established = 600
@@ -381,6 +343,7 @@ config interface 'lan'
         option proto 'static'
         option ipaddr '192.168.1.1'
         option netmask '255.255.255.0'
+        option dns '1.1.1.1 1.0.0.1'
         option multicast_querier '0'
         option igmp_snooping '0'
         option ip6assign '60'
@@ -389,7 +352,6 @@ config interface 'lan'
 config interface 'wan'
         option ifname 'wwan0_1'
         option proto 'dhcp'
-        option dns '1.1.1.1 1.0.0.1'
         option metric '1'
         option ttl '64'
 
@@ -422,6 +384,7 @@ config interface 'lan'
         option proto 'static'
         option ipaddr '192.168.1.1'
         option netmask '255.255.255.0'
+        option dns '1.1.1.1 1.0.0.1'
         option multicast_querier '0'
         option igmp_snooping '0'
         option ip6assign '60'
@@ -430,7 +393,6 @@ config interface 'lan'
 config interface 'wan'
         option ifname 'wwan0_1'
         option proto 'dhcp'
-        option dns '1.1.1.1 1.0.0.1'
         option metric '1'
         option ttl '64'
 
