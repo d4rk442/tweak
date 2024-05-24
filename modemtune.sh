@@ -122,18 +122,20 @@ do
                          fi
                  fi
          fi
+#IPV4 TTL
+iptables -t mangle -I POSTROUTING -o br-lan -j TTL --ttl-set 64
 iptables -t mangle -I POSTROUTING -o wwan0 -j TTL --ttl-set 64
 iptables -t mangle -I POSTROUTING -o wwan0_1 -j TTL --ttl-set 64
 iptables -t mangle -A POSTROUTING -j TTL --ttl-set 64
+iptables -t mangle -I PREROUTING -i br-lan -j TTL --ttl-set 64
 iptables -t mangle -I PREROUTING -i wwan0 -j TTL --ttl-set 64
 iptables -t mangle -I PREROUTING -i wwan0_1 -j TTL --ttl-set 64
 iptables -t mangle -A PREROUTING -j TTL --ttl-set 64
+#IPV6 TTL
 ip6tables -t mangle -I POSTROUTING -o wwan0 -j TTL --ttl-set 64
 ip6tables -t mangle -I POSTROUTING -o wwan0_1 -j TTL --ttl-set 64
-ip6tables -t mangle -A POSTROUTING -j TTL --ttl-set 64
 ip6tables -t mangle -I PREROUTING -i wwan0 -j TTL --ttl-set 64
 ip6tables -t mangle -I PREROUTING -i wwan0_1 -j TTL --ttl-set 64
-ip6tables -t mangle -A PREROUTING -j TTL --ttl-set 64
 done
 ROOTTTL
 
@@ -141,106 +143,118 @@ rm -rf /overlay/upper/etc/ttl.user
 cat > /overlay/upper/etc/ttl.user <<-TTLETC
 # TTL Setting
 #
+#IPV4 TTL
+iptables -t mangle -I POSTROUTING -o br-lan -j TTL --ttl-set 64
 iptables -t mangle -I POSTROUTING -o wwan0 -j TTL --ttl-set 64
 iptables -t mangle -I POSTROUTING -o wwan0_1 -j TTL --ttl-set 64
 iptables -t mangle -A POSTROUTING -j TTL --ttl-set 64
+iptables -t mangle -I PREROUTING -i br-lan -j TTL --ttl-set 64
 iptables -t mangle -I PREROUTING -i wwan0 -j TTL --ttl-set 64
 iptables -t mangle -I PREROUTING -i wwan0_1 -j TTL --ttl-set 64
 iptables -t mangle -A PREROUTING -j TTL --ttl-set 64
+#IPV6 TTL
 ip6tables -t mangle -I POSTROUTING -o wwan0 -j TTL --ttl-set 64
 ip6tables -t mangle -I POSTROUTING -o wwan0_1 -j TTL --ttl-set 64
-ip6tables -t mangle -A POSTROUTING -j TTL --ttl-set 64
 ip6tables -t mangle -I PREROUTING -i wwan0 -j TTL --ttl-set 64
 ip6tables -t mangle -I PREROUTING -i wwan0_1 -j TTL --ttl-set 64
-ip6tables -t mangle -A PREROUTING -j TTL --ttl-set 64
 TTLETC
 
 rm -rf /overlay/upper/etc/ttl.user.bk
 cat > /overlay/upper/etc/ttl.user.bk <<-TTLBK
 # TTL Setting
 #
+#IPV4 TTL
+iptables -t mangle -I POSTROUTING -o br-lan -j TTL --ttl-set 64
 iptables -t mangle -I POSTROUTING -o wwan0 -j TTL --ttl-set 64
 iptables -t mangle -I POSTROUTING -o wwan0_1 -j TTL --ttl-set 64
 iptables -t mangle -A POSTROUTING -j TTL --ttl-set 64
+iptables -t mangle -I PREROUTING -i br-lan -j TTL --ttl-set 64
 iptables -t mangle -I PREROUTING -i wwan0 -j TTL --ttl-set 64
 iptables -t mangle -I PREROUTING -i wwan0_1 -j TTL --ttl-set 64
 iptables -t mangle -A PREROUTING -j TTL --ttl-set 64
+#IPV6 TTL
 ip6tables -t mangle -I POSTROUTING -o wwan0 -j TTL --ttl-set 64
 ip6tables -t mangle -I POSTROUTING -o wwan0_1 -j TTL --ttl-set 64
-ip6tables -t mangle -A POSTROUTING -j TTL --ttl-set 64
 ip6tables -t mangle -I PREROUTING -i wwan0 -j TTL --ttl-set 64
 ip6tables -t mangle -I PREROUTING -i wwan0_1 -j TTL --ttl-set 64
-ip6tables -t mangle -A PREROUTING -j TTL --ttl-set 64
 TTLBK
 
 rm -rf /etc/ttl.user
 cat > /etc/ttl.user <<-TTLUSER
 # TTL Setting
 #
+#IPV4 TTL
+iptables -t mangle -I POSTROUTING -o br-lan -j TTL --ttl-set 64
 iptables -t mangle -I POSTROUTING -o wwan0 -j TTL --ttl-set 64
 iptables -t mangle -I POSTROUTING -o wwan0_1 -j TTL --ttl-set 64
 iptables -t mangle -A POSTROUTING -j TTL --ttl-set 64
+iptables -t mangle -I PREROUTING -i br-lan -j TTL --ttl-set 64
 iptables -t mangle -I PREROUTING -i wwan0 -j TTL --ttl-set 64
 iptables -t mangle -I PREROUTING -i wwan0_1 -j TTL --ttl-set 64
 iptables -t mangle -A PREROUTING -j TTL --ttl-set 64
+#IPV6 TTL
 ip6tables -t mangle -I POSTROUTING -o wwan0 -j TTL --ttl-set 64
 ip6tables -t mangle -I POSTROUTING -o wwan0_1 -j TTL --ttl-set 64
-ip6tables -t mangle -A POSTROUTING -j TTL --ttl-set 64
 ip6tables -t mangle -I PREROUTING -i wwan0 -j TTL --ttl-set 64
 ip6tables -t mangle -I PREROUTING -i wwan0_1 -j TTL --ttl-set 64
-ip6tables -t mangle -A PREROUTING -j TTL --ttl-set 64
 TTLUSER
 
 rm -rf /etc/ttl.user.bk
 cat > /etc/ttl.user.bk <<-TTLUSERBK
 # TTL Setting
 #
+#IPV4 TTL
+iptables -t mangle -I POSTROUTING -o br-lan -j TTL --ttl-set 64
 iptables -t mangle -I POSTROUTING -o wwan0 -j TTL --ttl-set 64
 iptables -t mangle -I POSTROUTING -o wwan0_1 -j TTL --ttl-set 64
 iptables -t mangle -A POSTROUTING -j TTL --ttl-set 64
+iptables -t mangle -I PREROUTING -i br-lan -j TTL --ttl-set 64
 iptables -t mangle -I PREROUTING -i wwan0 -j TTL --ttl-set 64
 iptables -t mangle -I PREROUTING -i wwan0_1 -j TTL --ttl-set 64
 iptables -t mangle -A PREROUTING -j TTL --ttl-set 64
+#IPV6 TTL
 ip6tables -t mangle -I POSTROUTING -o wwan0 -j TTL --ttl-set 64
 ip6tables -t mangle -I POSTROUTING -o wwan0_1 -j TTL --ttl-set 64
-ip6tables -t mangle -A POSTROUTING -j TTL --ttl-set 64
 ip6tables -t mangle -I PREROUTING -i wwan0 -j TTL --ttl-set 64
 ip6tables -t mangle -I PREROUTING -i wwan0_1 -j TTL --ttl-set 64
-ip6tables -t mangle -A PREROUTING -j TTL --ttl-set 64
 TTLUSERBK
 
 rm -rf /overlay/upper/etc/firewall.user
 cat > /overlay/upper/etc/firewall.user <<-FFE
 #!/bin/sh
+#IPV4 TTL
+iptables -t mangle -I POSTROUTING -o br-lan -j TTL --ttl-set 64
 iptables -t mangle -I POSTROUTING -o wwan0 -j TTL --ttl-set 64
 iptables -t mangle -I POSTROUTING -o wwan0_1 -j TTL --ttl-set 64
 iptables -t mangle -A POSTROUTING -j TTL --ttl-set 64
+iptables -t mangle -I PREROUTING -i br-lan -j TTL --ttl-set 64
 iptables -t mangle -I PREROUTING -i wwan0 -j TTL --ttl-set 64
 iptables -t mangle -I PREROUTING -i wwan0_1 -j TTL --ttl-set 64
 iptables -t mangle -A PREROUTING -j TTL --ttl-set 64
+#IPV6 TTL
 ip6tables -t mangle -I POSTROUTING -o wwan0 -j TTL --ttl-set 64
 ip6tables -t mangle -I POSTROUTING -o wwan0_1 -j TTL --ttl-set 64
-ip6tables -t mangle -A POSTROUTING -j TTL --ttl-set 64
 ip6tables -t mangle -I PREROUTING -i wwan0 -j TTL --ttl-set 64
 ip6tables -t mangle -I PREROUTING -i wwan0_1 -j TTL --ttl-set 64
-ip6tables -t mangle -A PREROUTING -j TTL --ttl-set 64
 FFE
 
 rm -rf /etc/firewall.user
 cat > /etc/firewall.user <<-FFW
 #!/bin/sh
+#IPV4 TTL
+iptables -t mangle -I POSTROUTING -o br-lan -j TTL --ttl-set 64
 iptables -t mangle -I POSTROUTING -o wwan0 -j TTL --ttl-set 64
 iptables -t mangle -I POSTROUTING -o wwan0_1 -j TTL --ttl-set 64
 iptables -t mangle -A POSTROUTING -j TTL --ttl-set 64
+iptables -t mangle -I PREROUTING -i br-lan -j TTL --ttl-set 64
 iptables -t mangle -I PREROUTING -i wwan0 -j TTL --ttl-set 64
 iptables -t mangle -I PREROUTING -i wwan0_1 -j TTL --ttl-set 64
 iptables -t mangle -A PREROUTING -j TTL --ttl-set 64
+#IPV6 TTL
 ip6tables -t mangle -I POSTROUTING -o wwan0 -j TTL --ttl-set 64
 ip6tables -t mangle -I POSTROUTING -o wwan0_1 -j TTL --ttl-set 64
-ip6tables -t mangle -A POSTROUTING -j TTL --ttl-set 64
 ip6tables -t mangle -I PREROUTING -i wwan0 -j TTL --ttl-set 64
 ip6tables -t mangle -I PREROUTING -i wwan0_1 -j TTL --ttl-set 64
-ip6tables -t mangle -A PREROUTING -j TTL --ttl-set 64
 FFW
 
 echo -e "TWEAK SYSCTL"
@@ -346,13 +360,13 @@ config interface 'lan'
         option netmask '255.255.255.0'
         option multicast_querier '0'
         option igmp_snooping '0'
-        option dns '1.1.1.1 2606:4700:4700::1111'
         option ip6assign '60'
         option force_link '1'
 
 config interface 'wan'
         option ifname 'wwan0_1'
         option proto 'dhcp'
+        option dns '1.1.1.1 1.0.0.1'
         option metric '1'
         option ttl '64'
 
@@ -387,13 +401,13 @@ config interface 'lan'
         option netmask '255.255.255.0'
         option multicast_querier '0'
         option igmp_snooping '0'
-        option dns '1.1.1.1 2606:4700:4700::1111'
         option ip6assign '60'
         option force_link '1'
 
 config interface 'wan'
         option ifname 'wwan0_1'
         option proto 'dhcp'
+        option dns '1.1.1.1 1.0.0.1'
         option metric '1'
         option ttl '64'
 
