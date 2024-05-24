@@ -378,7 +378,7 @@ config interface 'wan'
         option ttl '64'
 
 config interface 'wan6'
-        option ifname 'wwan0_1'
+        option ifname 'wwan0'
         option proto 'dhcpv6'
         option ttl '64'
 
@@ -419,7 +419,7 @@ config interface 'wan'
         option ttl '64'
 
 config interface 'wan6'
-        option ifname 'wwan0_1'
+        option ifname 'wwan0'
         option proto 'dhcpv6'
         option ttl '64'
 
