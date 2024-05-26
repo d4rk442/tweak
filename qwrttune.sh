@@ -16,7 +16,7 @@ DIST
 
 opkg update
 opkg install irqbalance
-opkg install nano-full
+opkg install nano
 opkg install htop
 opkg install sudo
 
