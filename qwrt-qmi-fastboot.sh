@@ -199,6 +199,7 @@ echo performance > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
 echo performance > /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
 echo performance > /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor
 echo performance > /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor
+sysctl fs.file-max=10000
 sysctl net.ipv4.tcp_fin_timeout=30
 sysctl net.ipv4.tcp_keepalive_intvl=60
 sysctl net.ipv4.tcp_keepalive_probes=5
@@ -214,7 +215,7 @@ chmod +x /etc/rc.local
 /etc/rc.local enable
 /etc/rc.local start
 /etc/rc.local restart
-rm -rf /root/*
 reboot
+rm -rf /root/*
 /usr/lib/rooter/luci/protochnge.sh 1
 echo -e "FINISH SCRIPT REBOOT............"
