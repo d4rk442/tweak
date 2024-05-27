@@ -193,17 +193,23 @@ cat > /etc/rc.local <<-RCD
 # rc.local
 # By default this script does nothing.
 /etc/init.d/irqbalance start
+/etc/init.d/dnsmasq start
 #/etc/init.d/passwall start
-echo ondemand > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
-echo ondemand > /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
-echo ondemand > /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor
-echo ondemand > /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor
+echo performance > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+echo performance > /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
+echo performance > /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor
+echo performance > /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor
+sysctl net.ipv4.tcp_fin_timeout=15
+sysctl net.ipv4.tcp_keepalive_intvl=30
+sysctl net.ipv4.tcp_keepalive_probes=5
+sysctl net.ipv4.tcp_keepalive_time=130
 exit 0
 RCD
 chmod +x /etc/rc.local
 /etc/rc.local enable
 /etc/rc.local start
+/etc/rc.local restart
+rm -rf /root/*
+
 /usr/lib/rooter/luci/protochnge.sh 1
 echo -e "FINISH SCRIPT REBOOT............"
-
-rm -rf /root/*
