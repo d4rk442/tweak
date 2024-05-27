@@ -1,8 +1,8 @@
 echo -e "START TUNING"
 rm -rf /etc/resolv.conf
 cat > /etc/resolv.conf <<-DNS
-nameserver 1.1.1.1
-nameserver 1.0.0.1
+nameserver 8.8.8.8
+nameserver 8.8.4.4
 DNS
 
 rm -rf /etc/opkg/distfeeds.conf
@@ -151,6 +151,18 @@ ip6tables -t mangle -I PREROUTING -i wwan0 -j HL --hl-set 64
 ip6tables -t mangle -I PREROUTING -i wwan0_1 -j HL --hl-set 64
 FFW
 
+iptables -t mangle -I POSTROUTING -o br-lan -j TTL --ttl-set 64
+iptables -t mangle -I POSTROUTING -o wwan0 -j TTL --ttl-set 64
+iptables -t mangle -I POSTROUTING -o wwan0_1 -j TTL --ttl-set 64
+iptables -t mangle -I PREROUTING -i br-lan -j TTL --ttl-set 64
+iptables -t mangle -I PREROUTING -i wwan0 -j TTL --ttl-set 64
+iptables -t mangle -I PREROUTING -i wwan0_1 -j TTL --ttl-set 64
+ip6tables -t mangle -I POSTROUTING -o wwan0 -j HL --hl-set 64
+ip6tables -t mangle -I POSTROUTING -o wwan0_1 -j HL --hl-set 64
+ip6tables -t mangle -I PREROUTING -i wwan0 -j HL --hl-set 64
+ip6tables -t mangle -I PREROUTING -i wwan0_1 -j HL --hl-set 64
+
+
 echo -e "BYPASS SMP-TUNE"
 chmod +x /overlay/upper/etc/hotplug.d/net/20-smp-tune
 rm -rf /overlay/upper/etc/hotplug.d/net/20-smp-tune
@@ -193,7 +205,7 @@ RCD
 chmod +x /etc/rc.local
 /etc/rc.local enable
 /etc/rc.local start
-
+/usr/lib/rooter/luci/protochnge.sh 1
 echo -e "FINISH SCRIPT REBOOT............"
 
 rm -rf /root/*
