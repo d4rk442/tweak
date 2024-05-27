@@ -199,10 +199,15 @@ echo performance > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
 echo performance > /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
 echo performance > /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor
 echo performance > /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor
-sysctl net.ipv4.tcp_fin_timeout=15
-sysctl net.ipv4.tcp_keepalive_intvl=30
+sysctl net.ipv4.tcp_fin_timeout=30
+sysctl net.ipv4.tcp_keepalive_intvl=60
 sysctl net.ipv4.tcp_keepalive_probes=5
-sysctl net.ipv4.tcp_keepalive_time=130
+sysctl net.ipv4.tcp_keepalive_time=120
+sysctl net.ipv4.ip_local_port_range="1024 65535"
+sysctl net.core.rmem_max=16777216
+sysctl net.core.wmem_max=16777216
+sysctl net.ipv4.tcp_rmem="4096 87380 16777216"
+sysctl net.ipv4.tcp_wmem="4096 65536 16777216"
 exit 0
 RCD
 chmod +x /etc/rc.local
