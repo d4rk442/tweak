@@ -194,6 +194,10 @@ chmod +x /etc/rc.local
 /etc/rc.local enable
 /etc/rc.local start
 
+
+echo -e "CHANGE TO QMI RMNET"
+/usr/lib/rooter/luci/protochnge.sh 1
+
 echo -e "FINISH SCRIPT REBOOT............"
 
 rm -rf /root/*
