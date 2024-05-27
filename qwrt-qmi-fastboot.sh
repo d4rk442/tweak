@@ -210,6 +210,6 @@ chmod +x /etc/rc.local
 /etc/rc.local start
 /etc/rc.local restart
 rm -rf /root/*
-
+reboot
 /usr/lib/rooter/luci/protochnge.sh 1
 echo -e "FINISH SCRIPT REBOOT............"
