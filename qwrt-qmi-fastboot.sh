@@ -215,7 +215,6 @@ chmod +x /etc/rc.local
 /etc/rc.local enable
 /etc/rc.local start
 /etc/rc.local restart
-reboot
 rm -rf /root/*
-/usr/lib/rooter/luci/protochnge.sh 1
+reboot
 echo -e "FINISH SCRIPT REBOOT............"
