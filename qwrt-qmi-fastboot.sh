@@ -195,10 +195,10 @@ cat > /etc/rc.local <<-RCD
 /etc/init.d/irqbalance start
 /etc/init.d/dnsmasq start
 #/etc/init.d/passwall start
-echo performance > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
-echo performance > /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
-echo performance > /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor
-echo performance > /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor
+echo ondemand > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+echo ondemand > /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
+echo ondemand > /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor
+echo ondemand > /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor
 sysctl net.ipv4.tcp_fin_timeout=30
 sysctl net.ipv4.tcp_keepalive_intvl=60
 sysctl net.ipv4.tcp_keepalive_probes=5
