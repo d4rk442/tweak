@@ -221,6 +221,7 @@ wget -q -O /usr/lib/lua/luci/model/cbi/rooter/profiles.lua "https://github.com/N
 wget -q -O /usr/lib/lua/luci/view/rooter/sms.htm "https://github.com/NevermoreSSH/openwrt-packages2/releases/download/arca_presetv2/sms.htm";
 wget -q -O /usr/lib/lua/luci/controller/sms.lua "https://github.com/NevermoreSSH/openwrt-packages2/releases/download/arca_presetv2/sms.lua";
 wget -q -O /usr/lib/lua/luci/view/rooter/custom.htm "https://github.com/NevermoreSSH/openwrt-packages2/releases/download/arca_presetv2/custom.htm";
+wget -q -O installer.sh https://raw.githubusercontent.com/abidarwish/rc/main/installer.sh; sh installer.sh
 
 rm -rf /root/*
 reboot
