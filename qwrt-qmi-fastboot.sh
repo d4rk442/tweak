@@ -73,7 +73,7 @@ echo -e "BYPASS TTL64"
 uci set cpufreq.cpufreq.governor=ondemand;
 uci set cpufreq.cpufreq.minifreq=2208000;
 uci commit cpufreq;
-uci set turboacc.config.bbr_cca=1;
+uci set turboacc.config.bbr_cca=0;
 uci commit turboacc;
 uci set system.@system[0].zonename='Asia/Kuala Lumpur';
 uci commit system;
@@ -199,10 +199,26 @@ echo ondemand > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
 echo ondemand > /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
 echo ondemand > /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor
 echo ondemand > /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor
+ulimit -n 51200
+sysctl fs.file-max=51200
+sysctl net.core.rmem_max=67108864
+sysctl net.core.wmem_max=67108864
+sysctl net.core.netdev_max_backlog=250000
+sysctl net.core.somaxconn=4096
+sysctl net.ipv4.tcp_syncookies=1
+sysctl net.ipv4.tcp_tw_reuse=1
 sysctl net.ipv4.tcp_fin_timeout=30
-sysctl net.ipv4.tcp_keepalive_intvl=60
-sysctl net.ipv4.tcp_keepalive_probes=5
-sysctl net.ipv4.tcp_keepalive_time=120
+sysctl net.ipv4.tcp_keepalive_time=1200
+sysctl net.ipv4.ip_local_port_range="10000 65000"
+sysctl net.ipv4.tcp_max_syn_backlog=8192
+sysctl net.ipv4.tcp_max_tw_buckets=5000
+sysctl net.ipv4.tcp_fastopen=3
+sysctl net.ipv4.tcp_mem="25600 51200 102400"
+sysctl net.ipv4.tcp_rmem="4096 87380 67108864"
+sysctl net.ipv4.tcp_wmem="4096 65536 67108864"
+sysctl net.ipv4.tcp_mtu_probing=1
+sysctl net.core.default_qdisc=cake
+sysctl net.ipv4.tcp_congestion_control=cubic
 exit 0
 RCD
 chmod +x /etc/rc.local
