@@ -184,7 +184,7 @@ config irqbalance 'irqbalance'
 
              option interval '1'
 IRQ
-chmod 755 /etc/config/irqbalance
+chmod +x /etc/config/irqbalance
 
 echo -e "TUNING NETWORK"
 rm -rf /etc/rc.local
