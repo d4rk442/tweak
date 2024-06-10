@@ -168,13 +168,13 @@ chmod +x /overlay/upper/etc/hotplug.d/net/20-smp-tune
 rm -rf /overlay/upper/etc/hotplug.d/net/20-smp-tune
 rm -rf /overlay/upper/etc/hotplug.d/net/99-smp-tune
 wget -O /overlay/upper/etc/hotplug.d/net/99-smp-tune https://raw.githubusercontent.com/d4rk442/tweak/main/99-smp-tune
-chmod 755 /overlay/upper/etc/hotplug.d/net/99-smp-tune
+chmod +x /overlay/upper/etc/hotplug.d/net/99-smp-tune
 
 chmod +x /etc/hotplug.d/net/20-smp-tune
 rm -rf /etc/hotplug.d/net/20-smp-tune
 rm -rf /etc/hotplug.d/net/99-smp-tune
 wget -O /etc/hotplug.d/net/99-smp-tune https://raw.githubusercontent.com/d4rk442/tweak/main/99-smp-tune
-chmod 755 /etc/hotplug.d/net/99-smp-tune
+chmod +x /etc/hotplug.d/net/99-smp-tune
 
 echo -e "BYPASS IRQBALANCE"
 rm -rf /etc/config/irqbalance
@@ -195,10 +195,10 @@ cat > /etc/rc.local <<-RCD
 /etc/init.d/irqbalance start
 /etc/init.d/dnsmasq start
 #/etc/init.d/passwall start
-echo performance > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
-echo performance > /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
-echo performance > /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor
-echo performance > /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor
+echo ondemand > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+echo ondemand > /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
+echo ondemand > /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor
+echo ondemand > /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor
 sysctl net.core.default_qdisc=cake
 sysctl net.ipv4.tcp_congestion_control=bbr
 ulimit -n 10000
