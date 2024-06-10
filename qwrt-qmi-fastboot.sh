@@ -195,12 +195,14 @@ cat > /etc/rc.local <<-RCD
 /etc/init.d/irqbalance start
 /etc/init.d/dnsmasq start
 #/etc/init.d/passwall start
-echo ondemand > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
-echo ondemand > /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
-echo ondemand > /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor
-echo ondemand > /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor
-ulimit -n 51200
-sysctl fs.file-max=51200
+echo performance > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+echo performance > /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
+echo performance > /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor
+echo performance > /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor
+sysctl net.core.default_qdisc=cake
+sysctl net.ipv4.tcp_congestion_control=bbr
+ulimit -n 10000
+sysctl fs.file-max=10000
 sysctl net.core.rmem_max=67108864
 sysctl net.core.wmem_max=67108864
 sysctl net.core.netdev_max_backlog=250000
@@ -212,13 +214,15 @@ sysctl net.ipv4.tcp_keepalive_time=1200
 sysctl net.ipv4.ip_local_port_range="10000 65000"
 sysctl net.ipv4.tcp_max_syn_backlog=8192
 sysctl net.ipv4.tcp_max_tw_buckets=5000
-sysctl net.ipv4.tcp_fastopen=3
 sysctl net.ipv4.tcp_mem="25600 51200 102400"
 sysctl net.ipv4.tcp_rmem="4096 87380 67108864"
 sysctl net.ipv4.tcp_wmem="4096 65536 67108864"
+sysctl net.ipv4.udp_rmem_min=8192
+sysctl net.ipv4.udp_wmem_min=8192
 sysctl net.ipv4.tcp_mtu_probing=1
-sysctl net.core.default_qdisc=cake
-sysctl net.ipv4.tcp_congestion_control=cubic
+sysctl net.ipv4.tcp_no_metrics_save=1
+sysctl net.ipv4.tcp_slow_start_after_idle=0
+sysctl net.ipv4.tcp_window_scaling=1
 exit 0
 RCD
 chmod +x /etc/rc.local
