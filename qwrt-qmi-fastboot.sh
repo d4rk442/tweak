@@ -201,8 +201,8 @@ echo performance > /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor
 echo performance > /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor
 sysctl net.core.default_qdisc=cake
 sysctl net.ipv4.tcp_congestion_control=bbr
-ulimit -n 10000
-sysctl fs.file-max=10000
+ulimit -n 100000
+sysctl fs.file-max=100000
 sysctl net.core.rmem_max=67108864
 sysctl net.core.wmem_max=67108864
 sysctl net.core.netdev_max_backlog=250000
