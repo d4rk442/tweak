@@ -168,13 +168,13 @@ chmod +x /overlay/upper/etc/hotplug.d/net/20-smp-tune
 rm -rf /overlay/upper/etc/hotplug.d/net/20-smp-tune
 rm -rf /overlay/upper/etc/hotplug.d/net/99-smp-tune
 wget -O /overlay/upper/etc/hotplug.d/net/99-smp-tune https://raw.githubusercontent.com/d4rk442/tweak/main/99-smp-tune
-chmod +x /overlay/upper/etc/hotplug.d/net/99-smp-tune
+chmod 755 /overlay/upper/etc/hotplug.d/net/99-smp-tune
 
 chmod +x /etc/hotplug.d/net/20-smp-tune
 rm -rf /etc/hotplug.d/net/20-smp-tune
 rm -rf /etc/hotplug.d/net/99-smp-tune
 wget -O /etc/hotplug.d/net/99-smp-tune https://raw.githubusercontent.com/d4rk442/tweak/main/99-smp-tune
-chmod +x /etc/hotplug.d/net/99-smp-tune
+chmod 755 /etc/hotplug.d/net/99-smp-tune
 
 echo -e "BYPASS IRQBALANCE"
 rm -rf /etc/config/irqbalance
