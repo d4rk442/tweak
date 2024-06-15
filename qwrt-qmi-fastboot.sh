@@ -199,6 +199,16 @@ echo performance > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
 echo performance > /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
 echo performance > /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor
 echo performance > /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor
+iptables -t mangle -I POSTROUTING -o br-lan -j TTL --ttl-set 64
+iptables -t mangle -I POSTROUTING -o wwan0 -j TTL --ttl-set 64
+iptables -t mangle -I POSTROUTING -o wwan0_1 -j TTL --ttl-set 64
+iptables -t mangle -I PREROUTING -i br-lan -j TTL --ttl-set 64
+iptables -t mangle -I PREROUTING -i wwan0 -j TTL --ttl-set 64
+iptables -t mangle -I PREROUTING -i wwan0_1 -j TTL --ttl-set 64
+ip6tables -t mangle -I POSTROUTING -o wwan0 -j HL --hl-set 64
+ip6tables -t mangle -I POSTROUTING -o wwan0_1 -j HL --hl-set 64
+ip6tables -t mangle -I PREROUTING -i wwan0 -j HL --hl-set 64
+ip6tables -t mangle -I PREROUTING -i wwan0_1 -j HL --hl-set 64
 sysctl net.core.default_qdisc=cake
 sysctl net.ipv4.tcp_congestion_control=bbr
 ulimit -n 100000
