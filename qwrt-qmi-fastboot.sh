@@ -70,7 +70,7 @@ DNS
 
 echo -e "BYPASS TTL64"
 
-uci set cpufreq.cpufreq.governor=performance;
+uci set cpufreq.cpufreq.governor=ondemand;
 uci set cpufreq.cpufreq.minifreq=2208000;
 uci commit cpufreq;
 uci set turboacc.config.bbr_cca=0;
@@ -195,10 +195,10 @@ cat > /etc/rc.local <<-RCD
 /etc/init.d/irqbalance start
 /etc/init.d/dnsmasq start
 #/etc/init.d/passwall start
-echo performance > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
-echo performance > /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
-echo performance > /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor
-echo performance > /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor
+echo ondemand > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+echo ondemand > /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
+echo ondemand > /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor
+echo ondemand > /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor
 iptables -t mangle -I POSTROUTING -o br-lan -j TTL --ttl-set 64
 iptables -t mangle -I POSTROUTING -o wwan0 -j TTL --ttl-set 64
 iptables -t mangle -I POSTROUTING -o wwan0_1 -j TTL --ttl-set 64
