@@ -245,6 +245,7 @@ net.ipv6.conf.all.accept_redirects=1
 net.ipv6.conf.all.accept_source_route=1
 #TWEAK
 fs.file-max=51200
+net.core.default_qdisc=cake
 net.core.rmem_max=67108864
 net.core.wmem_max=67108864
 net.core.netdev_max_backlog=250000
@@ -262,9 +263,6 @@ net.ipv4.udp_wmem_min=8192
 net.ipv4.tcp_no_metrics_save=1
 net.ipv4.tcp_slow_start_after_idle=0
 net.ipv4.tcp_window_scaling=1
-net.ipv4.ip_default_ttl=64
-net.ipv6.conf.all.hop_limit=64
-net.ipv6.conf.default.hop_limit=64
 SYSCT
 chmod +x /etc/sysctl.d/10-default.conf
 
