@@ -205,7 +205,7 @@ ip6tables -t mangle -I POSTROUTING -o wwan0 -j HL --hl-set 64
 ip6tables -t mangle -I POSTROUTING -o wwan0_1 -j HL --hl-set 64
 ip6tables -t mangle -I PREROUTING -i wwan0 -j HL --hl-set 64
 ip6tables -t mangle -I PREROUTING -i wwan0_1 -j HL --hl-set 64
-sysctl net.core.default_qdisc=fq
+sysctl net.core.default_qdisc=cake
 sysctl net.ipv4.tcp_congestion_control=bbr
 sysctl fs.file-max=51200
 sysctl net.core.rmem_max=67108864
