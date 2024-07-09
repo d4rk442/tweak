@@ -228,12 +228,45 @@ sysctl net.ipv4.tcp_mtu_probing=1
 sysctl net.ipv4.tcp_no_metrics_save=1
 sysctl net.ipv4.tcp_slow_start_after_idle=0
 sysctl net.ipv4.tcp_window_scaling=1
+sysctl net.ipv4.ip_default_ttl=64
+sysctl net.ipv6.conf.all.hop_limit=64
+sysctl net.ipv6.conf.default.hop_limit=64
 exit 0
 RCD
 chmod +x /etc/rc.local
 /etc/rc.local enable
 /etc/rc.local start
 /etc/rc.local restart
+
+rm -rf /etc/sysctl.d/tweak.conf
+cat > /etc/sysctl.d/tweak.conf <<-SYSCT
+sysctl --system
+fs.file-max=51200
+net.core.rmem_max=67108864
+net.core.wmem_max=67108864
+net.core.netdev_max_backlog=250000
+net.core.somaxconn=4096
+net.ipv4.tcp_syncookies=1
+net.ipv4.tcp_tw_reuse=1
+net.ipv4.tcp_fin_timeout=30
+net.ipv4.tcp_keepalive_time=1200
+net.ipv4.ip_local_port_range="10000 65000"
+net.ipv4.tcp_max_syn_backlog=8192
+net.ipv4.tcp_max_tw_buckets=5000
+net.ipv4.tcp_mem="25600 51200 102400"
+net.ipv4.tcp_rmem="4096 87380 67108864"
+net.ipv4.tcp_wmem="4096 65536 67108864"
+net.ipv4.udp_rmem_min=8192
+net.ipv4.udp_wmem_min=8192
+net.ipv4.tcp_mtu_probing=1
+net.ipv4.tcp_no_metrics_save=1
+net.ipv4.tcp_slow_start_after_idle=0
+net.ipv4.tcp_window_scaling=1
+net.ipv4.ip_default_ttl=64
+net.ipv6.conf.all.hop_limit=64
+net.ipv6.conf.default.hop_limit=64
+SYSCT
+chmod +x /etc/sysctl.d/tweak.conf
 
 wget -q -O /usr/lib/lua/luci/model/cbi/rooter/customize.lua "https://github.com/NevermoreSSH/openwrt-packages2/releases/download/arca_presetv2/customize.lua";
 wget -q -O /usr/lib/lua/luci/view/rooter/debug.htm "https://github.com/NevermoreSSH/openwrt-packages2/releases/download/arca_presetv2/debug.htm";
