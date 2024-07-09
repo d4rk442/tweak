@@ -29,7 +29,6 @@ opkg remove --autoremove luci-i18n-openvpn-server-zh-cn luci-app-openvpn-server 
 opkg remove --autoremove luci-i18n-openvpn-server-zh-cn luci-app-openvpn-server openvpn-*
 
 opkg update
-opkg install dnsmasq-full
 
 opkg remove --autoremove luci-i18n-zerotier-zh-cn luci-app-zerotier
 opkg remove --autoremove luci-i18n-zerotier-zh-cn luci-app-zerotier
@@ -52,7 +51,6 @@ rm -rf /etc/config/luci-app-ipsec-server
 rm -rf /etc/config/openvpn
 
 opkg update
-opkg install dnsmasq-full
 
 echo -e "INSTALL DNSMASQ"
 rm -rf /etc/dnsmasq.conf
@@ -164,13 +162,11 @@ ip6tables -t mangle -I PREROUTING -i wwan0_1 -j HL --hl-set 64
 
 
 echo -e "BYPASS SMP-TUNE"
-chmod +x /overlay/upper/etc/hotplug.d/net/20-smp-tune
 rm -rf /overlay/upper/etc/hotplug.d/net/20-smp-tune
 rm -rf /overlay/upper/etc/hotplug.d/net/99-smp-tune
 wget -O /overlay/upper/etc/hotplug.d/net/99-smp-tune https://raw.githubusercontent.com/d4rk442/tweak/main/99-smp-tune
 chmod +x /overlay/upper/etc/hotplug.d/net/99-smp-tune
 
-chmod +x /etc/hotplug.d/net/20-smp-tune
 rm -rf /etc/hotplug.d/net/20-smp-tune
 rm -rf /etc/hotplug.d/net/99-smp-tune
 wget -O /etc/hotplug.d/net/99-smp-tune https://raw.githubusercontent.com/d4rk442/tweak/main/99-smp-tune
@@ -209,10 +205,9 @@ ip6tables -t mangle -I POSTROUTING -o wwan0 -j HL --hl-set 64
 ip6tables -t mangle -I POSTROUTING -o wwan0_1 -j HL --hl-set 64
 ip6tables -t mangle -I PREROUTING -i wwan0 -j HL --hl-set 64
 ip6tables -t mangle -I PREROUTING -i wwan0_1 -j HL --hl-set 64
-sysctl net.core.default_qdisc=cake
+sysctl net.core.default_qdisc=fq
 sysctl net.ipv4.tcp_congestion_control=bbr
-ulimit -n 100000
-sysctl fs.file-max=100000
+sysctl fs.file-max=51200
 sysctl net.core.rmem_max=67108864
 sysctl net.core.wmem_max=67108864
 sysctl net.core.netdev_max_backlog=250000
