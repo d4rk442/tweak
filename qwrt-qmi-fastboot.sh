@@ -160,7 +160,6 @@ ip6tables -t mangle -I POSTROUTING -o wwan0_1 -j HL --hl-set 64
 ip6tables -t mangle -I PREROUTING -i wwan0 -j HL --hl-set 64
 ip6tables -t mangle -I PREROUTING -i wwan0_1 -j HL --hl-set 64
 
-
 echo -e "BYPASS SMP-TUNE"
 rm -rf /overlay/upper/etc/hotplug.d/net/20-smp-tune
 rm -rf /overlay/upper/etc/hotplug.d/net/99-smp-tune
@@ -215,56 +214,6 @@ chmod +x /etc/rc.local
 /etc/init.d/irqbalance start
 /etc/init.d/dnsmasq enable
 /etc/init.d/dnsmasq start
-
-rm -rf /etc/sysctl.d/10-default.conf
-cat > /etc/sysctl.d/10-default.conf <<-SYSCT
-#DEFAULT
-kernel.panic=1
-kernel.core_pattern=core
-fs.suid_dumpable=1
-
-fs.protected_hardlinks=1
-fs.protected_symlinks=1
-
-net.core.bpf_jit_enable=1
-net.ipv4.conf.default.arp_ignore=1
-net.ipv4.conf.all.arp_ignore=1
-net.ipv4.icmp_echo_ignore_broadcasts=1
-net.ipv4.icmp_ignore_bogus_error_responses=1
-net.ipv4.igmp_max_memberships=1000
-net.ipv4.tcp_timestamps=1
-net.ipv4.tcp_fin_timeout=30
-net.ipv4.tcp_keepalive_time=1200
-net.ipv4.tcp_mtu_probing=1
-net.ipv4.tcp_sack=1
-net.ipv4.tcp_dsack=1
-net.ipv4.ip_forward=1
-net.ipv6.conf.all.forwarding=1
-net.ipv6.conf.all.accept_ra=2
-net.ipv6.conf.all.accept_redirects=1
-net.ipv6.conf.all.accept_source_route=1
-#TWEAK
-fs.file-max=51200
-net.core.default_qdisc=cake
-net.core.rmem_max=67108864
-net.core.wmem_max=67108864
-net.core.netdev_max_backlog=250000
-net.core.somaxconn=4096
-net.ipv4.tcp_syncookies=1
-net.ipv4.tcp_tw_reuse=1
-net.ipv4.ip_local_port_range=10000 65000
-net.ipv4.tcp_max_syn_backlog=8192
-net.ipv4.tcp_max_tw_buckets=5000
-net.ipv4.tcp_mem=25600 51200 102400
-net.ipv4.tcp_rmem=4096 87380 67108864
-net.ipv4.tcp_wmem=4096 65536 67108864
-net.ipv4.udp_rmem_min=8192
-net.ipv4.udp_wmem_min=8192
-net.ipv4.tcp_no_metrics_save=1
-net.ipv4.tcp_slow_start_after_idle=0
-net.ipv4.tcp_window_scaling=1
-SYSCT
-chmod +x /etc/sysctl.d/10-default.conf
 
 wget -q -O /usr/lib/lua/luci/model/cbi/rooter/customize.lua "https://github.com/NevermoreSSH/openwrt-packages2/releases/download/arca_presetv2/customize.lua";
 wget -q -O /usr/lib/lua/luci/view/rooter/debug.htm "https://github.com/NevermoreSSH/openwrt-packages2/releases/download/arca_presetv2/debug.htm";
