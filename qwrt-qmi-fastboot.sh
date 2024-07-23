@@ -16,7 +16,6 @@ DIST
 
 opkg update
 opkg install irqbalance
-opkg install luci-app-irqbalance
 opkg install nano
 opkg install htop
 opkg install sudo
@@ -239,12 +238,8 @@ exit 0
 RCD
 chmod +x /etc/rc.local
 /etc/rc.local enable
-/etc/rc.local start
-/etc/rc.local restart
 /etc/init.d/irqbalance enable
-/etc/init.d/irqbalance start
 /etc/init.d/dnsmasq enable
-/etc/init.d/dnsmasq start
 
 rm -rf /root/*
 reboot
