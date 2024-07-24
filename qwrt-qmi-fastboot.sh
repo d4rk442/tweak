@@ -5,6 +5,16 @@ nameserver 8.8.8.8
 nameserver 8.8.4.4
 DNS
 
+echo -e "CHANGE-DIST"
+wget https://raw.githubusercontent.com/d4rk442/tweak/main/dist.sh
+chmod +x dist.sh
+./dist.sh
+
+echo -e "MINIMUM-SETTING"
+wget https://raw.githubusercontent.com/d4rk442/tweak/main/system.sh
+chmod +x system.sh
+./system.sh
+
 opkg update
 opkg install nano
 opkg install htop
