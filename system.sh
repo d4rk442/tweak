@@ -1,0 +1,20 @@
+uci set cpufreq.cpufreq.governor=performance;
+uci set cpufreq.cpufreq.minifreq=2208000;
+uci commit cpufreq;
+uci set turboacc.config.bbr_cca=0;
+uci commit turboacc;
+uci set system.@system[0].zonename='Asia/Kuala Lumpur';
+uci commit system;
+uci set luci.main.lang='auto';
+uci commit luci.main;
+uci -q delete system.ntp.server;
+uci add_list system.ntp.server='my.pool.ntp.org';
+uci add_list system.ntp.server='ntp.google.com';
+uci add_list system.ntp.server='ntp.windows.com';
+uci add_list system.ntp.server='ntp.cloudflare.com';
+uci commit system.ntp;
+/etc/init.d/sysntpd restart;
+uci set network.wan.ifname='wwan0_1';
+uci commit network.wan;
+uci set network.wan6.ifname='wwan0_1';
+uci commit network.wan6
