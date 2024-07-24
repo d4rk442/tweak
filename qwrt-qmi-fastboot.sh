@@ -23,24 +23,6 @@ chmod +x bypassttl.sh
 ./bypassttl.sh
 uci commit firewall
 
-echo -e "TUNE-DHCP"
-wget https://raw.githubusercontent.com/d4rk442/tweak/main/dhcp.sh
-chmod +x dhcp.sh
-./dhcp.sh
-uci commit dhcp
-
-echo -e "TUNE-NETWORK"
-wget https://raw.githubusercontent.com/d4rk442/tweak/main/network.sh
-chmod +x network.sh
-./network.sh
-uci commit network
-
-echo -e "TUNE-FIREWALL"
-wget https://raw.githubusercontent.com/d4rk442/tweak/main/firewall.sh
-chmod +x firewall.sh
-./firewall.sh
-uci commit firewall
-
 echo -e "TUNE-QMI"
 rm -rf /overlay/upper/etc/hotplug.d/net/20-smp-tune
 wget -O /overlay/upper/etc/hotplug.d/net/99-smp-tune https://raw.githubusercontent.com/d4rk442/tweak/main/99-smp-tune
