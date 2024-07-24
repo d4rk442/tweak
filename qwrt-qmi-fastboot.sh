@@ -63,12 +63,6 @@ kernel.panic=3
 
 kernel.core_pattern=/tmp/%e.%t.%p.%s.core
 
-rm -rf /etc/sysctl.d/*
-cat > /etc/sysctl.d/custom-default.conf <<-CUSTOM
-kernel.panic=3
-
-kernel.core_pattern=/tmp/%e.%t.%p.%s.core
-
 net.ipv4.conf.default.arp_ignore=1
 net.ipv4.conf.all.arp_ignore=1
 net.ipv4.ip_forward=1
@@ -85,6 +79,7 @@ net.ipv4.tcp_syncookies=1
 net.ipv4.tcp_timestamps=1
 net.ipv4.tcp_sack=1
 net.ipv4.tcp_dsack=1
+net.ipv4.tcp_mtu_probing=1
 net.ipv6.conf.default.forwarding=1
 net.ipv6.conf.all.forwarding=1
 net.netfilter.nf_conntrack_acct=1
@@ -97,15 +92,26 @@ net.netfilter.nf_conntrack_udp_timeout_stream=180
 net.bridge.bridge-nf-call-arptables=0
 net.bridge.bridge-nf-call-ip6tables=0
 net.bridge.bridge-nf-call-iptables=0
-# tweaks added by me for low latency
-net.ipv4.tcp_fastopen=3
-net.ipv4.tcp_low_latency=1
-net.ipv4.tcp_mtu_probing=1
 CUSTOM
 
 cat > /etc/sysctl.d/custom-bbr.conf <<-BBR
 net.core.default_qdisc=cake
 net.ipv4.tcp_congestion_control=bbr
+net.core.netdev_max_backlog=16384
+net.core.somaxconn=8192
+net.core.rmem_default=1048576
+net.core.rmem_max=16777216
+net.core.wmem_default=1048576
+net.core.wmem_max=16777216
+net.core.optmem_max=65536
+net.ipv4.tcp_rmem=4096 1048576 2097152
+net.ipv4.tcp_wmem=4096 65536 16777216
+net.ipv4.udp_rmem_min=8192
+net.ipv4.udp_wmem_min=8192
+net.ipv4.tcp_max_syn_backlog=8192
+net.ipv4.tcp_max_tw_buckets=2000000
+net.ipv4.ip_local_port_range=30000 65535
+net.ipv4.ping_group_range=0 65535
 BBR
 
 rm -rf /overlay/upper/etc/firewall.user
