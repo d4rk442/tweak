@@ -1,0 +1,55 @@
+rm -rf /etc/config/network
+cat > /etc/config/network <<-NET
+config interface 'loopback'
+	option ifname 'lo'
+	option proto 'static'
+	option ipaddr '127.0.0.1'
+	option netmask '255.0.0.0'
+
+config globals 'globals'
+	option ula_prefix 'fdf9:8c22:e165::/48'
+
+config interface 'lan'
+	option type 'bridge'
+	option ifname 'eth0 eth1 eth2 eth3 eth4'
+	option proto 'static'
+	option ipaddr '192.168.1.1'
+	option netmask '255.255.255.0'
+	option ip6assign '60'
+	option multicast_querier '0'
+	option igmp_snooping '0'
+	option force_link '1'
+
+config interface 'wan'
+	option proto 'dhcp'
+	option metric '1'
+	option ifname 'wwan0_1'
+	option mtu '1500'
+
+config interface 'wan6'
+	option proto 'dhcpv6'
+	option sourcefilter '0'
+	option mtu '1500'
+	option reqaddress 'try'
+	option _orig_ifname 'wwan0_1'
+	option _orig_bridge 'false'
+	option ifname 'wwan0_1'
+	option reqprefix 'auto'
+
+config interface 'ipsec_server'
+	option ifname 'ipsec0'
+	option device 'ipsec0'
+	option proto 'static'
+	option ipaddr '192.168.100.1'
+	option netmask '255.255.255.0'
+
+config interface 'wan1'
+	option proto 'dhcp'
+	option metric '10'
+	option ifname 'wwan0'
+
+config interface 'wan2'
+	option proto 'dhcp'
+	option metric '20'
+	option ifname 'wan2'
+NET
