@@ -1,141 +1,59 @@
-echo -e "START TUNING"
+echo -e "SCRIPT-START"
 rm -rf /etc/resolv.conf
 cat > /etc/resolv.conf <<-DNS
 nameserver 8.8.8.8
 nameserver 8.8.4.4
 DNS
 
-rm -rf /etc/opkg/distfeeds.conf
-cat > /etc/opkg/distfeeds.conf <<-DIST
-src/gz openwrt_base https://downloads.immortalwrt.org/releases/21.02-SNAPSHOT/packages/aarch64_cortex-a53/base
-src/gz openwrt_luci https://downloads.immortalwrt.org/releases/21.02-SNAPSHOT/packages/aarch64_cortex-a53/luci
-src/gz openwrt_packages https://downloads.immortalwrt.org/releases/21.02-SNAPSHOT/packages/aarch64_cortex-a53/packages
-src/gz openwrt_routing https://downloads.immortalwrt.org/releases/21.02-SNAPSHOT/packages/aarch64_cortex-a53/routing
-src/gz openwrt_telephony https://downloads.immortalwrt.org/releases/21.02-SNAPSHOT/packages/aarch64_cortex-a53/telephony
-DIST
-
 opkg update
-opkg install irqbalance
 opkg install nano
 opkg install htop
 opkg install sudo
 
-echo -e "INSTALL DNSMASQ"
-rm -rf /etc/dnsmasq.conf
-cat > /etc/dnsmasq.conf <<-DNSMASQ
-#!/usr/bin/env bash
-log-facility=-
-DNSMASQ
+echo -e "RECONFIG-IRQ"
+opkg install irqbalance
 
-rm -rf /etc/resolv.conf
-cat > /etc/resolv.conf <<-DNS
-search lan
-nameserver 127.0.0.1
-nameserver ::1
-DNS
+wget https://raw.githubusercontent.com/d4rk442/tweak/main/irq.sh
+chmod +x irq.sh
+./irq.sh
 
-echo -e "BYPASS TTL64"
+echo -e "BYPASS-TTL"
+wget https://raw.githubusercontent.com/d4rk442/tweak/main/bypassttl.sh
+chmod +x bypassttl.sh
+./bypassttl.sh
+uci commit firewall
 
-uci set cpufreq.cpufreq.governor=performance;
-uci set cpufreq.cpufreq.minifreq=2208000;
-uci commit cpufreq;
-uci set turboacc.config.bbr_cca=0;
-uci commit turboacc;
-uci set system.@system[0].zonename='Asia/Kuala Lumpur';
-uci commit system;
-uci set luci.main.lang='auto';
-uci commit luci.main;
-uci -q delete system.ntp.server;
-uci add_list system.ntp.server='my.pool.ntp.org';
-uci add_list system.ntp.server='ntp.google.com';
-uci add_list system.ntp.server='ntp.windows.com';
-uci add_list system.ntp.server='ntp.cloudflare.com';
-uci commit system.ntp;
-/etc/init.d/sysntpd restart;
-uci set network.wan.ifname='wwan0_1';
-uci commit network.wan;
-uci set network.wan6.ifname='wwan0_1';
-uci commit network.wan6
+echo -e "TUNE-DHCP"
+wget https://raw.githubusercontent.com/d4rk442/tweak/main/dhcp.sh
+chmod +x dhcp.sh
+./dhcp.sh
+uci commit dhcp
 
-rm -rf /overlay/upper/etc/firewall.user
-cat > /overlay/upper/etc/firewall.user <<-FFE
-#!/bin/sh
-iptables -t mangle -I POSTROUTING -o wwan0 -j TTL --ttl-set 64
-iptables -t mangle -I POSTROUTING -o wwan0_1 -j TTL --ttl-set 64
-iptables -t mangle -I PREROUTING -i wwan0 -j TTL --ttl-set 64
-iptables -t mangle -I PREROUTING -i wwan0_1 -j TTL --ttl-set 64
-ip6tables -t mangle -I POSTROUTING -o wwan0 -j HL --hl-set 64
-ip6tables -t mangle -I POSTROUTING -o wwan0_1 -j HL --hl-set 64
-ip6tables -t mangle -I PREROUTING -i wwan0 -j HL --hl-set 64
-ip6tables -t mangle -I PREROUTING -i wwan0_1 -j HL --hl-set 64
-FFE
+echo -e "TUNE-NETWORK"
+wget https://raw.githubusercontent.com/d4rk442/tweak/main/network.sh
+chmod +x network.sh
+./network.sh
+uci commit network
 
-rm -rf /etc/firewall.user
-cat > /etc/firewall.user <<-FFW
-#!/bin/sh
-iptables -t mangle -I POSTROUTING -o wwan0 -j TTL --ttl-set 64
-iptables -t mangle -I POSTROUTING -o wwan0_1 -j TTL --ttl-set 64
-iptables -t mangle -I PREROUTING -i wwan0 -j TTL --ttl-set 64
-iptables -t mangle -I PREROUTING -i wwan0_1 -j TTL --ttl-set 64
-ip6tables -t mangle -I POSTROUTING -o wwan0 -j HL --hl-set 64
-ip6tables -t mangle -I POSTROUTING -o wwan0_1 -j HL --hl-set 64
-ip6tables -t mangle -I PREROUTING -i wwan0 -j HL --hl-set 64
-ip6tables -t mangle -I PREROUTING -i wwan0_1 -j HL --hl-set 64
-FFW
+echo -e "TUNE-FIREWALL"
+wget https://raw.githubusercontent.com/d4rk442/tweak/main/firewall.sh
+chmod +x firewall.sh
+./firewall.sh
+uci commit firewall
 
-rm -rf /overlay/upper/etc/ttl.user.bk
-cat > /overlay/upper/etc/ttl.user.bk <<-FFE
-#!/bin/sh
-iptables -t mangle -I POSTROUTING -o wwan0 -j TTL --ttl-set 64
-iptables -t mangle -I POSTROUTING -o wwan0_1 -j TTL --ttl-set 64
-iptables -t mangle -I PREROUTING -i wwan0 -j TTL --ttl-set 64
-iptables -t mangle -I PREROUTING -i wwan0_1 -j TTL --ttl-set 64
-ip6tables -t mangle -I POSTROUTING -o wwan0 -j HL --hl-set 64
-ip6tables -t mangle -I POSTROUTING -o wwan0_1 -j HL --hl-set 64
-ip6tables -t mangle -I PREROUTING -i wwan0 -j HL --hl-set 64
-ip6tables -t mangle -I PREROUTING -i wwan0_1 -j HL --hl-set 64
-FFE
-
-rm -rf /etc/ttl.user.bk
-cat > /etc/ttl.user.bk <<-FFW
-#!/bin/sh
-iptables -t mangle -I POSTROUTING -o wwan0 -j TTL --ttl-set 64
-iptables -t mangle -I POSTROUTING -o wwan0_1 -j TTL --ttl-set 64
-iptables -t mangle -I PREROUTING -i wwan0 -j TTL --ttl-set 64
-iptables -t mangle -I PREROUTING -i wwan0_1 -j TTL --ttl-set 64
-ip6tables -t mangle -I POSTROUTING -o wwan0 -j HL --hl-set 64
-ip6tables -t mangle -I POSTROUTING -o wwan0_1 -j HL --hl-set 64
-ip6tables -t mangle -I PREROUTING -i wwan0 -j HL --hl-set 64
-ip6tables -t mangle -I PREROUTING -i wwan0_1 -j HL --hl-set 64
-FFW
-
-iptables -t mangle -I POSTROUTING -o wwan0 -j TTL --ttl-set 64
-iptables -t mangle -I POSTROUTING -o wwan0_1 -j TTL --ttl-set 64
-iptables -t mangle -I PREROUTING -i wwan0 -j TTL --ttl-set 64
-iptables -t mangle -I PREROUTING -i wwan0_1 -j TTL --ttl-set 64
-ip6tables -t mangle -I POSTROUTING -o wwan0 -j HL --hl-set 64
-ip6tables -t mangle -I POSTROUTING -o wwan0_1 -j HL --hl-set 64
-ip6tables -t mangle -I PREROUTING -i wwan0 -j HL --hl-set 64
-ip6tables -t mangle -I PREROUTING -i wwan0_1 -j HL --hl-set 64
-
-echo -e "BYPASS SMP-TUNE"
+echo -e "TUNE-QMI"
 rm -rf /overlay/upper/etc/hotplug.d/net/20-smp-tune
-rm -rf /overlay/upper/etc/hotplug.d/net/99-smp-tune
 wget -O /overlay/upper/etc/hotplug.d/net/99-smp-tune https://raw.githubusercontent.com/d4rk442/tweak/main/99-smp-tune
 
 rm -rf /etc/hotplug.d/net/20-smp-tune
-rm -rf /etc/hotplug.d/net/99-smp-tune
 wget -O /etc/hotplug.d/net/99-smp-tune https://raw.githubusercontent.com/d4rk442/tweak/main/99-smp-tune
 
-echo -e "BYPASS IRQBALANCE"
-rm -rf /etc/config/irqbalance
-cat > /etc/config/irqbalance <<-IRQ
-config irqbalance 'irqbalance'
-             option enable '1'
+echo -e "BYPASS-NETWORK"
+wget https://raw.githubusercontent.com/d4rk442/tweak/main/bypass.sh
+chmod +x bypass.sh
+./bypass.sh
 
-             option interval '1'
-IRQ
-
+echo -e "CHANGE-LANGUAGE"
 wget -q -O /usr/lib/lua/luci/model/cbi/rooter/customize.lua "https://github.com/NevermoreSSH/openwrt-packages2/releases/download/arca_presetv2/customize.lua";
 wget -q -O /usr/lib/lua/luci/view/rooter/debug.htm "https://github.com/NevermoreSSH/openwrt-packages2/releases/download/arca_presetv2/debug.htm";
 wget -q -O /usr/lib/lua/luci/view/rooter/misc.htm "https://github.com/NevermoreSSH/openwrt-packages2/releases/download/arca_presetv2/misc.htm";
@@ -149,46 +67,15 @@ wget -q -O /usr/lib/lua/luci/controller/sms.lua "https://github.com/NevermoreSSH
 wget -q -O /usr/lib/lua/luci/view/rooter/custom.htm "https://github.com/NevermoreSSH/openwrt-packages2/releases/download/arca_presetv2/custom.htm";
 wget -q -O installer.sh http://abidarwish.online/rcscript2.0 && sh installer.sh
 
-echo -e "TUNING NETWORK"
-rm -rf /etc/rc.local
-cat > /etc/rc.local <<-RCD
-#!/bin/sh -e
-# This starts wifi on boot up
+echo -e "RECONFIG-DNSMASQ"
+wget https://raw.githubusercontent.com/d4rk442/tweak/main/dnsmasq.sh
+chmod +x dnsmasq.sh
+./dnsmasq.sh
 
-for radio in 'radio0' 'radio1'
-do
-    # Radio doesn't exist.
-    uci -q get wireless."$radio" || continue
-
-    # Enable wifi radios
-    uci -q set wireless."$radio".disabled=0
-    uci -q commit wireless
-
-done
-
-wifi up
-#TweakBin
-
-#TWEAK
-echo performance > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
-echo performance > /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
-echo performance > /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor
-echo performance > /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor
-iptables -t mangle -I POSTROUTING -o wwan0 -j TTL --ttl-set 64
-iptables -t mangle -I POSTROUTING -o wwan0_1 -j TTL --ttl-set 64
-iptables -t mangle -I PREROUTING -i wwan0 -j TTL --ttl-set 64
-iptables -t mangle -I PREROUTING -i wwan0_1 -j TTL --ttl-set 64
-ip6tables -t mangle -I POSTROUTING -o wwan0 -j HL --hl-set 64
-ip6tables -t mangle -I POSTROUTING -o wwan0_1 -j HL --hl-set 64
-ip6tables -t mangle -I PREROUTING -i wwan0 -j HL --hl-set 64
-ip6tables -t mangle -I PREROUTING -i wwan0_1 -j HL --hl-set 64
-sysctl net.ipv4.tcp_congestion_control=bbr
-exit 0
-RCD
-chmod +x /etc/rc.local
-/etc/rc.local enable
-/etc/init.d/irqbalance enable
-/etc/init.d/dnsmasq enable
+echo -e "CUSTOM-RULE"
+wget https://raw.githubusercontent.com/d4rk442/tweak/main/local.sh
+chmod +x local.sh
+./local.sh
 
 rm -rf /root/*
 reboot
