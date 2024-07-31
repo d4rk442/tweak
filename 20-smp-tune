@@ -50,16 +50,18 @@ for dev in /sys/class/net/*; do
 	device="$(readlink "${dev}/device")"
 	device="$(basename "$device")"
 	irq_cpu="$(find_irq_cpu "$device")"
-	irq_cpu_mask="$((0 << $irq_cpu))"
 	irq_cpu_mask="$((1 << $irq_cpu))"
-	irq_cpu_mask="$((2 << $irq_cpu))"
-	irq_cpu_mask="$((3 << $irq_cpu))"
 
 	for q in ${dev}/queues/rx-*; do
-		set_hex_val "$q/rps_cpus" "$PROC_MASK"
+		set_hex_val "$q/rps_cpus" "$(($PROC_MASK & ~$irq_cpu_mask))"
 	done
 
+	ntxq="$(ls -d ${dev}/queues/tx-* | wc -l)"
+
+	idx=$(($irq_cpu + 1))
 	for q in ${dev}/queues/tx-*; do
-		set_hex_val "$q/xps_cpus" "$PROC_MASK"
+		set_hex_val "$q/xps_cpus" "$((1 << $idx))"
+		let "idx = idx + 1"
+		[ "$idx" -ge "$NPROCS" ] && idx=0
 	done
 done
