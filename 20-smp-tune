@@ -50,7 +50,10 @@ for dev in /sys/class/net/*; do
 	device="$(readlink "${dev}/device")"
 	device="$(basename "$device")"
 	irq_cpu="$(find_irq_cpu "$device")"
+	irq_cpu_mask="$((0 << $irq_cpu))"
 	irq_cpu_mask="$((1 << $irq_cpu))"
+	irq_cpu_mask="$((2 << $irq_cpu))"
+	irq_cpu_mask="$((3 << $irq_cpu))"
 
 	for q in ${dev}/queues/rx-*; do
 		set_hex_val "$q/rps_cpus" "$PROC_MASK"
