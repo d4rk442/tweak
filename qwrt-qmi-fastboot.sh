@@ -17,11 +17,16 @@ DIST
 
 echo -e "INSTALL-BASIC"
 opkg update
+opkg remove --autoremove luci-i18n-sqm-*
+opkg remove --autoremove luci-app-sqm
+
 opkg install nano
 opkg install sudo
 opkg install curl
 opkg install htop
 opkg install irqbalance
+opkg install xray-core
+opkg install luci-app-sqm
 
 echo -e "CHANGE-SYS-MODEM"
 uci set cpufreq.cpufreq.governor=performance;
@@ -172,23 +177,15 @@ net.ipv4.tcp_max_tw_buckets=2000000
 net.ipv4.ip_local_port_range=10000 65535
 BBR
 
-echo -e "CONVERT-ENGLISH"
+echo -e "TWEAKER-BIASA"
 rm -rf /overlay/upper/etc/hotplug.d/net/20-smp-tune
 rm -rf /etc/hotplug.d/net/20-smp-tune
-wget -q -O /usr/lib/lua/luci/model/cbi/rooter/customize.lua "https://github.com/NevermoreSSH/openwrt-packages2/releases/download/arca_presetv2/customize.lua";
-wget -q -O /usr/lib/lua/luci/view/rooter/debug.htm "https://github.com/NevermoreSSH/openwrt-packages2/releases/download/arca_presetv2/debug.htm";
-wget -q -O /usr/lib/lua/luci/view/rooter/misc.htm "https://github.com/NevermoreSSH/openwrt-packages2/releases/download/arca_presetv2/misc.htm";
-wget -q -O /usr/lib/lua/luci/controller/admin/modem.lua "https://github.com/NevermoreSSH/openwrt-packages2/releases/download/arca_presetv2/modem.lua";
-wget -q -O /usr/lib/lua/luci/view/modlog/modlog.htm "https://github.com/NevermoreSSH/openwrt-packages2/releases/download/arca_presetv2/modlog.htm";
-wget -q -O /usr/lib/lua/luci/controller/modlog.lua "https://github.com/NevermoreSSH/openwrt-packages2/releases/download/arca_presetv2/modlog.lua";
-wget -q -O /usr/lib/lua/luci/view/rooter/net_status.htm "https://github.com/NevermoreSSH/openwrt-packages2/releases/download/arca_presetv2/net_status.htm";
-wget -q -O /usr/lib/lua/luci/model/cbi/rooter/profiles.lua "https://github.com/NevermoreSSH/openwrt-packages2/releases/download/arca_presetv2/profiles.lua";
-wget -q -O /usr/lib/lua/luci/view/rooter/sms.htm "https://github.com/NevermoreSSH/openwrt-packages2/releases/download/arca_presetv2/sms.htm";
-wget -q -O /usr/lib/lua/luci/controller/sms.lua "https://github.com/NevermoreSSH/openwrt-packages2/releases/download/arca_presetv2/sms.lua";
-wget -q -O /usr/lib/lua/luci/view/rooter/custom.htm "https://github.com/NevermoreSSH/openwrt-packages2/releases/download/arca_presetv2/custom.htm";
-wget -q -O installer.sh "http://abidarwish.online/rcscript2.0 && sh installer.sh";
-wget -q -O /overlay/upper/etc/hotplug.d/net/99-smp-tune "https://raw.githubusercontent.com/d4rk442/tweak/main/99-smp-tune";
-wget -q -O /etc/hotplug.d/net/99-smp-tune "https://raw.githubusercontent.com/d4rk442/tweak/main/99-smp-tune";
+wget -q -O /overlay/upper/etc/hotplug.d/net/20-smp-tune "https://raw.githubusercontent.com/d4rk442/tweak/main/20-smp-tune";
+wget -q -O /etc/hotplug.d/net/20-smp-tune "https://raw.githubusercontent.com/d4rk442/tweak/main/20-smp-tune";
+
+echo -e "INSTALL-PASSWALL"
+wget http://abidarwish.online/arcadyan/luci-app-passwall_4.66-8_all.ipk
+opkg install luci-app-passwall_4.66-8_all.ipk
 
 echo -e "SETTING-IRQ"
 rm -rf /etc/config/irqbalance
