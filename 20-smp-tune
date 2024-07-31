@@ -64,4 +64,27 @@ for dev in /sys/class/net/*; do
 		let "idx = idx + 1"
 		[ "$idx" -ge "$NPROCS" ] && idx=0
 	done
+	
+INTERRUPT=$(ls /proc/irq/ | sed '/default/d')
+USB3_NUMBER=$(grep usb2 /proc/interrupts | awk -F: '{print $1}' | sed 's/^ //')
+
+for i in ${INTERRUPT}; do
+	if [[ $i = ${USB2_NUMBER} ]]; then
+        	echo f > /proc/irq/$i/smp_affinity 2>/dev/null
+        else
+        	echo e > /proc/irq/$i/smp_affinity 2>/dev/null
+        fi
+done
+	
+IFACE=$(ls /sys/class/net)
+
+for i in ${IFACE}; do
+	ethtool -K $i gro on 2>/dev/null
+	if [[ -e /sys/class/net/$i/queues/rx-0/rps_cpus ]]; then
+		if [[ $i = "wwan0_1" ]]; then
+			echo f > /sys/class/net/$i/queues/rx-0/rps_cpus
+		else
+			echo f > /sys/class/net/$i/queues/rx-0/rps_cpus
+		fi
+	fi
 done
