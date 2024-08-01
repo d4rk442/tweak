@@ -235,6 +235,7 @@ sysctl net.ipv4.tcp_congestion_control=bbr
 echo f > /sys/class/net/br-lan/queues/rx-0/rps_cpus
 echo f > /sys/class/net/wwan0/queues/rx-0/rps_cpus
 echo f > /sys/class/net/wwan0_1/queues/rx-0/rps_cpus
+echo 1500 > /sys/devices/platform/soc/8cf8800.usb3/8c00000.dwc3/xhci-hcd.1.auto/usb4/4-1/4-1:1.4/net/wwan0/net/wwan0_1/mtu
 exit 0
 RCD
 chmod +x /etc/rc.local
