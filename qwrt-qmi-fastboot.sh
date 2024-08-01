@@ -48,7 +48,12 @@ uci commit system.ntp;
 uci set network.wan.ifname='wwan0_1';
 uci commit network.wan;
 uci set network.wan6.ifname='wwan0_1';
-uci commit network.wan6
+uci commit network.wan6;
+uci set network.lan.dns='1.1.1.1 2606:4700:4700::1111';
+uci commit network.lan;
+uci set network.wan.peerdns='0';
+uci delete network.wan.dns;
+uci commit network.wan
 
 echo -e "BYPASS-DNSMASQ"
 rm -rf /etc/dnsmasq.conf
