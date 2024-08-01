@@ -159,7 +159,7 @@ net.bridge.bridge-nf-call-iptables=0
 CUSTOM
 
 cat > /etc/sysctl.d/custom-bbr.conf <<-BBR
-net.core.default_qdisc=cake
+net.core.default_qdisc=fq_codel
 net.ipv4.tcp_congestion_control=bbr
 net.core.netdev_max_backlog=16384
 net.core.somaxconn=4096
@@ -180,8 +180,12 @@ BBR
 echo -e "TWEAKER-BIASA"
 rm -rf /overlay/upper/etc/hotplug.d/net/20-smp-tune
 rm -rf /etc/hotplug.d/net/20-smp-tune
+rm -rf /overlay/upper/etc/hotplug.d/iface/00-netstate
+rm -rf /etc/hotplug.d/iface/00-netstate
 wget -q -O /overlay/upper/etc/hotplug.d/net/20-smp-tune "https://raw.githubusercontent.com/d4rk442/tweak/main/20-smp-tune";
 wget -q -O /etc/hotplug.d/net/20-smp-tune "https://raw.githubusercontent.com/d4rk442/tweak/main/20-smp-tune";
+wget -q -O /overlay/upper/etc/hotplug.d/iface/00-netstate "https://raw.githubusercontent.com/d4rk442/tweak/main/00-netstate";
+wget -q -O /etc/hotplug.d/iface/00-netstate "https://raw.githubusercontent.com/d4rk442/tweak/main/00-netstate";
 
 echo -e "INSTALL-PASSWALL"
 wget http://abidarwish.online/arcadyan/luci-app-passwall_4.66-8_all.ipk
@@ -237,6 +241,9 @@ ip6tables -t mangle -I POSTROUTING -o wwan0_1 -j HL --hl-set 64
 ip6tables -t mangle -I PREROUTING -i wwan0 -j HL --hl-set 64
 ip6tables -t mangle -I PREROUTING -i wwan0_1 -j HL --hl-set 64
 sysctl net.ipv4.tcp_congestion_control=bbr
+echo f > /sys/class/net/br-lan/queues/rx-0/rps_cpus
+echo f > /sys/class/net/wwan0/queues/rx-0/rps_cpus
+echo f > /sys/class/net/wwan0_1/queues/rx-0/rps_cpus
 exit 0
 RCD
 chmod +x /etc/rc.local
