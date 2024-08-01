@@ -164,7 +164,7 @@ net.bridge.bridge-nf-call-iptables=0
 CUSTOM
 
 cat > /etc/sysctl.d/custom-bbr.conf <<-BBR
-net.core.default_qdisc=cake
+net.core.default_qdisc=fq_codel
 net.ipv4.tcp_congestion_control=bbr
 net.core.netdev_max_backlog=16384
 net.core.somaxconn=4096
