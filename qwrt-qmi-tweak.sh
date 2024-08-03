@@ -59,13 +59,7 @@ uci delete network.wan6.dns;
 uci commit network.wan6;
 uci set network.wan1.peerdns='1';
 uci delete network.wan1.dns;
-uci commit network.wan1;
-uci set network.globals.packet_steering=1;
-uci set irqbalance.irqbalance.enabled=1;
-uci commit;
-uci set firewall.@defaults[0].flow_offloading='0';
-uci set firewall.@defaults[0].flow_offloading_hw='0';
-uci commit firewall
+uci commit network.wan1
 
 echo -e "BYPASS-DNSMASQ"
 rm -rf /etc/dnsmasq.conf
@@ -213,6 +207,13 @@ config irqbalance 'irqbalance'
 
              option interval '1'
 IRQ
+
+uci set network.globals.packet_steering=1;
+uci set irqbalance.irqbalance.enabled=1;
+uci commit;
+uci set firewall.@defaults[0].flow_offloading='0';
+uci set firewall.@defaults[0].flow_offloading_hw='0';
+uci commit firewall
 
 rm -rf /etc/resolv.conf
 cat > /etc/resolv.conf <<-DNS
