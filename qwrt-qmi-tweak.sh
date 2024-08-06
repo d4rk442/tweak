@@ -49,8 +49,8 @@ uci set network.wan.ifname='wwan0_1';
 uci commit network.wan;
 uci set network.wan6.ifname='wwan0_1';
 uci commit network.wan6;
-uci set firewall.@defaults[0].flow_offloading='1';
-uci set firewall.@defaults[0].flow_offloading_hw='1';
+uci set firewall.@defaults[0].flow_offloading='0';
+uci set firewall.@defaults[0].flow_offloading_hw='0';
 uci commit firewall
 
 echo -e "BYPASS-DNSMASQ"
