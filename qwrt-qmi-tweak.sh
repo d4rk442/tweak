@@ -49,6 +49,7 @@ uci set network.wan.ifname='wwan0_1';
 uci commit network.wan;
 uci set network.wan6.ifname='wwan0_1';
 uci commit network.wan6;
+uci set network.lan.dns='1.1.1.1 2606:4700:4700::1111';
 uci set firewall.@defaults[0].flow_offloading='0';
 uci set firewall.@defaults[0].flow_offloading_hw='0';
 uci commit firewall;
@@ -59,6 +60,7 @@ echo -e "BYPASS-DNSMASQ"
 rm -rf /etc/dnsmasq.conf
 cat > /etc/dnsmasq.conf <<-DNSMASQ
 #!/usr/bin/env bash
+domain=lan,192.168.0.0/16
 log-facility=-
 DNSMASQ
 
@@ -129,7 +131,6 @@ echo -e "TWEAK-SPEED"
 rm -rf /etc/sysctl.d/*
 cat > /etc/sysctl.d/custom-default.conf <<-CUSTOM
 kernel.panic=3
-
 kernel.core_pattern=/tmp/%e.%t.%p.%s.core
 
 net.ipv4.conf.default.arp_ignore=1
@@ -137,50 +138,42 @@ net.ipv4.conf.all.arp_ignore=1
 net.ipv4.ip_forward=1
 net.ipv4.icmp_echo_ignore_broadcasts=1
 net.ipv4.icmp_ignore_bogus_error_responses=1
-net.ipv4.icmp_echo_ignore_all=1
 net.ipv4.igmp_max_memberships=100
 net.ipv4.tcp_fin_timeout=30
-net.ipv4.tcp_keepalive_time=120
-net.ipv4.tcp_keepalive_intvl=30
-net.ipv4.tcp_keepalive_probes=5
-net.ipv4.tcp_slow_start_after_idle=0
 net.ipv4.tcp_syncookies=1
 net.ipv4.tcp_timestamps=1
 net.ipv4.tcp_sack=1
 net.ipv4.tcp_dsack=1
-net.ipv4.tcp_mtu_probing=1
+
 net.ipv6.conf.default.forwarding=1
 net.ipv6.conf.all.forwarding=1
+
 net.netfilter.nf_conntrack_acct=1
 net.netfilter.nf_conntrack_checksum=0
-net.netfilter.nf_conntrack_max=16384
+net.netfilter.nf_conntrack_max=65535
 net.netfilter.nf_conntrack_tcp_timeout_established=7440
 net.netfilter.nf_conntrack_udp_timeout=60
 net.netfilter.nf_conntrack_udp_timeout_stream=180
-# disable bridge firewalling by default
-net.bridge.bridge-nf-call-arptables=0
-net.bridge.bridge-nf-call-ip6tables=0
-net.bridge.bridge-nf-call-iptables=0
 CUSTOM
 
 cat > /etc/sysctl.d/custom-bbr.conf <<-BBR
-net.core.default_qdisc=cake
+net.core.default_qdisc=fq_codel
 net.ipv4.tcp_congestion_control=bbr
-net.ipv4.tcp_ecn=0
-net.ipv4.route.flush=1
-net.ipv4.tcp_rfc1337=1
-net.ipv4.ip_no_pmtu_disc=0
-net.ipv4.tcp_sack=1
-net.ipv4.tcp_fack=1
-net.ipv4.tcp_dsack=1
-net.ipv4.tcp_window_scaling=1
-net.ipv4.tcp_timestamps=1
-net.ipv4.tcp_syncookies=1
-net.ipv4.tcp_rmem=4096 39000 187000
-net.ipv4.tcp_wmem=4096 39000 187000
-net.ipv4.tcp_mem=187000 187000 187000
-net.ipv4.tcp_no_metrics_save=1
-net.ipv4.tcp_moderate_rcvbuf=1
+net.core.rmem_default = 256960
+net.core.rmem_max = 513920
+net.core.wmem_default = 256960
+net.core.wmem_max = 513920
+net.core.netdev_max_backlog = 2000
+net.core.somaxconn = 2048
+net.core.optmem_max = 81920
+net.ipv4.tcp_mem = 131072  262144  524288
+net.ipv4.tcp_rmem = 8760  256960  4088000
+net.ipv4.tcp_wmem = 8760  256960  4088000
+net.ipv4.tcp_window_scaling = 1
+net.ipv4.tcp_tw_reuse = 1
+net.ipv4.tcp_fin_timeout = 30
+net.ipv4.ip_local_port_range = 1024  65000
+net.ipv4.tcp_max_syn_backlog = 2048
 BBR
 
 echo -e "TWEAKER-BIASA"
@@ -231,7 +224,6 @@ do
     uci -q commit wireless
 
 done
-
 wifi up
 #TweakBin
 
@@ -252,8 +244,6 @@ sysctl net.ipv4.tcp_congestion_control=bbr
 echo f > /sys/class/net/br-lan/queues/rx-0/rps_cpus
 echo f > /sys/class/net/wwan0/queues/rx-0/rps_cpus
 echo f > /sys/class/net/wwan0_1/queues/rx-0/rps_cpus
-ifup wan
-ifup wan1
 exit 0
 RCD
 chmod +x /etc/rc.local
