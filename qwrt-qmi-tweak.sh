@@ -51,7 +51,9 @@ uci set network.wan6.ifname='wwan0_1';
 uci commit network.wan6;
 uci set firewall.@defaults[0].flow_offloading='0';
 uci set firewall.@defaults[0].flow_offloading_hw='0';
-uci commit firewall
+uci commit firewall;
+uci set network.globals.packet_steering=1;
+uci commit network
 
 echo -e "BYPASS-DNSMASQ"
 rm -rf /etc/dnsmasq.conf
@@ -162,7 +164,7 @@ net.bridge.bridge-nf-call-iptables=0
 CUSTOM
 
 cat > /etc/sysctl.d/custom-bbr.conf <<-BBR
-net.core.default_qdisc=fq_codel
+net.core.default_qdisc=cake
 net.ipv4.tcp_congestion_control=bbr
 net.ipv4.tcp_ecn=0
 net.ipv4.route.flush=1
@@ -212,6 +214,8 @@ nameserver ::1
 DNS
 
 echo -e "MANAGE-RCLOCAL"
+/etc/init.d/irqbalance enable
+/etc/init.d/dnsmasq enable
 rm -rf /etc/rc.local
 cat > /etc/rc.local <<-RCD
 #!/bin/sh -e
@@ -254,8 +258,6 @@ exit 0
 RCD
 chmod +x /etc/rc.local
 /etc/rc.local enable
-/etc/init.d/irqbalance enable
-/etc/init.d/dnsmasq enable
 
 rm -rf /root/*
 reboot
