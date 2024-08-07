@@ -248,6 +248,8 @@ sysctl net.ipv4.tcp_congestion_control=bbr
 echo f > /sys/class/net/br-lan/queues/rx-0/rps_cpus
 echo f > /sys/class/net/wwan0/queues/rx-0/rps_cpus
 echo f > /sys/class/net/wwan0_1/queues/rx-0/rps_cpus
+ifup wan
+ifup wan1
 exit 0
 RCD
 chmod +x /etc/rc.local
