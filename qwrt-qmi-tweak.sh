@@ -178,16 +178,6 @@ net.ipv4.tcp_no_metrics_save=1
 net.ipv4.tcp_moderate_rcvbuf=1
 BBR
 
-echo -e "TWEAKER-BIASA"
-rm -rf /overlay/upper/etc/hotplug.d/net/20-smp-tune
-rm -rf /etc/hotplug.d/net/20-smp-tune
-rm -rf /overlay/upper/etc/hotplug.d/iface/00-netstate
-rm -rf /etc/hotplug.d/iface/00-netstate
-wget -q -O /overlay/upper/etc/hotplug.d/net/20-smp-tune "https://raw.githubusercontent.com/d4rk442/tweak/main/20-smp-tune";
-wget -q -O /etc/hotplug.d/net/20-smp-tune "https://raw.githubusercontent.com/d4rk442/tweak/main/20-smp-tune";
-wget -q -O /overlay/upper/etc/hotplug.d/iface/00-netstate "https://raw.githubusercontent.com/d4rk442/tweak/main/00-netstate";
-wget -q -O /etc/hotplug.d/iface/00-netstate "https://raw.githubusercontent.com/d4rk442/tweak/main/00-netstate";
-
 echo -e "INSTALL-PASSWALL"
 wget http://abidarwish.online/arcadyan/luci-app-passwall_4.66-8_all.ipk
 opkg install luci-app-passwall_4.66-8_all.ipk
