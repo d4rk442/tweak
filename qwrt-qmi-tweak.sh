@@ -60,7 +60,6 @@ echo -e "BYPASS-DNSMASQ"
 rm -rf /etc/dnsmasq.conf
 cat > /etc/dnsmasq.conf <<-DNSMASQ
 #!/usr/bin/env bash
-domain=lan,192.168.0.0/16
 log-facility=-
 DNSMASQ
 
