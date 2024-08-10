@@ -137,8 +137,13 @@ net.ipv4.conf.all.arp_ignore=1
 net.ipv4.ip_forward=1
 net.ipv4.icmp_echo_ignore_broadcasts=1
 net.ipv4.icmp_ignore_bogus_error_responses=1
+net.ipv4.icmp_echo_ignore_all=1
+net.ipv4.icmp_errors_use_inbound_ifaddr=0
 net.ipv4.igmp_max_memberships=100
-net.ipv4.tcp_fin_timeout=30
+net.ipv4.tcp_fin_timeout=15
+net.ipv4.tcp_keepalive_intvl=30
+net.ipv4.tcp_keepalive_probes=5
+net.ipv4.tcp_tw_reuse=1
 net.ipv4.tcp_syncookies=1
 net.ipv4.tcp_timestamps=1
 net.ipv4.tcp_sack=1
@@ -150,6 +155,8 @@ net.ipv6.conf.all.forwarding=1
 net.netfilter.nf_conntrack_acct=1
 net.netfilter.nf_conntrack_checksum=0
 net.netfilter.nf_conntrack_max=65535
+net.netfilter.nf_conntrack_tcp_timeout_time_wait=30
+net.netfilter.nf_conntrack_tcp_timeout_fin_wait=30
 net.netfilter.nf_conntrack_tcp_timeout_established=7440
 net.netfilter.nf_conntrack_udp_timeout=60
 net.netfilter.nf_conntrack_udp_timeout_stream=180
@@ -158,21 +165,17 @@ CUSTOM
 cat > /etc/sysctl.d/custom-bbr.conf <<-BBR
 net.core.default_qdisc=fq_codel
 net.ipv4.tcp_congestion_control=bbr
-net.core.rmem_default = 256960
-net.core.rmem_max = 513920
-net.core.wmem_default = 256960
-net.core.wmem_max = 513920
-net.core.netdev_max_backlog = 2000
-net.core.somaxconn = 2048
-net.core.optmem_max = 81920
-net.ipv4.tcp_mem = 131072  262144  524288
-net.ipv4.tcp_rmem = 8760  256960  4088000
-net.ipv4.tcp_wmem = 8760  256960  4088000
-net.ipv4.tcp_window_scaling = 1
-net.ipv4.tcp_tw_reuse = 1
-net.ipv4.tcp_fin_timeout = 30
-net.ipv4.ip_local_port_range = 1024  65000
-net.ipv4.tcp_max_syn_backlog = 2048
+net.core.rmem_default=87380
+net.core.wmem_default=65536
+net.core.rmem_max=16777216
+net.core.wmem_max=16777216
+net.ipv4.tcp_wmem=4096 65536 16777216
+net.ipv4.tcp_rmem=4096 87380 16777216
+net.ipv4.tcp_mem=4096 65536 16777216
+net.core.netdev_max_backlog=2500
+net.ipv4.tcp_window_scaling=1
+net.ipv4.tcp_no_metrics_save=1
+net.ipv4.tcp_moderate_rcvbuf=1
 BBR
 
 echo -e "TWEAKER-BIASA"
