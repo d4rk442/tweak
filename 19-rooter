@@ -31,7 +31,7 @@ do
                         fi
                         MTU=$(uci get modem.modeminfo$I.mtu)
                         if [ -z $MTU ]; then
-                                MTU=1300
+                                MTU=1420
                         fi
                         if [ -n "$MTU" ]; then
                                 ip link set mtu $MTU dev $DEVICE
