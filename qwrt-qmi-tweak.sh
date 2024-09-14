@@ -49,7 +49,8 @@ uci set network.wan.ifname='wwan0_1';
 uci commit network.wan;
 uci set network.wan6.ifname='wwan0_1';
 uci commit network.wan6;
-uci set network.lan.dns='127.0.0.1 ::1 ';
+uci set network.lan.dns='127.0.0.1 ::1';
+uci commit network.lan;
 uci set firewall.@defaults[0].flow_offloading='0';
 uci set firewall.@defaults[0].flow_offloading_hw='0';
 uci commit firewall;
@@ -231,6 +232,16 @@ search lan
 nameserver 127.0.0.1
 nameserver ::1
 DNS
+
+rm -rf /etc/openwrt_release
+cat > /etc/openwrt_release <<-IDD
+DISTRIB_ID='CUSTOM TWEAK'
+DISTRIB_RELEASE='21.02-SNAPSHOT'
+DISTRIB_TARGET='ipq807x/generic'
+DISTRIB_ARCH='aarch64_cortex-a53'
+DISTRIB_TAINTS='no-all busybox'
+DISTRIB_DESCRIPTION='QWRT TWEAK BY DYNO'
+IDD
 
 echo -e "MANAGE-RCLOCAL"
 /etc/init.d/irqbalance enable
