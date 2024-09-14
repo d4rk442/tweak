@@ -65,6 +65,21 @@ uci set network.wan6.peerdns='0';
 uci delete network.wan6.dns;
 uci commit network.wan6
 
+uci set network.globals.ula_prefix=''
+uci commit network
+uci set dhcp.lan.ra='relay'
+uci set dhcp.lan.dhcpv6='relay'
+uci set dhcp.lan.ndp='relay'
+uci commit dhcp
+uci set dhcp.wan6=dhcp
+uci set dhcp.wan6.interface='wan6'
+uci set dhcp.wan6.ignore='1'
+uci set dhcp.wan6.master='1'
+uci set dhcp.wan6.dhcpv6='relay'
+uci set dhcp.wan6.ra='relay'
+uci set dhcp.wan6.ndp='relay'
+uci commit dhcp
+
 echo -e "BYPASS-DNSMASQ"
 rm -rf /etc/dnsmasq.conf
 cat > /etc/dnsmasq.conf <<-DNSMASQ
