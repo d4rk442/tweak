@@ -49,18 +49,35 @@ uci set network.wan.ifname='wwan0_1';
 uci commit network.wan;
 uci set network.wan6.ifname='wwan0_1';
 uci commit network.wan6;
-uci set network.lan.dns='1.1.1.1 2606:4700:4700::1111';
+uci set network.lan.dns='127.0.0.1 ::1 ';
 uci set firewall.@defaults[0].flow_offloading='0';
 uci set firewall.@defaults[0].flow_offloading_hw='0';
 uci commit firewall;
 uci set network.globals.packet_steering=1;
-uci commit network
+uci commit network;
+uci set network.wan1.peerdns='0';
+uci delete network.wan1.dns;
+uci commit network.wan1
+uci set network.wan.peerdns='0';
+uci delete network.wan.dns;
+uci commit network.wan
+uci set network.wan6.peerdns='0';
+uci delete network.wan6.dns;
+uci commit network.wan6
 
 echo -e "BYPASS-DNSMASQ"
 rm -rf /etc/dnsmasq.conf
 cat > /etc/dnsmasq.conf <<-DNSMASQ
 #!/usr/bin/env bash
+bind-dynamic
+bogus-priv
+no-resolv
+strict-order
 log-facility=-
+local-ttl=60
+interface=*
+server=1.1.1.1
+server=1.0.0.1
 DNSMASQ
 
 echo -e "BYPASS-TTL"
@@ -134,7 +151,6 @@ kernel.core_pattern=/tmp/%e.%t.%p.%s.core
 
 net.ipv4.conf.default.arp_ignore=1
 net.ipv4.conf.all.arp_ignore=1
-net.ipv4.ip_forward=1
 net.ipv4.icmp_echo_ignore_broadcasts=1
 net.ipv4.icmp_ignore_bogus_error_responses=1
 net.ipv4.icmp_echo_ignore_all=1
@@ -149,8 +165,11 @@ net.ipv4.tcp_timestamps=1
 net.ipv4.tcp_sack=1
 net.ipv4.tcp_dsack=1
 
+net.ipv4.ip_forward=1
 net.ipv6.conf.default.forwarding=1
 net.ipv6.conf.all.forwarding=1
+net.ipv6.conf.all.disable_ipv6=0
+net.ipv6.conf.default.disable_ipv6=0
 
 net.netfilter.nf_conntrack_acct=1
 net.netfilter.nf_conntrack_checksum=0
@@ -233,6 +252,8 @@ ip6tables -t mangle -I POSTROUTING -o wwan0_1 -j HL --hl-set 64
 ip6tables -t mangle -I PREROUTING -i wwan0 -j HL --hl-set 64
 ip6tables -t mangle -I PREROUTING -i wwan0_1 -j HL --hl-set 64
 sysctl net.ipv4.tcp_congestion_control=bbr
+sysctl net.ipv6.conf.all.disable_ipv6=0
+sysctl net.ipv6.conf.default.disable_ipv6=0
 echo f > /sys/class/net/br-lan/queues/rx-0/rps_cpus
 echo f > /sys/class/net/wwan0/queues/rx-0/rps_cpus
 echo f > /sys/class/net/wwan0_1/queues/rx-0/rps_cpus
