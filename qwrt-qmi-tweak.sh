@@ -20,6 +20,10 @@ opkg update
 opkg remove --autoremove luci-i18n-sqm-*
 opkg remove --autoremove luci-app-sqm
 opkg remove --autoremove luci-app-openclash
+opkg remove --autoremove luci-i18n-openvpn-server-zh-cn
+opkg remove --autoremove luci-i18n-openvpn-*
+opkg remove --autoremove luci-i18n-ipsec-server-zh-cn
+opkg remove --autoremove luci-app-ipsec-server*
 
 opkg install nano
 opkg install sudo
