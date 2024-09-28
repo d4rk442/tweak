@@ -1,8 +1,8 @@
 echo -e "SCRIPT-START"
 rm -rf /etc/resolv.conf
 cat > /etc/resolv.conf <<-DNS
-nameserver 8.8.8.8
-nameserver 8.8.4.4
+nameserver 1.1.1.2
+nameserver 1.0.0.2
 DNS
 
 echo -e "CHANGE-FEEDS"
@@ -19,6 +19,7 @@ echo -e "INSTALL-BASIC"
 opkg update
 opkg remove --autoremove luci-i18n-sqm-*
 opkg remove --autoremove luci-app-sqm
+opkg remove --autoremove luci-app-openclash
 
 opkg install nano
 opkg install sudo
@@ -27,6 +28,7 @@ opkg install htop
 opkg install irqbalance
 opkg install xray-core
 opkg install luci-app-sqm
+opkg install dnsmasq
 
 echo -e "CHANGE-SYS-MODEM"
 uci set cpufreq.cpufreq.governor=performance;
@@ -49,7 +51,7 @@ uci set network.wan.ifname='wwan0_1';
 uci commit network.wan;
 uci set network.wan6.ifname='wwan0_1';
 uci commit network.wan6;
-uci set network.lan.dns='127.0.0.1 ::1';
+uci set network.lan.dns='1.1.1.2 1.0.0.2 2606:4700:4700::1112 2606:4700:4700::1002;
 uci commit network.lan;
 uci set firewall.@defaults[0].flow_offloading='0';
 uci set firewall.@defaults[0].flow_offloading_hw='0';
@@ -66,22 +68,14 @@ uci set network.wan6.peerdns='0';
 uci delete network.wan6.dns;
 uci commit network.wan6
 
-uci set network.globals.ula_prefix=''
-uci commit network
-uci set dhcp.lan.ra='relay'
-uci set dhcp.lan.dhcpv6='relay'
-uci set dhcp.lan.ndp='relay'
-uci commit dhcp
-uci set dhcp.wan6=dhcp
-uci set dhcp.wan6.interface='wan6'
-uci set dhcp.wan6.ignore='1'
-uci set dhcp.wan6.master='1'
-uci set dhcp.wan6.dhcpv6='relay'
-uci set dhcp.wan6.ra='relay'
-uci set dhcp.wan6.ndp='relay'
+uci set dhcp.wan6=dhcp;
+uci set dhcp.wan6.interface='wan6';
+uci set dhcp.wan6.ignore='1';
 uci commit dhcp
 
 echo -e "BYPASS-DNSMASQ"
+rm -rf /etc/config/dhcp-opkg
+rm -rf /etc/config/dhcp.save
 rm -rf /etc/dnsmasq.conf
 cat > /etc/dnsmasq.conf <<-DNSMASQ
 #!/usr/bin/env bash
@@ -92,8 +86,8 @@ strict-order
 log-facility=-
 local-ttl=60
 interface=*
-server=1.1.1.1
-server=1.0.0.1
+server=1.1.1.2
+server=1.0.0.2
 DNSMASQ
 
 echo -e "BYPASS-TTL"
@@ -291,6 +285,51 @@ echo f > /sys/class/net/wwan0/queues/rx-0/rps_cpus
 echo f > /sys/class/net/wwan0_1/queues/rx-0/rps_cpus
 exit 0
 RCD
+
+rm -rf /etc/config/wireless
+cat > /etc/config/wireless <<-WIFI
+
+config wifi-device 'wifi0'
+        option type 'qcawificfg80211'
+        option macaddr 'ec:6c:9a:b8:4c:e0'
+        option hwmode '11axa'
+        option country 'US'
+        option channel '128'
+        option htmode 'HT160'
+        option txpower '30'
+
+config wifi-iface 'ath0'
+        option device 'wifi0'
+        option network 'lan'
+        option mode 'ap'
+        option wmm '1'
+        option rrm '1'
+        option qbssload '1'
+        option ssid 'WK-VISTANA-5G'
+        option encryption 'psk'
+        option key '112233445566'
+
+config wifi-device 'wifi1'
+        option type 'qcawificfg80211'
+        option channel '1'
+        option macaddr 'ec:6c:9a:b8:4c:df'
+        option hwmode '11axg'
+        option country 'US'
+        option htmode 'HT20'
+        option txpower '30'
+
+config wifi-iface 'ath1'
+        option device 'wifi1'
+        option network 'lan'
+        option mode 'ap'
+        option wmm '1'
+        option rrm '1'
+        option qbssload '1'
+        option ssid 'WK-VISTANA-2.4'
+        option encryption 'psk'
+        option key '112233445566'
+WIFI
+
 chmod +x /etc/rc.local
 /etc/rc.local enable
 
