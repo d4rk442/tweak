@@ -65,13 +65,9 @@ cat > /etc/dnsmasq.conf <<-DNSMASQ
 #!/usr/bin/env bash
 bind-dynamic
 bogus-priv
-no-resolv
-strict-order
 log-facility=-
 local-ttl=60
 interface=*
-server=1.1.1.1
-server=1.0.0.1
 DNSMASQ
 
 echo -e "BYPASS-TTL"
