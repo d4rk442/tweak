@@ -32,7 +32,7 @@ echo -e "CHANGE-SYS-MODEM"
 uci set cpufreq.cpufreq.governor=performance;
 uci set cpufreq.cpufreq.minifreq=2208000;
 uci commit cpufreq;
-uci set turboacc.config.bbr_cca=1;
+uci set turboacc.config.bbr_cca=0;
 uci commit turboacc;
 uci set system.@system[0].zonename='Asia/Kuala Lumpur';
 uci commit system;
