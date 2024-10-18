@@ -233,9 +233,56 @@ exit 0
 RCD
 chmod +x /etc/rc.local
 
+rm -rf /etc/config/wireless
+cat > /etc/config/wireless <<-WIFI
+
+config wifi-device 'wifi0'
+        option type 'qcawificfg80211'
+        option macaddr 'ec:6c:9a:b8:4c:e0'
+        option hwmode '11axa'
+        option country 'US'
+        option channel '128'
+        option htmode 'HT160'
+        option txpower '30'
+
+config wifi-iface 'ath0'
+        option device 'wifi0'
+        option network 'lan'
+        option mode 'ap'
+        option wmm '1'
+        option rrm '1'
+        option qbssload '1'
+        option ssid 'WK-VISTANA-5G'
+        option encryption 'psk'
+        option key '112233445566'
+
+config wifi-device 'wifi1'
+        option type 'qcawificfg80211'
+        option channel '1'
+        option macaddr 'ec:6c:9a:b8:4c:df'
+        option hwmode '11axg'
+        option country 'US'
+        option htmode 'HT20'
+        option txpower '30'
+
+config wifi-iface 'ath1'
+        option device 'wifi1'
+        option network 'lan'
+        option mode 'ap'
+        option wmm '1'
+        option rrm '1'
+        option qbssload '1'
+        option ssid 'WK-VISTANA-2.4'
+        option encryption 'psk'
+        option key '112233445566'
+WIFI
+chmod +x /etc/config/wireless
+
 uci commit
 uci commit firewall
 uci commit network
+uci commit wireless
+uci commit irqbalance
 /etc/init.d/firewall-custom enable
 /etc/init.d/firewall-custom start
 /etc/init.d/irqbalance enable
