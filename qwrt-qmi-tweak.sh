@@ -158,8 +158,8 @@ DEF
 cat > /etc/sysctl.d/11-nf-conntrack.conf <<-CONS
 net.netfilter.nf_conntrack_acct=1
 net.netfilter.nf_conntrack_checksum=0
-net.netfilter.nf_conntrack_max=1638400
-net.netfilter.nf_conntrack_expect_max=1638400
+net.netfilter.nf_conntrack_max=65536
+net.netfilter.nf_conntrack_expect_max=65536
 net.netfilter.nf_conntrack_tcp_timeout_time_wait=30
 net.netfilter.nf_conntrack_tcp_timeout_fin_wait=30
 net.netfilter.nf_conntrack_tcp_timeout_established=7440
