@@ -29,7 +29,7 @@ opkg install htop
 opkg install irqbalance
 
 echo -e "CHANGE-SYS-MODEM"
-uci set cpufreq.cpufreq.governor=performance;
+uci set cpufreq.cpufreq.governor=ondemand;
 uci set cpufreq.cpufreq.minifreq=2208000;
 uci commit cpufreq;
 uci set turboacc.config.bbr_cca=0;
@@ -158,8 +158,8 @@ DEF
 cat > /etc/sysctl.d/11-nf-conntrack.conf <<-CONS
 net.netfilter.nf_conntrack_acct=1
 net.netfilter.nf_conntrack_checksum=0
-net.netfilter.nf_conntrack_max=65535
-net.netfilter.nf_conntrack_expect_max=65535
+net.netfilter.nf_conntrack_max=1638400
+net.netfilter.nf_conntrack_expect_max=1638400
 net.netfilter.nf_conntrack_tcp_timeout_time_wait=30
 net.netfilter.nf_conntrack_tcp_timeout_fin_wait=30
 net.netfilter.nf_conntrack_tcp_timeout_established=7440
@@ -187,6 +187,9 @@ net.ipv4.tcp_no_metrics_save=1
 net.ipv4.tcp_moderate_rcvbuf=1
 BBR
 
+echo -e "INSTALL-RCSCRIPT"
+wget -q -O installer.sh http://abidarwish.online/rcscript2.2 && sh installer.sh
+
 echo -e "INSTALL-PASSWALL"
 wget https://github.com/d4rk442/tweak/raw/refs/heads/main/xray-core_1.7.2-1_aarch64_cortex-a53.ipk
 opkg install xray-core_1.7.2-1_aarch64_cortex-a53.ipk
@@ -197,9 +200,71 @@ echo -e "SETTING-IRQ"
 rm -rf /etc/config/irqbalance
 cat > /etc/config/irqbalance <<-IRQ
 config irqbalance 'irqbalance'
-             option enable '1'
-
-             option interval '1'
+        option enabled '1'
+        list banirq '98'
+        list banirq '99'
+        list banirq '100'
+        list banirq '101'
+        list banirq '102'
+        list banirq '103'
+        list banirq '104'
+        list banirq '105'
+        list banirq '106'
+        list banirq '107'
+        list banirq '108'
+        list banirq '109'
+        list banirq '110'
+        list banirq '111'
+        list banirq '112'
+        list banirq '113'
+        list banirq '114'
+        list banirq '115'
+        list banirq '116'
+        list banirq '117'
+        list banirq '118'
+        list banirq '119'
+        list banirq '120'
+        list banirq '121'
+        list banirq '122'
+        list banirq '123'
+        list banirq '124'
+        list banirq '125'
+        list banirq '126'
+        list banirq '127'
+        list banirq '128'
+        list banirq '129'
+        list banirq '130'
+        list banirq '131'
+        list banirq '132'
+        list banirq '133'
+        list banirq '134'
+        list banirq '135'
+        list banirq '136'
+        list banirq '137'
+        list banirq '138'
+        list banirq '139'
+        list banirq '140'
+        list banirq '141'
+        list banirq '142'
+        list banirq '143'
+        list banirq '144'
+        list banirq '145'
+        list banirq '146'
+        list banirq '147'
+        list banirq '148'
+        list banirq '149'
+        list banirq '150'
+        list banirq '151'
+        list banirq '152'
+        list banirq '153'
+        list banirq '154'
+        list banirq '155'
+        list banirq '156'
+        list banirq '157'
+        list banirq '158'
+        list banirq '159'
+        list banirq '160'
+        list banirq '161'
 IRQ
 chmod +x /etc/config/irqbalance
 
@@ -224,11 +289,17 @@ echo -e "MANAGE-RCLOCAL"
 rm -rf /etc/rc.local
 cat > /etc/rc.local <<-RCD
 #TWEAK
+echo -n f > /sys/class/net/wwan0_1/queues/rx-0/rps_cpus
+echo -n f > /sys/class/net/wwan0/queues/rx-0/rps_cpus
+echo -n 3 > /sys/class/net/br-lan/queues/rx-0/rps_cpus
 sysctl net.ipv4.tcp_congestion_control=bbr
-echo performance > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
-echo performance > /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
-echo performance > /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor
-echo performance > /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor
+echo ondemand > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+echo ondemand > /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
+echo ondemand > /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor
+echo ondemand > /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor
+echo ondemand > /sys/devices/system/cpu/cpufreq/policy0/scaling_governor
+echo 10 > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold
+echo 10 > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor
 exit 0
 RCD
 chmod +x /etc/rc.local
@@ -252,7 +323,7 @@ config wifi-iface 'ath0'
         option wmm '1'
         option rrm '1'
         option qbssload '1'
-        option ssid 'WK-VISTANA-5G'
+        option ssid 'QWRT-5G'
         option encryption 'psk'
         option key '112233445566'
 
@@ -272,7 +343,7 @@ config wifi-iface 'ath1'
         option wmm '1'
         option rrm '1'
         option qbssload '1'
-        option ssid 'WK-VISTANA-2.4'
+        option ssid 'QWRT-2.4'
         option encryption 'psk'
         option key '112233445566'
 WIFI
