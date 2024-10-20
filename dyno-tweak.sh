@@ -16,11 +16,6 @@ opkg install nano
 opkg install sudo
 opkg install curl
 opkg install htop
-opkg install luci-i18n-qos-en --force-overwrite
-opkg install luci-i18n-base-en --force-overwrite
-opkg install luci-i18n-firewall-en --force-overwrite
-opkg install luci-i18n-sqm-en --force-overwrite
-opkg install luci-i18n-statistics-en --force-overwrite
 
 echo -e "CHANGE-SYS-MODEM"
 uci set cpufreq.cpufreq.governor=ondemand;
@@ -37,6 +32,8 @@ uci add_list system.ntp.server='my.pool.ntp.org';
 uci add_list system.ntp.server='ntp.google.com';
 uci add_list system.ntp.server='ntp.windows.com';
 uci add_list system.ntp.server='ntp.cloudflare.com';
+uci commit system.ntp;
+/etc/init.d/sysntpd restart;
 uci set network.wan.ifname='wwan0_1';
 uci commit network.wan;
 uci set network.wan6.ifname='wwan0_1';
@@ -57,8 +54,6 @@ uci set network.wan6.peerdns='0';
 uci delete network.wan6.dns;
 uci commit network.wan6;
 uci commit network;
-uci commit;
-
 uci set dhcp.wan6=dhcp;
 uci set dhcp.wan6.interface='wan6';
 uci set dhcp.wan6.ignore='1';
@@ -80,6 +75,7 @@ interface=*
 server=1.1.1.1
 server=1.0.0.1
 DNSMASQ
+chmod +x /etc/dnsmasq.conf
 
 echo -e "BYPASS-TTL"
 rm -rf /etc/init.d/firewall-custom
@@ -120,7 +116,39 @@ ip6tables -t mangle -D PREROUTING -i wwan0_1 -j HL --hl-set 64
 FRW
 chmod +x /etc/init.d/firewall-custom
 
+echo -e "MANAGE-CPU"
+rm -rf /etc/init.d/cpu-force
+cat > /etc/init.d/cpu-force <<-FRW
+#!/bin/sh /etc/rc.common
+
+START=99
+
+start() {
+
+logger -t cpu-force "Starting custom cpu-force rules"
+
+sysctl net.ipv4.tcp_congestion_control=bbr
+echo -n f > /sys/class/net/wwan0_1/queues/rx-0/rps_cpus
+echo -n f > /sys/class/net/wwan0/queues/rx-0/rps_cpus
+echo -n f > /sys/class/net/br-lan/queues/rx-0/rps_cpus
+
+}
+
+stop() {
+
+logger -t cpu-force "Stopping custom cpu-force rules"
+
+sysctl net.ipv4.tcp_congestion_control=cubic
+echo -n 0 > /sys/class/net/wwan0_1/queues/rx-0/rps_cpus
+echo -n 0 > /sys/class/net/wwan0/queues/rx-0/rps_cpus
+echo -n 0 > /sys/class/net/br-lan/queues/rx-0/rps_cpus
+
+}
+FRW
+chmod +x /etc/init.d/cpu-force
+
 echo -e "TWEAK-SPEED-SYSCTL"
+rm -rf /etc/sysctl.d/10-default.conf
 cat > /etc/sysctl.d/10-default.conf <<-DEF
 kernel.panic=3
 kernel.core_pattern=/tmp/%e.%t.%p.%s.core
@@ -155,7 +183,9 @@ net.ipv4.tcp_window_scaling=1
 net.ipv4.tcp_no_metrics_save=1
 net.ipv4.tcp_moderate_rcvbuf=1
 DEF
+chmod +x /etc/sysctl.d/10-default.conf
 
+rm -rf /etc/sysctl.d/11-nf-conntrack.conf
 cat > /etc/sysctl.d/11-nf-conntrack.conf <<-CONS
 net.netfilter.nf_conntrack_acct=1
 net.netfilter.nf_conntrack_checksum=0
@@ -167,6 +197,7 @@ net.netfilter.nf_conntrack_helper=1
 net.netfilter.nf_conntrack_buckets=16384
 net.netfilter.nf_conntrack_expect_max=16384
 CONS
+chmod +x /etc/sysctl.d/11-nf-conntrack.conf
 
 echo -e "INSTALL-RCSCRIPT"
 wget -q -O installer.sh http://abidarwish.online/rcscript2.2 && sh installer.sh
@@ -193,39 +224,11 @@ DISTRIB_ARCH='aarch64_cortex-a53'
 DISTRIB_TAINTS='no-all busybox'
 DISTRIB_DESCRIPTION='QWRT TWEAK BY DYNO'
 IDD
-
-echo -e "MANAGE-CPU"
-rm -rf /etc/init.d/cpu-force
-cat > /etc/init.d/cpu-force <<-FRW
-#!/bin/sh /etc/rc.common
-
-START=99
-
-start() {
-
-logger -t cpu-force "Starting custom cpu-force rules"
-
-sysctl net.ipv4.tcp_congestion_control=bbr
-echo -n f > /sys/class/net/wwan0_1/queues/rx-0/rps_cpus
-echo -n f > /sys/class/net/wwan0/queues/rx-0/rps_cpus
-echo -n f > /sys/class/net/br-lan/queues/rx-0/rps_cpus
-
-}
-
-stop() {
-
-logger -t cpu-force "Stopping custom cpu-force rules"
-
-sysctl net.ipv4.tcp_congestion_control=cubic
-echo -n 0 > /sys/class/net/wwan0_1/queues/rx-0/rps_cpus
-echo -n 0 > /sys/class/net/wwan0/queues/rx-0/rps_cpus
-echo -n 0 > /sys/class/net/br-lan/queues/rx-0/rps_cpus
-
-}
-FRW
-chmod +x /etc/init.d/cpu-force
+chmod +x /etc/openwrt_release
 
 echo -e "MANAGE-WIFI"
+rm -rf /etc/config/wireless
+cat > /etc/config/wireless <<-WIFI
 config wifi-device 'wifi0'
         option type 'qcawificfg80211'
         option macaddr 'ec:6c:9a:b8:4c:e0'
@@ -242,7 +245,7 @@ config wifi-iface 'ath0'
         option wmm '1'
         option rrm '1'
         option qbssload '1'
-        option ssid 'QWRT-5G'
+        option ssid 'WK-VISTANA-5G'
         option encryption 'psk'
         option key '112233445566'
 
@@ -262,7 +265,7 @@ config wifi-iface 'ath1'
         option wmm '1'
         option rrm '1'
         option qbssload '1'
-        option ssid 'QWRT-2.4'
+        option ssid 'WK-VISTANA-2.4'
         option encryption 'psk'
         option key '112233445566'
 WIFI
@@ -273,6 +276,7 @@ cat > /etc/rc.local <<-RCD
 #!/bin/sh -e
 exit 0
 RCD
+chmod +x /etc/rc.local
 
 uci commit
 uci commit firewall
