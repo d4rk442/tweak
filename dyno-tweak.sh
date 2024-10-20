@@ -268,6 +268,12 @@ config wifi-iface 'ath1'
 WIFI
 chmod +x /etc/config/wireless
 
+rm -rf /etc/rc.local
+cat > /etc/rc.local <<-RCD
+#!/bin/sh -e
+exit 0
+RCD
+
 uci commit
 uci commit firewall
 uci commit network
