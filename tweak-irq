@@ -4,7 +4,7 @@ INTERRUPT=$(ls /proc/irq/ | sed '/default/d')
 USB2_NUMBER=$(grep usb2 /proc/interrupts | awk -F: '{print $1}' | sed 's/^ //')
 	
 for i in ${INTERRUPT}; do
-	if [[ $i = ${USB3_NUMBER} ]]; then
+	if [[ $i = ${USB2_NUMBER} ]]; then
 			echo 9 > /proc/irq/$i/smp_affinity 2>/dev/null
 		else
 			echo c > /proc/irq/$i/smp_affinity 2>/dev/null
