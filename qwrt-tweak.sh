@@ -85,8 +85,6 @@ chmod +x /etc/init.d/firewall-custom
 echo -e "TWEAK-MODEM"
 wget -q -O /etc/rc.local "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/rc.local";
 wget -q -O /etc/config/tweak-irq "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/tweak-irq";
-wget -q -O /etc/hotplug.d/iface/82-irqbalance "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/82-irqbalance";
-wget -q -O /etc/hotplug.d/net/97-smp-tune "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/97-smp-tune";
 wget -q -O /usr/bin/speedtest "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/speedtest";chmod +x /usr/bin/speedtest;
 
 echo -e "TRANSLATING-MODEM"
