@@ -5,6 +5,8 @@
 /etc/init.d/passwall restart
 # Running script irqbalance
 sh /etc/config/irq1
+echo -e "AT+CFUN=0" >/dev/ttyUSB2
+echo -e "AT+CFUN=1" >/dev/ttyUSB2
 sysctl net.ipv4.tcp_congestion_control=bbr
 
 exit 0
