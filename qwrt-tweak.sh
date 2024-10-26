@@ -41,20 +41,16 @@ uci set network.wan6.ifname='wwan0_1';
 uci commit network.wan6;
 uci set network.lan.dns='1.1.1.1 1.0.0.1';
 uci commit network.lan;
-uci set firewall.@defaults[0].flow_offloading='0';
-uci set firewall.@defaults[0].flow_offloading_hw='0';
 uci commit firewall;
 uci set network.globals.packet_steering=1;
 uci set network.wan.peerdns='0';
-uci delete network.wan.dns;
 uci commit network.wan;
 uci set network.wan1.peerdns='0';
-uci delete network.wan1.dns;
 uci commit network.wan1;
 uci set network.wan6.peerdns='0';
-uci delete network.wan6.dns;
 uci commit network.wan6;
 uci commit network;
+
 uci set dhcp.wan6=dhcp;
 uci set dhcp.wan6.interface='wan6';
 uci set dhcp.wan6.ignore='1';
@@ -79,27 +75,39 @@ DNSMASQ
 chmod +x /etc/dnsmasq.conf
 
 echo -e "BYPASS-TTL"
-wget -q -O /etc/init.d/firewall-custom "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/custom-firewall";
+wget -q -O /etc/init.d/firewall-custom "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/firewall-custom";
 chmod +x /etc/init.d/firewall-custom
 
 echo -e "TWEAK-MODEM"
 wget -q -O /etc/rc.local "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/rc.local";
 chmod +x /etc/rc.local
 wget -q -O /etc/config/tweak-irq "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/tweak-irq";
+chmod +x /etc/config/tweak-irq
 wget -q -O /usr/bin/speedtest "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/speedtest";chmod +x /usr/bin/speedtest;
 
 echo -e "TRANSLATING-MODEM"
 wget -q -O /usr/lib/lua/luci/model/cbi/rooter/customize.lua "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/customize.lua";
+chmod +x /usr/lib/lua/luci/model/cbi/rooter/customize.lua
 wget -q -O /usr/lib/lua/luci/view/rooter/debug.htm "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/debug.htm";
+chmod +x /usr/lib/lua/luci/view/rooter/debug.htm
 wget -q -O /usr/lib/lua/luci/view/rooter/misc.htm "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/misc.htm";
+chmod +x /usr/lib/lua/luci/view/rooter/misc.htm
 wget -q -O /usr/lib/lua/luci/controller/admin/modem.lua "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/modem.lua";
+chmod +x /usr/lib/lua/luci/controller/admin/modem.lua
 wget -q -O /usr/lib/lua/luci/view/modlog/modlog.htm "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/modlog.htm";
+chmod +x /usr/lib/lua/luci/view/modlog/modlog.htm
 wget -q -O /usr/lib/lua/luci/controller/modlog.lua "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/modlog.lua";
+chmod +x /usr/lib/lua/luci/controller/modlog.lua
 wget -q -O /usr/lib/lua/luci/view/rooter/net_status.htm "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/net_status.htm";
+chmod +x /usr/lib/lua/luci/view/rooter/net_status.htm
 wget -q -O /usr/lib/lua/luci/model/cbi/rooter/profiles.lua "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/profiles.lua";
+chmod +x /usr/lib/lua/luci/model/cbi/rooter/profiles.lua
 wget -q -O /usr/lib/lua/luci/view/rooter/sms.htm "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/sms.htm";
+chmod +x /usr/lib/lua/luci/view/rooter/sms.htm
 wget -q -O /usr/lib/lua/luci/controller/sms.lua "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/sms.lua";
+chmod +x /usr/lib/lua/luci/controller/sms.lua
 wget -q -O /usr/lib/lua/luci/view/rooter/custom.htm "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/custom.htm";
+chmod +x /usr/lib/lua/luci/view/rooter/custom.htm
 
 echo -e "TWEAK-SPEED-SYSCTL"
 rm -rf /etc/sysctl.d/10-default.conf
@@ -234,6 +242,7 @@ config irqbalance 'irqbalance'
 
              option interval '1'
 IRQ
+chmod +x /etc/config/irqbalance
 
 uci commit
 uci commit firewall
