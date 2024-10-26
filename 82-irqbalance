@@ -6,7 +6,7 @@ log () {
 
 [ "$ACTION" = ifup -o "$ACTION" = ifupdate ] || exit 0
 	sleep 2
-	sh /etc/config/rirq
+	sh /etc/config/tweak-irq
   logger "CustomSC - Reloading IRQs when $INTERFACE ($DEVICE) is now up"
 	fi
 fi
