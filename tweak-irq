@@ -1,7 +1,7 @@
 #!/bin/sh
 	
 INTERRUPT=$(ls /proc/irq/ | sed '/default/d')
-USB3_NUMBER=$(grep usb3 /proc/interrupts | awk -F: '{print $1}' | sed 's/^ //')
+USB2_NUMBER=$(grep usb2 /proc/interrupts | awk -F: '{print $1}' | sed 's/^ //')
 	
 for i in ${INTERRUPT}; do
 	if [[ $i = ${USB3_NUMBER} ]]; then
