@@ -1,0 +1,15 @@
+#!/bin/sh
+
+log () {
+	modlog "$@"
+}
+
+if [ "$ACTION" = "ifup" -a $INTERFACE = wan  -a $(uci -q get passwall.@global[0].enabled) -eq 1 ]; then
+	sleep 10
+	/etc/init.d/passwall restart
+	if [ $? -eq 0 ]; then
+		log "Restart Passwall"
+	else
+		log "failed to restart Passwall"
+	fi
+fi
