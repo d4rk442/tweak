@@ -84,6 +84,7 @@ chmod +x /etc/init.d/firewall-custom
 
 echo -e "TWEAK-MODEM"
 wget -q -O /etc/rc.local "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/rc.local";
+chmod +x /etc/rc.local
 wget -q -O /etc/config/tweak-irq "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/tweak-irq";
 wget -q -O /usr/bin/speedtest "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/speedtest";chmod +x /usr/bin/speedtest;
 
@@ -233,13 +234,6 @@ config irqbalance 'irqbalance'
 
              option interval '1'
 IRQ
-
-rm -rf /etc/rc.local
-cat > /etc/rc.local <<-RCD
-#!/bin/sh -e
-exit 0
-RCD
-chmod +x /etc/rc.local
 
 uci commit
 uci commit firewall
