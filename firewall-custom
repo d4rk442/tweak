@@ -6,6 +6,7 @@ start() {
 
 logger -t firewall-custom "Starting custom firewall rules"
 
+ip link set dev wwan0_1 mtu 1500
 iptables -t mangle -I POSTROUTING -o wwan0 -j TTL --ttl-set 64
 iptables -t mangle -I POSTROUTING -o wwan0_1 -j TTL --ttl-set 64
 iptables -t mangle -I PREROUTING -i wwan0 -j TTL --ttl-set 64
