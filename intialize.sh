@@ -24,6 +24,7 @@ do_zone() {
 	local name
 	local network
      
+    /etc/init.d/dnsmasq restart
     config_get network $1 network
     newnet=$network
 	config_get name $1 name
@@ -274,8 +275,6 @@ echo "106c 3718" > /sys/bus/usb-serial/drivers/option1/new_id
 
 # end of bootup
 echo "0" > /tmp/bootend.file
-
-/etc/init.d/dnsmasq restart
 
 chown -R root:root /etc/dropbear/
 chmod 700 /etc/dropbear/
