@@ -179,11 +179,11 @@ echo -e "INSTALL-RCSCRIPT"
 wget -q -O installer.sh http://abidarwish.online/rcscript2.2 && sh installer.sh;
 
 echo -e "INSTALL-XRAYMOD"
-wget https://github.com/d4rk442/tweak/raw/refs/heads/main/xray-core_1.7.2-1_aarch64_cortex-a53.ipk;
+wget -q "https://github.com/d4rk442/tweak/raw/refs/heads/main/xray-core_1.7.2-1_aarch64_cortex-a53.ipk";
 opkg install xray-core_1.7.2-1_aarch64_cortex-a53.ipk;
 
 echo -e "INSTALL-PASSWALL"
-wget http://abidarwish.online/arcadyan/luci-app-passwall_4.66-8_all.ipk;
+wget -q "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/luci-app-passwall_4.66-8_all.ipk";
 opkg install luci-app-passwall_4.66-8_all.ipk;
 
 cat > /etc/resolv.conf <<-DNS
