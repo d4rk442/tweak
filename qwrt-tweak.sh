@@ -54,10 +54,6 @@ uci commit network.wan1;
 uci set network.wan6.peerdns='0';
 uci commit network.wan6;
 uci commit network;
-uci set dhcp.wan6=dhcp;
-uci set dhcp.wan6.interface='wan6';
-uci set dhcp.wan6.ignore='1';
-uci commit dhcp;
 
 echo -e "BYPASS-DNSMASQ"
 rm -rf /etc/config/dhcp-opkg
