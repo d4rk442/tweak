@@ -211,7 +211,7 @@ config wifi-device 'wifi0'
         option macaddr 'ec:6c:9a:b8:4c:e0'
         option hwmode '11axa'
         option country 'MY'
-        option channel '64'
+        option channel '128'
         option htmode 'HT160'
         option txpower '30'
 
