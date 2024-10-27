@@ -222,7 +222,7 @@ fi
 SM=$(uci get modem.sms)
 if [ -z $SM ]; then
 	uci set modem.sms="sms"
-	uci set modem.sms.menable="0"
+	uci set modem.sms.menable="1"
 	uci set modem.sms.slots="0"
 fi
 
