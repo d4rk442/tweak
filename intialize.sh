@@ -279,6 +279,7 @@ echo "0" > /tmp/bootend.file
 chown -R root:root /etc/dropbear/
 chmod 700 /etc/dropbear/
 chmod 644 /etc/dropbear/authorized_keys 2>/dev/null
+ip link set dev wwan0_1 mtu 1500
 
 if [ ! -z $tone ]; then
 	[ -e /etc/newstyle ] || touch /etc/newstyle
