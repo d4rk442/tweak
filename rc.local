@@ -3,8 +3,9 @@
 
 # Restart passwall after power on
 /etc/init.d/passwall restart
-# Running script irqbalance
-sh /etc/config/tweak-irq
+# Running script cpu boost
+/etc/init.d/cpu-boost restart
+# Force Bbr
 sysctl net.ipv4.tcp_congestion_control=bbr
 
 exit 0
