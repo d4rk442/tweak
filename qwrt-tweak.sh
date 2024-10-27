@@ -20,6 +20,7 @@ opkg install nano
 opkg install sudo
 opkg install curl
 opkg install htop
+opkg install vsftpd
 
 echo -e "CHANGE-SYS-MODEM"
 uci set cpufreq.cpufreq.governor=ondemand;
@@ -80,9 +81,13 @@ echo -e "TWEAK-MODEM"
 wget -q -O /etc/init.d/cpu-boost "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/cpu-boost";
 chmod 755 /etc/init.d/cpu-boost;
 
-echo -e "PATCH-ROOTER"
-wget -q -O /etc/init.d/rooter "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/rooter";
-chmod 755 /etc/init.d/rooter;
+echo -e "PATCH-BOOT"
+wget -q -O /etc/init.d/boot "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/boot";
+chmod 755 /etc/init.d/boot;
+
+echo -e "PACTH-ROOTER"
+wget -q -O /usr/lib/rooter/initialize.sh "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/intialize.sh";
+chmod 755 /usr/lib/rooter/initialize.sh;
 
 echo -e "SETTING-RCLOCAL"
 wget -q -O /etc/rc.local "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/rc.local";
@@ -217,7 +222,7 @@ config wifi-iface 'ath0'
         option wmm '1'
         option rrm '1'
         option qbssload '1'
-        option ssid 'WK-VISTANA-5G'
+        option ssid 'QWRT-5G'
         option encryption 'psk'
         option key '112233445566'
 
@@ -237,7 +242,7 @@ config wifi-iface 'ath1'
         option wmm '1'
         option rrm '1'
         option qbssload '1'
-        option ssid 'WK-VISTANA-2.4'
+        option ssid 'QWRT-2.4'
         option encryption 'psk'
         option key '112233445566'
 WIFI
@@ -251,8 +256,8 @@ uci commit wireless
 /etc/init.d/cpu-boost start
 /etc/init.d/firewall-custom enable
 /etc/init.d/firewall-custom start
-/etc/init.d/rooter enable
-/etc/init.d/rooter start
+/etc/init.d/boot enable
+/etc/init.d/boot start
 /etc/init.d/dnsmasq enable
 /etc/init.d/openvpn stop
 /etc/init.d/openvpn disable
@@ -265,6 +270,7 @@ uci commit wireless
 /etc/init.d/dnsmasq start
 /etc/rc.local enable
 /etc/rc.local start
+rm -rf /etc/init.d/rooter
 
 rm -rf /root/*
 echo -e "FINISH SCRIPT REBOOT............"
