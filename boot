@@ -53,6 +53,10 @@ boot() {
 	
 	# temporary hack until configd exists
 	/sbin/reload_config
-  sh /usr/lib/rooter/initialize.sh
-  wifi up
+        /sbin/usbmode -l
+        /bin/sleep 1
+        /sbin/usbmode -s
+        /bin/sleep 1
+        sh /usr/lib/rooter/initialize.sh
+        wifi up
 }
