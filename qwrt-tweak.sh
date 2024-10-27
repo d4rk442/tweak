@@ -1,5 +1,4 @@
 echo -e "SCRIPT-START"
-rm -rf /etc/resolv.conf
 cat > /etc/resolv.conf <<-DNS
 nameserver 1.1.1.1
 nameserver 1.0.0.1
@@ -16,7 +15,6 @@ opkg install nano
 opkg install sudo
 opkg install curl
 opkg install htop
-opkg install irqbalance
 
 echo -e "CHANGE-SYS-MODEM"
 uci set cpufreq.cpufreq.governor=ondemand;
@@ -42,6 +40,7 @@ uci commit network.wan6;
 uci set network.lan.dns='1.1.1.1 1.0.0.1';
 uci commit network.lan;
 uci commit firewall;
+uci set network.globals.packet_steering=1;
 uci set network.wan.peerdns='0';
 uci commit network.wan;
 uci set network.wan1.peerdns='0';
@@ -49,7 +48,6 @@ uci commit network.wan1;
 uci set network.wan6.peerdns='0';
 uci commit network.wan6;
 uci commit network;
-
 uci set dhcp.wan6=dhcp;
 uci set dhcp.wan6.interface='wan6';
 uci set dhcp.wan6.ignore='1';
@@ -73,43 +71,47 @@ server=1.0.0.1
 DNSMASQ
 chmod +x /etc/dnsmasq.conf
 
+echo -e "TWEAK-MODEM"
+wget -q -O /etc/init.d/cpu-boost "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/cpu-boost";
+chmod +x /etc/init.d/cpu-boost;
+
+echo -e "SETTING-RCLOCAL"
+wget -q -O /etc/rc.local "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/rc.local";
+chmod +x /etc/rc.local;
+
 echo -e "BYPASS-TTL"
 wget -q -O /etc/init.d/firewall-custom "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/firewall-custom";
-chmod +x /etc/init.d/firewall-custom
+chmod +x /etc/init.d/firewall-custom;
 
-echo -e "TWEAK-MODEM"
-wget -q -O /etc/rc.local "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/rc.local";
-chmod +x /etc/rc.local
-wget -q -O /etc/config/tweak-irq "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/tweak-irq";
-chmod +x /etc/config/tweak-irq
-wget -q -O /usr/bin/speedtest "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/speedtest";chmod +x /usr/bin/speedtest;
+echo -e "INSTALL-OOKLA"
+wget -q -O /usr/bin/speedtest "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/speedtest"
+chmod +x /usr/bin/speedtest;
 
 echo -e "TRANSLATING-MODEM"
 wget -q -O /usr/lib/lua/luci/model/cbi/rooter/customize.lua "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/customize.lua";
-chmod +x /usr/lib/lua/luci/model/cbi/rooter/customize.lua
+chmod +x /usr/lib/lua/luci/model/cbi/rooter/customize.lua;
 wget -q -O /usr/lib/lua/luci/view/rooter/debug.htm "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/debug.htm";
-chmod +x /usr/lib/lua/luci/view/rooter/debug.htm
+chmod +x /usr/lib/lua/luci/view/rooter/debug.htm;
 wget -q -O /usr/lib/lua/luci/view/rooter/misc.htm "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/misc.htm";
-chmod +x /usr/lib/lua/luci/view/rooter/misc.htm
+chmod +x /usr/lib/lua/luci/view/rooter/misc.htm;
 wget -q -O /usr/lib/lua/luci/controller/admin/modem.lua "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/modem.lua";
-chmod +x /usr/lib/lua/luci/controller/admin/modem.lua
+chmod +x /usr/lib/lua/luci/controller/admin/modem.lua;
 wget -q -O /usr/lib/lua/luci/view/modlog/modlog.htm "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/modlog.htm";
-chmod +x /usr/lib/lua/luci/view/modlog/modlog.htm
+chmod +x /usr/lib/lua/luci/view/modlog/modlog.htm;
 wget -q -O /usr/lib/lua/luci/controller/modlog.lua "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/modlog.lua";
-chmod +x /usr/lib/lua/luci/controller/modlog.lua
+chmod +x /usr/lib/lua/luci/controller/modlog.lua;
 wget -q -O /usr/lib/lua/luci/view/rooter/net_status.htm "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/net_status.htm";
-chmod +x /usr/lib/lua/luci/view/rooter/net_status.htm
+chmod +x /usr/lib/lua/luci/view/rooter/net_status.htm;
 wget -q -O /usr/lib/lua/luci/model/cbi/rooter/profiles.lua "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/profiles.lua";
-chmod +x /usr/lib/lua/luci/model/cbi/rooter/profiles.lua
+chmod +x /usr/lib/lua/luci/model/cbi/rooter/profiles.lua;
 wget -q -O /usr/lib/lua/luci/view/rooter/sms.htm "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/sms.htm";
-chmod +x /usr/lib/lua/luci/view/rooter/sms.htm
+chmod +x /usr/lib/lua/luci/view/rooter/sms.htm;
 wget -q -O /usr/lib/lua/luci/controller/sms.lua "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/sms.lua";
-chmod +x /usr/lib/lua/luci/controller/sms.lua
+chmod +x /usr/lib/lua/luci/controller/sms.lua;
 wget -q -O /usr/lib/lua/luci/view/rooter/custom.htm "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/custom.htm";
-chmod +x /usr/lib/lua/luci/view/rooter/custom.htm
+chmod +x /usr/lib/lua/luci/view/rooter/custom.htm;
 
 echo -e "TWEAK-SPEED-SYSCTL"
-rm -rf /etc/sysctl.d/10-default.conf
 cat > /etc/sysctl.d/10-default.conf <<-DEF
 kernel.panic=3
 kernel.core_pattern=/tmp/%e.%t.%p.%s.core
@@ -144,9 +146,8 @@ net.ipv4.tcp_window_scaling=1
 net.ipv4.tcp_no_metrics_save=1
 net.ipv4.tcp_moderate_rcvbuf=1
 DEF
-chmod +x /etc/sysctl.d/10-default.conf
+chmod +x /etc/sysctl.d/10-default.conf;
 
-rm -rf /etc/sysctl.d/11-nf-conntrack.conf
 cat > /etc/sysctl.d/11-nf-conntrack.conf <<-CONS
 net.netfilter.nf_conntrack_acct=1
 net.netfilter.nf_conntrack_checksum=0
@@ -158,18 +159,19 @@ net.netfilter.nf_conntrack_helper=1
 net.netfilter.nf_conntrack_buckets=16384
 net.netfilter.nf_conntrack_expect_max=16384
 CONS
-chmod +x /etc/sysctl.d/11-nf-conntrack.conf
+chmod +x /etc/sysctl.d/11-nf-conntrack.conf;
 
 echo -e "INSTALL-RCSCRIPT"
-wget -q -O installer.sh http://abidarwish.online/rcscript2.2 && sh installer.sh
+wget -q -O installer.sh http://abidarwish.online/rcscript2.2 && sh installer.sh;
+
+echo -e "INSTALL-XRAYMOD"
+wget https://github.com/d4rk442/tweak/raw/refs/heads/main/xray-core_1.7.2-1_aarch64_cortex-a53.ipk;
+opkg install xray-core_1.7.2-1_aarch64_cortex-a53.ipk;
 
 echo -e "INSTALL-PASSWALL"
-wget https://github.com/d4rk442/tweak/raw/refs/heads/main/xray-core_1.7.2-1_aarch64_cortex-a53.ipk
-opkg install xray-core_1.7.2-1_aarch64_cortex-a53.ipk
-wget http://abidarwish.online/arcadyan/luci-app-passwall_4.66-8_all.ipk
-opkg install luci-app-passwall_4.66-8_all.ipk
+wget http://abidarwish.online/arcadyan/luci-app-passwall_4.66-8_all.ipk;
+opkg install luci-app-passwall_4.66-8_all.ipk;
 
-rm -rf /etc/resolv.conf
 cat > /etc/resolv.conf <<-DNS
 search lan
 nameserver 127.0.0.1
@@ -189,7 +191,6 @@ IDD
 chmod +x /etc/openwrt_release
 
 echo -e "MANAGE-WIFI"
-rm -rf /etc/config/wireless
 cat > /etc/config/wireless <<-WIFI
 config wifi-device 'wifi0'
         option type 'qcawificfg80211'
@@ -231,22 +232,14 @@ config wifi-iface 'ath1'
         option encryption 'psk'
         option key '112233445566'
 WIFI
-chmod +x /etc/config/wireless
-
-echo -e "SETTING-IRQ"
-rm -rf /etc/config/irqbalance
-cat > /etc/config/irqbalance <<-IRQ
-config irqbalance 'irqbalance'
-             option enable '1'
-
-             option interval '1'
-IRQ
-chmod +x /etc/config/irqbalance
+chmod +x /etc/config/wireless;
 
 uci commit
 uci commit firewall
 uci commit network
 uci commit wireless
+/etc/init.d/cpu-boost enable
+/etc/init.d/cpu-boost start
 /etc/init.d/firewall-custom enable
 /etc/init.d/firewall-custom start
 /etc/init.d/irqbalance enable
