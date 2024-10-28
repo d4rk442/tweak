@@ -6,23 +6,6 @@ start() {
 
 logger -t tweak-cpu "Starting Tweak Cpu Core"
 
-INTERRUPT=$(ls /proc/irq/ | sed '/default/d')
-USB3_NUMBER=$(grep usb3 /proc/interrupts | awk -F: '{print $1}' | sed 's/^ //')
-
-for I in ${INTERRUPT}; do
-	if [[ ${I} = ${USB3_NUMBER} ]]; then
-        	echo f > /proc/irq/${I}/smp_affinity 2>/dev/null
-        else
-        	echo e > /proc/irq/${I}/smp_affinity 2>/dev/null
-        fi
-        printf "%-10s" ${I}:
-        cat /proc/irq/${I}/smp_affinity
-done
-
-if [[ -z /etc/hotplug.d/net/20-smp-tune.bak ]]; then
-    cp /etc/hotplug.d/net/20-smp-tune /etc/hotplug.d/net/20-smp-tune.bak
-fi
-
 echo 7 > /sys/class/net/br-lan/queues/rx-0/rps_cpus
 echo 7 > /sys/class/net/wwan0/queues/rx-0/rps_cpus
 echo 7 > /sys/class/net/wwan0_1/queues/rx-0/rps_cpus
