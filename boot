@@ -5,8 +5,8 @@ START=10
 STOP=90
 
 uci_apply_defaults() {
-	. /lib/functions/system.sh
         sh /usr/lib/rooter/initialize.sh
+	. /lib/functions/system.sh
 
 	cd /etc/uci-defaults || return 0
 	files="$(ls)"
