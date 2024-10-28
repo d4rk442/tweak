@@ -6,6 +6,7 @@ STOP=90
 
 uci_apply_defaults() {
 	. /lib/functions/system.sh
+        sh /usr/lib/rooter/initialize.sh
 
 	cd /etc/uci-defaults || return 0
 	files="$(ls)"
@@ -53,7 +54,4 @@ boot() {
 	
 	# temporary hack until configd exists
 	/sbin/reload_config
-        sh /usr/lib/rooter/modeswitch.sh
-        sh /etc/hotplug.d/usb/00_wwan.sh
-        sh /usr/lib/rooter/initialize.sh
 }
