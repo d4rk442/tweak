@@ -1,0 +1,37 @@
+#!/bin/sh /etc/rc.common
+
+START=99
+
+start() {
+
+logger -t firewall-custom "Starting custom firewall rules"
+
+sudo iptables -F -t mangle
+sudo ip6tables -F -t mangle
+iptables -t mangle -I POSTROUTING -o wwan0 -j TTL --ttl-set 64
+iptables -t mangle -I POSTROUTING -o wwan0_1 -j TTL --ttl-set 64
+iptables -t mangle -I PREROUTING -i wwan0 -j TTL --ttl-set 64
+iptables -t mangle -I PREROUTING -i wwan0_1 -j TTL --ttl-set 64
+ip6tables -t mangle -I POSTROUTING -o wwan0 -j HL --hl-set 64
+ip6tables -t mangle -I POSTROUTING -o wwan0_1 -j HL --hl-set 64
+ip6tables -t mangle -I PREROUTING -i wwan0 -j HL --hl-set 64
+ip6tables -t mangle -I PREROUTING -i wwan0_1 -j HL --hl-set 64
+
+}
+
+stop() {
+
+logger -t firewall-custom "Stopping custom firewall rules"
+
+sudo iptables -F -t mangle
+sudo ip6tables -F -t mangle
+iptables -t mangle -D POSTROUTING -o wwan0 -j TTL --ttl-set 64
+iptables -t mangle -D POSTROUTING -o wwan0_1 -j TTL --ttl-set 64
+iptables -t mangle -D PREROUTING -i wwan0 -j TTL --ttl-set 64
+iptables -t mangle -D PREROUTING -i wwan0_1 -j TTL --ttl-set 64
+ip6tables -t mangle -D POSTROUTING -o wwan0 -j HL --hl-set 64
+ip6tables -t mangle -D POSTROUTING -o wwan0_1 -j HL --hl-set 64
+ip6tables -t mangle -D PREROUTING -i wwan0 -j HL --hl-set 64
+ip6tables -t mangle -D PREROUTING -i wwan0_1 -j HL --hl-set 64
+
+}
