@@ -53,5 +53,7 @@ boot() {
 	
 	# temporary hack until configd exists
 	/sbin/reload_config
+        sh /usr/lib/rooter/modeswitch.sh
+        sh /etc/hotplug.d/usb/00_wwan.sh
         sh /usr/lib/rooter/initialize.sh
 }
