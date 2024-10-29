@@ -43,6 +43,10 @@ do_zone() {
 	fi
 }
 
+sh /usr/lib/rooter/connect/preconnect.sh
+sh /usr/lib/rooter/connect/postconnect.sh
+sh /usr/lib/rooter/connect/create_connect.sh
+
 firstboot() {
 	# HO=$(uci get system.@system[-1].hostname)
 	# if [ $HO = "OpenWrt" ]; then
