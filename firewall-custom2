@@ -6,75 +6,94 @@ start() {
 
 logger -t firewall-custom "Starting custom firewall rules"
 
+#FORWARD
+iptables-nft -t mangle -I FORWARD -i usb0 -j TTL --ttl-set 64
+iptables-nft -t mangle -I FORWARD -i wwan0 -j TTL --ttl-set 64
+iptables-nft -t mangle -I FORWARD -i wwan0_1 -j TTL --ttl-set 64
+ip6tables-nft -t mangle -I FORWARD -i usb0 -j TTL --ttl-set 64
+ip6tables-nft -t mangle -I FORWARD -i wwan0 -j TTL --ttl-set 64
+ip6tables-nft -t mangle -I FORWARD -i wwan0_1 -j TTL --ttl-set 64
+nft add rule inet fw4 mangle_forward oifname usb0 ip ttl set 64
 nft add rule inet fw4 mangle_forward oifname wwan0_1 ip ttl set 64
-nft add rule inet fw4 mangle_forward oifname wwan0_1 ip6 hoplimit set 64
-
-nft add rule inet fw4 mangle_prerouting oifname wwan0_1 ip ttl set 64
-nft add rule inet fw4 mangle_prerouting oifname wwan0_1 ip6 hoplimit set 64
-
-nft add rule inet fw4 mangle_postrouting oifname wwan0_1 ip ttl set 64
-nft add rule inet fw4 mangle_postrouting oifname wwan0_1 ip6 hoplimit set 64
-
-
-nft insert rule inet fw4 mangle_prerouting oifname wwan0_1 ip ttl set 64
-nft insert rule inet fw4 mangle_prerouting oifname wwan0_1 ip6 hoplimit set 64
-
-nft insert rule inet fw4 mangle_postrouting oifname wwan0_1 ip ttl set 64
-nft insert rule inet fw4 mangle_postrouting oifname wwan0_1 ip6 hoplimit set 64
-
-#
 nft add rule inet fw4 mangle_forward oifname wwan0 ip ttl set 64
+nft add rule inet fw4 mangle_forward oifname usb0 ip6 hoplimit set 64
+nft add rule inet fw4 mangle_forward oifname wwan0_1 ip6 hoplimit set 64
 nft add rule inet fw4 mangle_forward oifname wwan0 ip6 hoplimit set 64
 
-nft add rule inet fw4 mangle_prerouting oifname wwan0 ip ttl set 64
-nft add rule inet fw4 mangle_prerouting oifname wwan0 ip6 hoplimit set 64
-
+#POSTROUT
+iptables-nft -t mangle -I POSTROUTING -o usb0 -j TTL --ttl-set 64
+iptables-nft -t mangle -I POSTROUTING -o wwan0 -j TTL --ttl-set 64
+iptables-nft -t mangle -I POSTROUTING -o wwan0_1 -j TTL --ttl-set 64
+ip6tables-nft -t mangle -I POSTROUTING -o usb0 -j TTL --ttl-set 64
+ip6tables-nft -t mangle -I POSTROUTING -o wwan0 -j TTL --ttl-set 64
+ip6tables-nft -t mangle -I POSTROUTING -o wwan0_1 -j TTL --ttl-set 64
+nft add rule inet fw4 mangle_postrouting oifname usb0 ip ttl set 64
+nft add rule inet fw4 mangle_postrouting oifname wwan0_1 ip ttl set 64
 nft add rule inet fw4 mangle_postrouting oifname wwan0 ip ttl set 64
+nft add rule inet fw4 mangle_postrouting oifname usb0 ip6 hoplimit set 64
+nft add rule inet fw4 mangle_postrouting oifname wwan0_1 ip6 hoplimit set 64
 nft add rule inet fw4 mangle_postrouting oifname wwan0 ip6 hoplimit set 64
 
+#PREROUT
+iptables-nft -t mangle -I PREROUTING -i usb0 -j TTL --ttl-set 64
+iptables-nft -t mangle -I PREROUTING -i wwan0 -j TTL --ttl-set 64
+iptables-nft -t mangle -I PREROUTING -i wwan0_1 -j TTL --ttl-set 64
+ip6tables-nft -t mangle -I PREROUTING -i usb0 -j TTL --ttl-set 64
+ip6tables-nft -t mangle -I PREROUTING -i wwan0 -j TTL --ttl-set 64
+ip6tables-nft -t mangle -I PREROUTING -i wwan0_1 -j TTL --ttl-set 64
+nft add rule inet fw4 mangle_prerouting oifname usb0 ip ttl set 64
+nft add rule inet fw4 mangle_prerouting oifname wwan0_1 ip ttl set 64
+nft add rule inet fw4 mangle_prerouting oifname wwan0 ip ttl set 64
+nft add rule inet fw4 mangle_prerouting oifname usb0 ip6 hoplimit set 64
+nft add rule inet fw4 mangle_prerouting oifname wwan0_1 ip6 hoplimit set 64
+nft add rule inet fw4 mangle_prerouting oifname wwan0 ip6 hoplimit set 64
 
-nft insert rule inet fw4 mangle_prerouting oifname wwan0 ip ttl set 64
-nft insert rule inet fw4 mangle_prerouting oifname wwan0 ip6 hoplimit set 64
-
-nft insert rule inet fw4 mangle_postrouting oifname wwan0 ip ttl set 64
-nft insert rule inet fw4 mangle_postrouting oifname wwan0 ip6 hoplimit set 64
 }
 
 stop() {
 
 logger -t firewall-custom "Stopping custom firewall rules"
 
+#FORWARD
+iptables-nft -t mangle -I FORWARD -i usb0 -j TTL --ttl-set 64
+iptables-nft -t mangle -I FORWARD -i wwan0 -j TTL --ttl-set 64
+iptables-nft -t mangle -I FORWARD -i wwan0_1 -j TTL --ttl-set 64
+ip6tables-nft -t mangle -I FORWARD -i usb0 -j TTL --ttl-set 64
+ip6tables-nft -t mangle -I FORWARD -i wwan0 -j TTL --ttl-set 64
+ip6tables-nft -t mangle -I FORWARD -i wwan0_1 -j TTL --ttl-set 64
+nft add rule inet fw4 mangle_forward oifname usb0 ip ttl set 64
 nft add rule inet fw4 mangle_forward oifname wwan0_1 ip ttl set 64
-nft add rule inet fw4 mangle_forward oifname wwan0_1 ip6 hoplimit set 64
-
-nft add rule inet fw4 mangle_prerouting oifname wwan0_1 ip ttl set 64
-nft add rule inet fw4 mangle_prerouting oifname wwan0_1 ip6 hoplimit set 64
-
-nft add rule inet fw4 mangle_postrouting oifname wwan0_1 ip ttl set 64
-nft add rule inet fw4 mangle_postrouting oifname wwan0_1 ip6 hoplimit set 64
-
-
-nft insert rule inet fw4 mangle_prerouting oifname wwan0_1 ip ttl set 64
-nft insert rule inet fw4 mangle_prerouting oifname wwan0_1 ip6 hoplimit set 64
-
-nft insert rule inet fw4 mangle_postrouting oifname wwan0_1 ip ttl set 64
-nft insert rule inet fw4 mangle_postrouting oifname wwan0_1 ip6 hoplimit set 64
-
-#
 nft add rule inet fw4 mangle_forward oifname wwan0 ip ttl set 64
+nft add rule inet fw4 mangle_forward oifname usb0 ip6 hoplimit set 64
+nft add rule inet fw4 mangle_forward oifname wwan0_1 ip6 hoplimit set 64
 nft add rule inet fw4 mangle_forward oifname wwan0 ip6 hoplimit set 64
 
-nft add rule inet fw4 mangle_prerouting oifname wwan0 ip ttl set 64
-nft add rule inet fw4 mangle_prerouting oifname wwan0 ip6 hoplimit set 64
-
+#POSTROUT
+iptables-nft -t mangle -I POSTROUTING -o usb0 -j TTL --ttl-set 64
+iptables-nft -t mangle -I POSTROUTING -o wwan0 -j TTL --ttl-set 64
+iptables-nft -t mangle -I POSTROUTING -o wwan0_1 -j TTL --ttl-set 64
+ip6tables-nft -t mangle -I POSTROUTING -o usb0 -j TTL --ttl-set 64
+ip6tables-nft -t mangle -I POSTROUTING -o wwan0 -j TTL --ttl-set 64
+ip6tables-nft -t mangle -I POSTROUTING -o wwan0_1 -j TTL --ttl-set 64
+nft add rule inet fw4 mangle_postrouting oifname usb0 ip ttl set 64
+nft add rule inet fw4 mangle_postrouting oifname wwan0_1 ip ttl set 64
 nft add rule inet fw4 mangle_postrouting oifname wwan0 ip ttl set 64
+nft add rule inet fw4 mangle_postrouting oifname usb0 ip6 hoplimit set 64
+nft add rule inet fw4 mangle_postrouting oifname wwan0_1 ip6 hoplimit set 64
 nft add rule inet fw4 mangle_postrouting oifname wwan0 ip6 hoplimit set 64
 
-
-nft insert rule inet fw4 mangle_prerouting oifname wwan0 ip ttl set 64
-nft insert rule inet fw4 mangle_prerouting oifname wwan0 ip6 hoplimit set 64
-
-nft insert rule inet fw4 mangle_postrouting oifname wwan0 ip ttl set 64
-nft insert rule inet fw4 mangle_postrouting oifname wwan0 ip6 hoplimit set 64
+#PREROUT
+iptables-nft -t mangle -I PREROUTING -i usb0 -j TTL --ttl-set 64
+iptables-nft -t mangle -I PREROUTING -i wwan0 -j TTL --ttl-set 64
+iptables-nft -t mangle -I PREROUTING -i wwan0_1 -j TTL --ttl-set 64
+ip6tables-nft -t mangle -I PREROUTING -i usb0 -j TTL --ttl-set 64
+ip6tables-nft -t mangle -I PREROUTING -i wwan0 -j TTL --ttl-set 64
+ip6tables-nft -t mangle -I PREROUTING -i wwan0_1 -j TTL --ttl-set 64
+nft add rule inet fw4 mangle_prerouting oifname usb0 ip ttl set 64
+nft add rule inet fw4 mangle_prerouting oifname wwan0_1 ip ttl set 64
+nft add rule inet fw4 mangle_prerouting oifname wwan0 ip ttl set 64
+nft add rule inet fw4 mangle_prerouting oifname usb0 ip6 hoplimit set 64
+nft add rule inet fw4 mangle_prerouting oifname wwan0_1 ip6 hoplimit set 64
+nft add rule inet fw4 mangle_prerouting oifname wwan0 ip6 hoplimit set 64
 
 }
