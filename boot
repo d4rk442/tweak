@@ -52,7 +52,6 @@ boot() {
 	sync
 	
 	# temporary hack until configd exists
-        sh /usr/lib/rooter/connect/create_connect.sh
         sh /usr/lib/rooter/initialize.sh
 	/sbin/reload_config
 }
