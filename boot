@@ -5,7 +5,6 @@ START=10
 STOP=90
 
 uci_apply_defaults() {
-        sh /usr/lib/rooter/initialize.sh
 	. /lib/functions/system.sh
 
 	cd /etc/uci-defaults || return 0
@@ -53,5 +52,6 @@ boot() {
 	sync
 	
 	# temporary hack until configd exists
+        sh /usr/lib/rooter/initialize.sh
 	/sbin/reload_config
 }
