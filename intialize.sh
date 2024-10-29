@@ -4,19 +4,19 @@
 ROOTER=/usr/lib/rooter
 ROOTER_LINK="/tmp/links"
 
+echo "1546 1146" > /sys/bus/usb-serial/drivers/option1/new_id
+echo "106c 3718" > /sys/bus/usb-serial/drivers/option1/new_id
+
 CODENAME="ROOter "
 if [ -f "/etc/codename" ]; then
 	source /etc/codename
 fi
 
-#
-# Set the maximum number of modems supported
-#
-MAX_MODEMS=2
+MAX_MODEMS=1
 MODCNT=$MAX_MODEMS
 
 log() {
-	modlog "ROOter Initialize" "$@"
+	modlog "STARTING MODEM" "$@"
 }
 
 do_zone() {
@@ -44,17 +44,6 @@ do_zone() {
 }
 
 firstboot() {
-	# HO=$(uci get system.@system[-1].hostname)
-	# if [ $HO = "OpenWrt" ]; then
-	# 	uci set system.@system[-1].hostname="OpenWrt"
-	# 	echo "OpenWrt" > /proc/sys/kernel/hostname
-	# fi
-	# if [ $HO = "LEDE" ]; then
-	# 	uci set system.@system[-1].hostname="LEDE"
-	# 	echo "LEDE" > /proc/sys/kernel/hostname
-	# fi
-	# uci set system.@system[-1].cronloglevel="9"
-	# uci commit system
 
 	AP=$(uci -q get profile.default.apn)
 	if [ -z "$AP" ]; then
@@ -67,11 +56,6 @@ firstboot() {
 	config_load firewall
 	config_foreach do_zone zone
 
-	# source /etc/openwrt_release
-	# if [ $DISTRIB_RELEASE = "SNAPSHOT" ]; then
-	# 	DISTRIB_RELEASE="master"
-	# fi
-	# tone=$(echo "$DISTRIB_RELEASE" | grep "master")
 }
 
 if [ -e /tmp/installing ]; then
@@ -79,7 +63,9 @@ if [ -e /tmp/installing ]; then
 fi
 
 
-log " Initializing Rooter"
+log " GETTING NETWORK"
+
+mkdir -p $ROOTER_LINK
 
 sed -i -e 's|/etc/savevar|#removed line|g' /etc/rc.local
 
@@ -87,33 +73,43 @@ sed -i -e 's|/etc/savevar|#removed line|g' /etc/rc.local
 	firstboot
 }
 
-mkdir -p $ROOTER_LINK
-
 uci delete modem.Version
 uci set modem.Version=version
 uci set modem.Version.ver=$CODENAME
 uci commit modem
 
-# source /etc/openwrt_release
-# rm -f /etc/openwrt_release
-# if [ $DISTRIB_RELEASE = "SNAPSHOT" ]; then
-# 	DISTRIB_RELEASE="master"
-# fi
-# if [ -e /etc/custom ]; then
-# 	lua $ROOTER/customname.lua
-# 	DISTRIB_DESCRIPTION=$(uci get modem.Version.ver)
-# 	DISTRIB_REVISION=" "
-# else
-# 	DISTRIB_DESCRIPTION=$(uci get modem.Version.ver)" ( "$DISTRIB_ID" "$DISTRIB_RELEASE" )"
-# 	DISTRIB_REVISION=" "
-# fi
-# echo "$(uci get modem.Version.ver)" > /etc/revision
-# echo 'DISTRIB_ID="'"$DISTRIB_ID"'"' >> /etc/openwrt_release
-# echo 'DISTRIB_RELEASE="'"$DISTRIB_RELEASE"'"' >> /etc/openwrt_release
-# echo 'DISTRIB_REVISION="'"$DISTRIB_REVISION"'"' >> /etc/openwrt_release
-# echo 'DISTRIB_CODENAME="'"$DISTRIB_CODENAME"'"' >> /etc/openwrt_release
-# echo 'DISTRIB_TARGET="'"$DISTRIB_TARGET"'"' >> /etc/openwrt_release
-# echo 'DISTRIB_DESCRIPTION="'"$DISTRIB_DESCRIPTION"'"' >> /etc/openwrt_release
+PRO=$(uci -q get network.wan.proto)
+if [ ! -z $PRO ]; then
+	uci set network.wan.metric="1"
+fi
+
+SM=$(uci get modem.sms)
+if [ -z $SM ]; then
+	uci set modem.sms="sms"
+	uci set modem.sms.menable="0"
+	uci set modem.sms.slots="0"
+fi
+
+if [ -e /etc/config/failover ]; then
+	uci delete failover.Wan
+	EXX=$(uci get network.wan)
+	if [ ! -z $EXX ]; then
+		uci set failover.Wan=member
+	fi
+	uci delete failover.Hotspot
+	uci set failover.Hotspot=member
+	uci commit failover
+	ENB=$(uci get failover.enabled.enabled)
+	if [ $ENB = "1" ]; then
+		if [ -e $ROOTER/connect/failover.sh ]; then
+			log "Starting Failover System"
+			$ROOTER/connect/failover.sh &
+		fi
+	fi
+fi
+
+uci commit modem
+uci commit network
 
 MODSTART=1
 WWAN=0
@@ -129,29 +125,6 @@ then
 	else
 		ETHN=2
 	fi
-fi
-
-echo 'MODSTART="'"$MODSTART"'"' > /tmp/variable.file
-echo 'WWAN="'"$WWAN"'"' >> /tmp/variable.file
-echo 'USBN="'"$USBN"'"' >> /tmp/variable.file
-echo 'ETHN="'"$ETHN"'"' >> /tmp/variable.file
-echo 'WDMN="'"$WDMN"'"' >> /tmp/variable.file
-echo 'BASEPORT="'"$BASEPORT"'"' >> /tmp/variable.file
-
-echo 'MODCNTX="'"$MODCNT"'"' > /tmp/modcnt
-uci set modem.general.max=$MODCNT
-uci set modem.general.modemnum=1
-uci set modem.general.smsnum=1
-uci set modem.general.miscnum=1
-
-OPING=$(uci -q get modem.ping.alive)
-if [ ! -z $OPING ]; then
-	uci delete modem.ping
-fi
-
-ifname1="ifname"
-if [ -n "$tone" -o -e /etc/newstyle ]; then
-	ifname1="device"
 fi
 
 COUNTER=1
@@ -193,42 +166,20 @@ while [ $COUNTER -le $MODCNT ]; do
 		uci delete failover.Modem$COUNTER
 		uci set failover.Modem$COUNTER=member
 	fi
+	
+OPING=$(uci -q get modem.ping.alive)
+if [ ! -z $OPING ]; then
+	uci delete modem.ping
+fi
+
+ifname1="ifname"
+if [ -n "$tone" -o -e /etc/newstyle ]; then
+	ifname1="device"
+fi
 
 	let COUNTER=COUNTER+1
 done
 
-if [ -e /etc/config/failover ]; then
-	uci delete failover.Wan
-	EXX=$(uci get network.wan)
-	if [ ! -z $EXX ]; then
-		uci set failover.Wan=member
-	fi
-	uci delete failover.Hotspot
-	uci set failover.Hotspot=member
-	uci commit failover
-	ENB=$(uci get failover.enabled.enabled)
-	if [ $ENB = "1" ]; then
-		if [ -e $ROOTER/connect/failover.sh ]; then
-			log "Starting Failover System"
-			$ROOTER/connect/failover.sh &
-		fi
-	fi
-fi
-
-PRO=$(uci -q get network.wan.proto)
-if [ ! -z $PRO ]; then
-	uci set network.wan.metric="1"
-fi
-
-SM=$(uci get modem.sms)
-if [ -z $SM ]; then
-	uci set modem.sms="sms"
-	uci set modem.sms.menable="0"
-	uci set modem.sms.slots="0"
-fi
-
-uci commit modem
-uci commit network
 if [ -e /etc/hotplug.d/10-motion ]; then
 	rm -f /etc/hotplug.d/10-motion
 fi
@@ -241,6 +192,19 @@ fi
 if [ -e $ROOTER/special.sh ]; then
 	$ROOTER/special.sh
 fi
+
+echo 'MODSTART="'"$MODSTART"'"' > /tmp/variable.file
+echo 'WWAN="'"$WWAN"'"' >> /tmp/variable.file
+echo 'USBN="'"$USBN"'"' >> /tmp/variable.file
+echo 'ETHN="'"$ETHN"'"' >> /tmp/variable.file
+echo 'WDMN="'"$WDMN"'"' >> /tmp/variable.file
+echo 'BASEPORT="'"$BASEPORT"'"' >> /tmp/variable.file
+
+echo 'MODCNTX="'"$MODCNT"'"' > /tmp/modcnt
+uci set modem.general.max=$MODCNT
+uci set modem.general.modemnum=1
+uci set modem.general.smsnum=1
+uci set modem.general.miscnum=1
 
 lua $ROOTER/gpiomodel.lua
 
@@ -261,17 +225,6 @@ else
 	echo 'FIRSTBOOT="'"0"'"' > /etc/firstboot
 	echo 'BOOTTIME="'"$(date +%s)"'"' > /tmp/boottime
 fi
-
-#
-# Added modems to various drivers
-#
-#source /etc/flash
-#if [ "$FLASH" = "4" ]; then
-#fi
-#echo "413c 81b6" > /sys/bus/usb-serial/drivers/option1/new_id
-echo "1546 1146" > /sys/bus/usb-serial/drivers/option1/new_id
-echo "106c 3718" > /sys/bus/usb-serial/drivers/option1/new_id
-#echo "1199 9091" > /sys/bus/usb-serial/drivers/option1/new_id
 
 # end of bootup
 echo "0" > /tmp/bootend.file
