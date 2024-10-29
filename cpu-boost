@@ -13,44 +13,28 @@ for i in ${IFACE}; do
 	if [[ -e /sys/class/net/$i/queues/rx-0/rps_cpus ]]; then
 		if [[ $i = "wwan0" ]]; then
 			echo f > /sys/class/net/$i/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/wwan0/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/wwan0_1/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/br-lan/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/eth0/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/eth0/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/eth1/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/eth2/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/eth3/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/eth4/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/sit0/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/soc0/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/wifi0/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/wifi1/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/ifb0/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/ifb1/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/gretap0/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/erspan0/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/bond0/queues/rx-0/rps_cpus
+                        echo 2 > /proc/irq/35/smp_affinity
+                        echo 8 > /proc/irq/36/smp_affinity
+                        echo 2 > /sys/class/net/br-lan/queues/rx-0/rps_cpus
+                        echo 8 > /sys/class/net/wwan0/queues/rx-0/rps_cpus
+                        echo 8 > /sys/class/net/wwan0_1/queues/rx-0/rps_cpus
+                        echo 8 > /sys/class/net/eth0/queues/rx-0/rps_cpus
+                        echo 8 > /sys/class/net/eth0/queues/rx-0/rps_cpus
+                        echo 8 > /sys/class/net/eth1/queues/rx-0/rps_cpus
+                        echo 8 > /sys/class/net/eth2/queues/rx-0/rps_cpus
+                        echo 8 > /sys/class/net/eth4/queues/rx-0/rps_cpus
 		else
 			echo f > /sys/class/net/$i/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/wwan0/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/wwan0_1/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/br-lan/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/eth0/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/eth0/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/eth1/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/eth2/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/eth3/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/eth4/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/sit0/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/soc0/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/wifi0/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/wifi1/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/ifb0/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/ifb1/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/gretap0/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/erspan0/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/bond0/queues/rx-0/rps_cpus
+                        echo 2 > /proc/irq/35/smp_affinity
+                        echo 8 > /proc/irq/36/smp_affinity
+                        echo 2 > /sys/class/net/br-lan/queues/rx-0/rps_cpus
+                        echo 8 > /sys/class/net/wwan0/queues/rx-0/rps_cpus
+                        echo 8 > /sys/class/net/wwan0_1/queues/rx-0/rps_cpus
+                        echo 8 > /sys/class/net/eth0/queues/rx-0/rps_cpus
+                        echo 8 > /sys/class/net/eth0/queues/rx-0/rps_cpus
+                        echo 8 > /sys/class/net/eth1/queues/rx-0/rps_cpus
+                        echo 8 > /sys/class/net/eth2/queues/rx-0/rps_cpus
+                        echo 8 > /sys/class/net/eth4/queues/rx-0/rps_cpus
 		fi
 	fi
 done
@@ -68,44 +52,28 @@ for i in ${IFACE}; do
 	if [[ -e /sys/class/net/$i/queues/rx-0/rps_cpus ]]; then
 		if [[ $i = "wwan0" ]]; then
 			echo f > /sys/class/net/$i/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/wwan0/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/wwan0_1/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/br-lan/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/eth0/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/eth0/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/eth1/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/eth2/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/eth3/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/eth4/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/sit0/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/soc0/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/wifi0/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/wifi1/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/ifb0/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/ifb1/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/gretap0/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/erspan0/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/bond0/queues/rx-0/rps_cpus
+                        echo 2 > /proc/irq/35/smp_affinity
+                        echo 8 > /proc/irq/36/smp_affinity
+                        echo 2 > /sys/class/net/br-lan/queues/rx-0/rps_cpus
+                        echo 8 > /sys/class/net/wwan0/queues/rx-0/rps_cpus
+                        echo 8 > /sys/class/net/wwan0_1/queues/rx-0/rps_cpus
+                        echo 8 > /sys/class/net/eth0/queues/rx-0/rps_cpus
+                        echo 8 > /sys/class/net/eth0/queues/rx-0/rps_cpus
+                        echo 8 > /sys/class/net/eth1/queues/rx-0/rps_cpus
+                        echo 8 > /sys/class/net/eth2/queues/rx-0/rps_cpus
+                        echo 8 > /sys/class/net/eth4/queues/rx-0/rps_cpus
 		else
 			echo f > /sys/class/net/$i/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/wwan0/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/wwan0_1/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/br-lan/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/eth0/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/eth0/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/eth1/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/eth2/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/eth3/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/eth4/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/sit0/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/soc0/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/wifi0/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/wifi1/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/ifb0/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/ifb1/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/gretap0/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/erspan0/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/bond0/queues/rx-0/rps_cpus
+                        echo 2 > /proc/irq/35/smp_affinity
+                        echo 8 > /proc/irq/36/smp_affinity
+                        echo 2 > /sys/class/net/br-lan/queues/rx-0/rps_cpus
+                        echo 8 > /sys/class/net/wwan0/queues/rx-0/rps_cpus
+                        echo 8 > /sys/class/net/wwan0_1/queues/rx-0/rps_cpus
+                        echo 8 > /sys/class/net/eth0/queues/rx-0/rps_cpus
+                        echo 8 > /sys/class/net/eth0/queues/rx-0/rps_cpus
+                        echo 8 > /sys/class/net/eth1/queues/rx-0/rps_cpus
+                        echo 8 > /sys/class/net/eth2/queues/rx-0/rps_cpus
+                        echo 8 > /sys/class/net/eth4/queues/rx-0/rps_cpus
 		fi
 	fi
 done
