@@ -51,7 +51,6 @@ boot() {
 	uci_apply_defaults
 	sync
 	
-	# temporary hack until configd exists
-        sh /usr/lib/rooter/initialize.sh
 	/sbin/reload_config
+        sh /usr/lib/rooter/initialize.sh
 }
