@@ -46,7 +46,7 @@ uci commit network.wan6;
 uci set network.lan.dns='1.1.1.1 1.0.0.1';
 uci commit network.lan;
 uci commit firewall;
-uci set network.globals.packet_steering=1;
+uci set network.globals.packet_steering=0;
 uci set network.wan.peerdns='0';
 uci commit network.wan;
 uci set network.wan1.peerdns='0';
@@ -54,10 +54,6 @@ uci commit network.wan1;
 uci set network.wan6.peerdns='0';
 uci commit network.wan6;
 uci commit network;
-uci set dhcp.wan6=dhcp;
-uci set dhcp.wan6.interface='wan6';
-uci set dhcp.wan6.ignore='1';
-uci commit dhcp;
 
 echo -e "BYPASS-DNSMASQ"
 rm -rf /etc/config/dhcp-opkg
@@ -85,9 +81,9 @@ echo -e "PATCH-BOOT"
 wget -q -O /etc/init.d/boot "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/boot";
 chmod 755 /etc/init.d/boot;
 
-echo -e "PACTH-ROOTER"
-wget -q -O /usr/lib/rooter/initialize.sh "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/intialize.sh";
-chmod 755 /usr/lib/rooter/initialize.sh;
+echo -e "PACTH-SMP"
+wget -q -O /etc/hotplug.d/net/20-smp-tune "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/20-smp-tune";
+chmod 755 /etc/hotplug.d/net/20-smp-tune;
 
 echo -e "SETTING-RCLOCAL"
 wget -q -O /etc/rc.local "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/rc.local";
@@ -96,6 +92,7 @@ chmod 755 /etc/rc.local;
 echo -e "BYPASS-TTL"
 wget -q -O /etc/init.d/firewall-custom "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/firewall-custom";
 chmod 755 /etc/init.d/firewall-custom;
+
 
 echo -e "INSTALL-OOKLA"
 wget -q -O /usr/bin/speedtest "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/speedtest"
@@ -210,7 +207,7 @@ config wifi-device 'wifi0'
         option type 'qcawificfg80211'
         option macaddr 'ec:6c:9a:b8:4c:e0'
         option hwmode '11axa'
-        option country 'MY'
+        option country 'US'
         option channel '128'
         option htmode 'HT160'
         option txpower '30'
@@ -222,7 +219,7 @@ config wifi-iface 'ath0'
         option wmm '1'
         option rrm '1'
         option qbssload '1'
-        option ssid 'QWRT-5G'
+        option ssid 'WK-VISTANA-5G'
         option encryption 'psk'
         option key '112233445566'
 
@@ -231,7 +228,7 @@ config wifi-device 'wifi1'
         option channel '1'
         option macaddr 'ec:6c:9a:b8:4c:df'
         option hwmode '11axg'
-        option country 'MY'
+        option country 'US'
         option htmode 'HT20'
         option txpower '30'
 
@@ -242,7 +239,7 @@ config wifi-iface 'ath1'
         option wmm '1'
         option rrm '1'
         option qbssload '1'
-        option ssid 'QWRT-2.4'
+        option ssid 'WK-VISTANA-2.4'
         option encryption 'psk'
         option key '112233445566'
 WIFI
