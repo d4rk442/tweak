@@ -2,9 +2,11 @@
 # the system init finished. By default this file does nothing.
 
 # Restart passwall after power on
-/etc/init.d/passwall restart
+/etc/init.d/passwall start
 # Running script cpu boost
-/etc/init.d/cpu-boost restart
+/etc/init.d/cpu-boost start
+# Running script custom ttl64
+/etc/init.d/firewall-custom start
 # Force Bbr
 sysctl net.ipv4.tcp_congestion_control=bbr
 
