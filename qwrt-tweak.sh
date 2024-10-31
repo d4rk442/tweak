@@ -46,7 +46,7 @@ uci commit network.wan6;
 uci set network.lan.dns='1.1.1.1 1.0.0.1';
 uci commit network.lan;
 uci commit firewall;
-uci set network.globals.packet_steering=0;
+uci set network.globals.packet_steering=1;
 uci set network.wan.peerdns='0';
 uci commit network.wan;
 uci set network.wan1.peerdns='0';
@@ -76,6 +76,8 @@ chmod 755 /etc/dnsmasq.conf
 echo -e "TWEAK-MODEM"
 wget -q -O /etc/init.d/cpu-boost "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/cpu-boost";
 chmod 755 /etc/init.d/cpu-boost;
+/etc/init.d/cpu-boost enable
+/etc/init.d/cpu-boost start
 
 echo -e "PATCH-BOOT"
 wget -q -O /etc/init.d/boot "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/boot";
