@@ -35,7 +35,7 @@ set_hex_val() {
 }
 
 packet_steering="$(uci get "network.@globals[0].packet_steering")"
-[ "$packet_steering" != 0 ] && exit 0
+[ "$packet_steering" != 1 ] && exit 0
 
 exec 512>/var/lock/smp_tune.lock
 flock 512 || exit 1
