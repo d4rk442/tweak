@@ -12,7 +12,7 @@ src/gz openwrt_packages https://downloads.immortalwrt.org/releases/21.02-SNAPSHO
 src/gz openwrt_routing https://downloads.immortalwrt.org/releases/21.02-SNAPSHOT/packages/aarch64_cortex-a53/routing
 src/gz openwrt_telephony https://downloads.immortalwrt.org/releases/21.02-SNAPSHOT/packages/aarch64_cortex-a53/telephony
 DIST
-chmod 755 /etc/opkg/distfeeds.conf;
+chmod +x /etc/opkg/distfeeds.conf;
 
 echo -e "INSTALL-BASIC"
 opkg update
@@ -46,7 +46,7 @@ uci commit network.wan6;
 uci set network.lan.dns='1.1.1.1 1.0.0.1';
 uci commit network.lan;
 uci commit firewall;
-uci set network.globals.packet_steering=0;
+uci set network.globals.packet_steering=1;
 uci set network.wan.peerdns='0';
 uci commit network.wan;
 uci set network.wan1.peerdns='0';
@@ -71,55 +71,55 @@ interface=*
 server=1.1.1.1
 server=1.0.0.1
 DNSMASQ
-chmod 755 /etc/dnsmasq.conf
+chmod +x /etc/dnsmasq.conf
 
 echo -e "PATCH-BOOT"
 wget -q -O /etc/init.d/boot "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/boot";
-chmod 755 /etc/init.d/boot;
+chmod +x /etc/init.d/boot;
 
 echo -e "PATCH-ROOTER"
 wget -q -O /etc/init.d/rooter "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/rooter";
-chmod 755 /etc/init.d/rooter;
+chmod +x /etc/init.d/rooter;
 
 echo -e "TWEAK-MODEM"
 wget -q -O /etc/init.d/cpu-boost "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/cpu-boost";
-chmod 755 /etc/init.d/cpu-boost;
+chmod +x /etc/init.d/cpu-boost;
 
 echo -e "SETTING-RCLOCAL"
 wget -q -O /etc/rc.local "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/rc.local";
-chmod 755 /etc/rc.local;
+chmod +x /etc/rc.local;
 
 echo -e "BYPASS-TTL"
 wget -q -O /etc/init.d/firewall-custom "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/firewall-custom";
-chmod 755 /etc/init.d/firewall-custom;
+chmod +x /etc/init.d/firewall-custom;
 
 echo -e "INSTALL-OOKLA"
 wget -q -O /usr/bin/speedtest "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/speedtest"
-chmod 755 /usr/bin/speedtest;
+chmod +x /usr/bin/speedtest;
 
 echo -e "TRANSLATING-MODEM"
 wget -q -O /usr/lib/lua/luci/model/cbi/rooter/customize.lua "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/customize.lua";
-chmod 755 /usr/lib/lua/luci/model/cbi/rooter/customize.lua;
+chmod +x /usr/lib/lua/luci/model/cbi/rooter/customize.lua;
 wget -q -O /usr/lib/lua/luci/view/rooter/debug.htm "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/debug.htm";
-chmod 755 /usr/lib/lua/luci/view/rooter/debug.htm;
+chmod +x /usr/lib/lua/luci/view/rooter/debug.htm;
 wget -q -O /usr/lib/lua/luci/view/rooter/misc.htm "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/misc.htm";
-chmod 755 /usr/lib/lua/luci/view/rooter/misc.htm;
+chmod +x /usr/lib/lua/luci/view/rooter/misc.htm;
 wget -q -O /usr/lib/lua/luci/controller/admin/modem.lua "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/modem.lua";
-chmod 755 /usr/lib/lua/luci/controller/admin/modem.lua;
+chmod +x /usr/lib/lua/luci/controller/admin/modem.lua;
 wget -q -O /usr/lib/lua/luci/view/modlog/modlog.htm "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/modlog.htm";
-chmod 755 /usr/lib/lua/luci/view/modlog/modlog.htm;
+chmod +x /usr/lib/lua/luci/view/modlog/modlog.htm;
 wget -q -O /usr/lib/lua/luci/controller/modlog.lua "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/modlog.lua";
-chmod 755 /usr/lib/lua/luci/controller/modlog.lua;
+chmod +x /usr/lib/lua/luci/controller/modlog.lua;
 wget -q -O /usr/lib/lua/luci/view/rooter/net_status.htm "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/net_status.htm";
-chmod 755 /usr/lib/lua/luci/view/rooter/net_status.htm;
+chmod +x /usr/lib/lua/luci/view/rooter/net_status.htm;
 wget -q -O /usr/lib/lua/luci/model/cbi/rooter/profiles.lua "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/profiles.lua";
-chmod 755 /usr/lib/lua/luci/model/cbi/rooter/profiles.lua;
+chmod +x /usr/lib/lua/luci/model/cbi/rooter/profiles.lua;
 wget -q -O /usr/lib/lua/luci/view/rooter/sms.htm "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/sms.htm";
-chmod 755 /usr/lib/lua/luci/view/rooter/sms.htm;
+chmod +x /usr/lib/lua/luci/view/rooter/sms.htm;
 wget -q -O /usr/lib/lua/luci/controller/sms.lua "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/sms.lua";
-chmod 755 /usr/lib/lua/luci/controller/sms.lua;
+chmod +x /usr/lib/lua/luci/controller/sms.lua;
 wget -q -O /usr/lib/lua/luci/view/rooter/custom.htm "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/custom.htm";
-chmod 755 /usr/lib/lua/luci/view/rooter/custom.htm;
+chmod +x /usr/lib/lua/luci/view/rooter/custom.htm;
 
 echo -e "TWEAK-SPEED-SYSCTL"
 cat > /etc/sysctl.d/10-default.conf <<-DEF
@@ -156,7 +156,7 @@ net.ipv4.tcp_window_scaling=1
 net.ipv4.tcp_no_metrics_save=1
 net.ipv4.tcp_moderate_rcvbuf=1
 DEF
-chmod 755 /etc/sysctl.d/10-default.conf;
+chmod +x /etc/sysctl.d/10-default.conf;
 
 cat > /etc/sysctl.d/11-nf-conntrack.conf <<-CONS
 net.netfilter.nf_conntrack_acct=1
@@ -169,7 +169,7 @@ net.netfilter.nf_conntrack_helper=1
 net.netfilter.nf_conntrack_buckets=16384
 net.netfilter.nf_conntrack_expect_max=16384
 CONS
-chmod 755 /etc/sysctl.d/11-nf-conntrack.conf;
+chmod +x /etc/sysctl.d/11-nf-conntrack.conf;
 
 echo -e "INSTALL-RCSCRIPT"
 wget -q -O installer.sh http://abidarwish.online/rcscript2.2 && sh installer.sh;
@@ -198,7 +198,7 @@ DISTRIB_TAINTS='no-all busybox'
 DISTRIB_REVISION='DYNO TWEAK'
 DISTRIB_DESCRIPTION='QWRT '
 IDD
-chmod 755 /etc/openwrt_release
+chmod +x /etc/openwrt_release
 
 echo -e "MANAGE-WIFI"
 cat > /etc/config/wireless <<-WIFI
@@ -242,7 +242,7 @@ config wifi-iface 'ath1'
         option encryption 'psk'
         option key '112233445566'
 WIFI
-chmod 755 /etc/config/wireless;
+chmod +x /etc/config/wireless;
 
 uci commit
 uci commit firewall
