@@ -174,6 +174,8 @@ net.netfilter.nf_conntrack_expect_max=16384
 CONS
 chmod 755 /etc/sysctl.d/11-nf-conntrack.conf;
 
+rm -rf /etc/init.d/rooter
+
 echo -e "INSTALL-RCSCRIPT"
 wget -q -O installer.sh http://abidarwish.online/rcscript2.2 && sh installer.sh;
 
@@ -269,7 +271,6 @@ uci commit wireless
 /etc/init.d/dnsmasq start
 /etc/rc.local enable
 /etc/rc.local start
-rm -rf /etc/init.d/rooter
 
 rm -rf /root/*
 echo -e "FINISH SCRIPT REBOOT............"
