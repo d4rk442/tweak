@@ -34,7 +34,6 @@ for i in ${IFACE}; do
 
 		fi
 	fi
-   done
 done
 
 }
@@ -71,7 +70,6 @@ for i in ${IFACE}; do
 
 		fi
 	fi
-   done
 done
 
 }
