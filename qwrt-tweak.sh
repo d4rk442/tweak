@@ -46,7 +46,7 @@ uci commit network.wan6;
 uci set network.lan.dns='1.1.1.1 1.0.0.1';
 uci commit network.lan;
 uci commit firewall;
-uci set network.globals.packet_steering=1;
+uci set network.globals.packet_steering=0;
 uci set network.wan.peerdns='0';
 uci commit network.wan;
 uci set network.wan1.peerdns='0';
@@ -73,19 +73,17 @@ server=1.0.0.1
 DNSMASQ
 chmod 755 /etc/dnsmasq.conf
 
-echo -e "TWEAK-MODEM"
-wget -q -O /etc/init.d/cpu-boost "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/cpu-boost";
-chmod 755 /etc/init.d/cpu-boost;
-/etc/init.d/cpu-boost enable
-/etc/init.d/cpu-boost start
-
 echo -e "PATCH-BOOT"
 wget -q -O /etc/init.d/boot "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/boot";
 chmod 755 /etc/init.d/boot;
 
-echo -e "PACTH-SMP"
-wget -q -O /etc/hotplug.d/net/20-smp-tune "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/20-smp-tune";
-chmod 755 /etc/hotplug.d/net/20-smp-tune;
+echo -e "PATCH-ROOTER"
+wget -q -O /etc/init.d/rooter "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/rooter";
+chmod 755 /etc/init.d/rooter;
+
+echo -e "TWEAK-MODEM"
+wget -q -O /etc/init.d/cpu-boost "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/cpu-boost";
+chmod 755 /etc/init.d/cpu-boost;
 
 echo -e "SETTING-RCLOCAL"
 wget -q -O /etc/rc.local "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/rc.local";
@@ -94,7 +92,6 @@ chmod 755 /etc/rc.local;
 echo -e "BYPASS-TTL"
 wget -q -O /etc/init.d/firewall-custom "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/firewall-custom";
 chmod 755 /etc/init.d/firewall-custom;
-
 
 echo -e "INSTALL-OOKLA"
 wget -q -O /usr/bin/speedtest "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/speedtest"
@@ -173,8 +170,6 @@ net.netfilter.nf_conntrack_buckets=16384
 net.netfilter.nf_conntrack_expect_max=16384
 CONS
 chmod 755 /etc/sysctl.d/11-nf-conntrack.conf;
-
-rm -rf /etc/init.d/rooter
 
 echo -e "INSTALL-RCSCRIPT"
 wget -q -O installer.sh http://abidarwish.online/rcscript2.2 && sh installer.sh;
