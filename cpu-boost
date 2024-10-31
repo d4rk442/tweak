@@ -21,6 +21,22 @@ for i in ${IFACE}; do
 	fi
 done
 
+IFACE=$(ls /sys/class/net)
+	
+for i in ${IFACE}; do
+	ethtool -K $i gro on 2>/dev/null
+	if [[ -e /sys/class/net/$i/queues/rx-0/rps_cpus ]]; then
+		if [[ $i = "wwan0_1" ]]; then
+			echo f > /sys/class/net/$i/queues/rx-0/rps_cpus
+
+		else
+			echo f > /sys/class/net/$i/queues/rx-0/rps_cpus
+
+		fi
+	fi
+   done
+done
+
 }
 
 stop() {
@@ -40,6 +56,22 @@ for i in ${IFACE}; do
 
 		fi
 	fi
+done
+
+IFACE=$(ls /sys/class/net)
+	
+for i in ${IFACE}; do
+	ethtool -K $i gro on 2>/dev/null
+	if [[ -e /sys/class/net/$i/queues/rx-0/rps_cpus ]]; then
+		if [[ $i = "wwan0_1" ]]; then
+			echo f > /sys/class/net/$i/queues/rx-0/rps_cpus
+
+		else
+			echo f > /sys/class/net/$i/queues/rx-0/rps_cpus
+
+		fi
+	fi
+   done
 done
 
 }
