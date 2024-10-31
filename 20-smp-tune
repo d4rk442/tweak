@@ -9,7 +9,7 @@ PROC_MASK="$(( (1 << $NPROCS) - 1 ))"
 find_irq_cpu() {
 	local dev="$1"
 	local match="$(grep -m 1 "$dev\$" /proc/interrupts)"
-	local cpu=0
+	local cpu=2
 
 	[ -n "$match" ] && {
 		set -- $match
