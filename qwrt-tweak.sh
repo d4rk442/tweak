@@ -125,9 +125,7 @@ echo -e "TWEAK-SPEED-SYSCTL"
 cat > /etc/sysctl.d/10-default.conf <<-DEF
 kernel.panic=3
 kernel.core_pattern=/tmp/%e.%t.%p.%s.core
-
-fs.protected_hardlinks=1
-fs.protected_symlinks=1
+fs.suid_dumpable=2
 
 net.ipv4.conf.default.arp_ignore=1
 net.ipv4.conf.all.arp_ignore=1
@@ -139,6 +137,7 @@ net.ipv4.igmp_max_memberships=100
 net.ipv4.tcp_fin_timeout=15
 net.ipv4.tcp_keepalive_intvl=30
 net.ipv4.tcp_keepalive_probes=5
+net.ipv4.tcp_keepalive_time=120
 net.ipv4.tcp_tw_reuse=1
 net.ipv4.tcp_syncookies=1
 net.ipv4.tcp_timestamps=1
