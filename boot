@@ -53,4 +53,5 @@ boot() {
 	
 	# temporary hack until configd exists
 	/sbin/reload_config
+        sh /usr/lib/rooter/initialize.sh
 }
