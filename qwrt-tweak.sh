@@ -46,7 +46,7 @@ uci commit network.wan6;
 uci set network.lan.dns='1.1.1.1 1.0.0.1';
 uci commit network.lan;
 uci commit firewall;
-uci set network.globals.packet_steering=1;
+uci set network.globals.packet_steering=0;
 uci set network.wan.peerdns='0';
 uci commit network.wan;
 uci set network.wan1.peerdns='0';
@@ -80,6 +80,10 @@ chmod +x /etc/init.d/boot;
 echo -e "PATCH-ROOTER"
 wget -q -O /etc/init.d/rooter "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/rooter";
 chmod +x /etc/init.d/rooter;
+
+echo -e "PATCH-INTIALIZE"
+wget -q -O /usr/lib/rooter/initialize.sh "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/initialize.sh";
+chmod +x /usr/lib/rooter/initialize.sh;
 
 echo -e "TWEAK-MODEM"
 wget -q -O /etc/init.d/cpu-boost "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/cpu-boost";
