@@ -16,18 +16,17 @@ MAX_MODEMS=2
 MODCNT=$MAX_MODEMS
 
 log() {
-	modlog "Arcadyan Initialize" "$@"
+	modlog "ROOter Initialize" "$@"
 }
 
 do_zone() {
 	local config=$1
-	local name
 	local network
-     
-    /etc/init.d/dnsmasq restart
+	local name
+
     config_get network $1 network
-    newnet=$network
 	config_get name $1 name
+	newnet=$network
 	if [ $name = wan ]; then
 		WAN1=$(echo $network | grep "wan1")
 		if [ -z $WAN1 ]; then
@@ -79,7 +78,7 @@ if [ -e /tmp/installing ]; then
 fi
 
 
-log " Getting Network"
+log " Initializing Rooter"
 
 sed -i -e 's|/etc/savevar|#removed line|g' /etc/rc.local
 
@@ -229,6 +228,10 @@ fi
 
 uci commit modem
 uci commit network
+if [ -e /etc/config/mwan3 ]; then
+	uci commit mwan3
+fi
+
 if [ -e /etc/hotplug.d/10-motion ]; then
 	rm -f /etc/hotplug.d/10-motion
 fi
@@ -275,6 +278,8 @@ echo "106c 3718" > /sys/bus/usb-serial/drivers/option1/new_id
 
 # end of bootup
 echo "0" > /tmp/bootend.file
+
+/etc/init.d/dnsmasq restart
 
 chown -R root:root /etc/dropbear/
 chmod 700 /etc/dropbear/
