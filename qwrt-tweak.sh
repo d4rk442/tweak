@@ -86,6 +86,10 @@ echo -e "PATCH-BOOT"
 wget -q -O /etc/init.d/boot "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/boot";
 chmod +x /etc/init.d/boot;
 
+echo -e "PATCH-ROOTER"
+wget -q -O /etc/init.d/rooter "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/rooter";
+chmod +x /etc/init.d/rooter;
+
 echo -e "TWEAK-MODEM"
 wget -q -O /etc/init.d/cpu-boost "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/cpu-boost";
 chmod +x /etc/init.d/cpu-boost;
@@ -254,8 +258,6 @@ uci commit wireless
 /etc/init.d/firewall-custom start
 /etc/init.d/dnsmasq enable
 /etc/init.d/dnsmasq start
-/etc/init.d/openvpn stop
-/etc/init.d/openvpn disable
 /etc/init.d/pppoe-server stop
 /etc/init.d/pppoe-server disable
 /etc/init.d/pppoe-relay stop
