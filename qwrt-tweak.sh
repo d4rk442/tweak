@@ -18,10 +18,6 @@ echo -e "REMOVE-BASIC"
 opkg update
 opkg remove --autoremove luci-i18n-openvpn-server-zh-cn
 opkg remove --autoremove luci-app-openvpn-*
-opkg remove --autoremove luci-i18n-ipsec-server-zh-cn
-opkg remove --autoremove luci-app-ipsec-*
-opkg remove strongswan-full --force-depends
-opkg remove strongswan-* --force-depends
 
 echo -e "INSTALL-BASIC"
 opkg update
