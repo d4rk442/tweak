@@ -150,7 +150,7 @@ net.ipv4.tcp_timestamps=1
 net.ipv4.tcp_sack=1
 net.ipv4.tcp_dsack=1
 
-net.ipv4.ip_forward=0
+net.ipv4.ip_forward=1
 net.ipv6.conf.all.disable_ipv6=1
 net.ipv6.conf.default.disable_ipv6=1
 DEF
