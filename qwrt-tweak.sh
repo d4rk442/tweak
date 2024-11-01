@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 echo -e "SCRIPT-START"
 cat > /etc/resolv.conf <<-DNS
 nameserver 1.1.1.1
