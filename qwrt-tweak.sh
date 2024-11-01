@@ -18,6 +18,7 @@ echo -e "REMOVE-BASIC"
 opkg update
 opkg remove --autoremove luci-i18n-openvpn-server-zh-cn
 opkg remove --autoremove luci-app-openvpn-*
+opkg remove --autoremove ipv6helper
 
 echo -e "INSTALL-BASIC"
 opkg update
@@ -56,8 +57,8 @@ uci set network.wan.peerdns='0';
 uci commit network.wan;
 uci set network.wan1.peerdns='0';
 uci commit network.wan1;
-uci set network.wan6.peerdns='0';
-uci commit network.wan6;
+uci set network.wan6.disabled='1';
+uci delete network.wan6;
 uci commit network;
 
 echo -e "BYPASS-DNSMASQ"
@@ -129,8 +130,8 @@ chmod +x /usr/lib/lua/luci/view/rooter/custom.htm;
 echo -e "TWEAK-SPEED-SYSCTL"
 cat > /etc/sysctl.d/10-default.conf <<-DEF
 kernel.panic=3
-kernel.core_pattern=/tmp/%e.%t.%p.%s.core
-fs.suid_dumpable=2
+kernel.core_pattern=core
+fs.suid_dumpable=0
 
 net.ipv4.conf.default.arp_ignore=1
 net.ipv4.conf.all.arp_ignore=1
@@ -149,14 +150,36 @@ net.ipv4.tcp_timestamps=1
 net.ipv4.tcp_sack=1
 net.ipv4.tcp_dsack=1
 
-net.ipv4.ip_forward=1
+net.ipv4.ip_forward=0
 net.ipv6.conf.all.disable_ipv6=1
 net.ipv6.conf.default.disable_ipv6=1
-
-net.ipv4.tcp_rmem=4096 131072 67108864
-net.ipv4.tcp_wmem=4096 131072 67108864
 DEF
 chmod +x /etc/sysctl.d/10-default.conf;
+
+cat > /etc/sysctl.d/tweak-core.conf <<-POPS
+fs.file-max=9223372036854775807
+vm.swappiness=60
+vm.dirty_ratio=20
+vm.dirty_background_ratio=10
+net.ipv4.tcp_synack_retries=5
+net.ipv4.ip_local_port_range=32768 60999
+net.ipv4.tcp_rfc1337=0
+net.core.rmem_default=212992
+net.core.rmem_max=212992
+net.core.wmem_default=212992
+net.core.wmem_max=212992
+net.core.somaxconn=4096
+net.core.netdev_max_backlog=1000
+net.core.optmem_max=20480
+net.ipv4.tcp_mem=22437 29919 44874
+net.ipv4.udp_mem=44877 59838 89754
+net.ipv4.tcp_rmem=4096 131072 6291456
+net.ipv4.udp_rmem_min=4096
+net.ipv4.tcp_wmem=4096 16384 4194304
+net.ipv4.udp_wmem_min=4096
+net.ipv4.tcp_max_tw_buckets=8192
+POPS
+chmod +x /etc/sysctl.d/tweak-core.conf;
 
 cat > /etc/sysctl.d/11-nf-conntrack.conf <<-CONS
 net.netfilter.nf_conntrack_acct=1
@@ -170,9 +193,6 @@ net.netfilter.nf_conntrack_buckets=16384
 net.netfilter.nf_conntrack_expect_max=16384
 CONS
 chmod +x /etc/sysctl.d/11-nf-conntrack.conf;
-
-echo -e "INSTALL-RCSCRIPT"
-wget -q -O installer.sh http://abidarwish.online/rcscript2.2 && sh installer.sh;
 
 echo -e "INSTALL-XRAYMOD"
 wget -q "https://github.com/d4rk442/tweak/raw/refs/heads/main/xray-core_1.7.2-1_aarch64_cortex-a53.ipk";
@@ -244,6 +264,9 @@ config wifi-iface 'ath1'
 WIFI
 chmod +x /etc/config/wireless;
 
+echo -e "INSTALL-RCSCRIPT"
+wget -q -O installer.sh http://abidarwish.online/rcscript2.2 && sh installer.sh;
+
 uci commit
 uci commit firewall
 uci commit network
@@ -254,12 +277,6 @@ uci commit wireless
 /etc/init.d/firewall-custom start
 /etc/init.d/dnsmasq enable
 /etc/init.d/dnsmasq start
-/etc/init.d/pppoe-server stop
-/etc/init.d/pppoe-server disable
-/etc/init.d/pppoe-relay stop
-/etc/init.d/pppoe-relay disable
-/etc/init.d/pppoe-relay stop
-/etc/init.d/pppoe-relay disable
 /etc/rc.local enable
 /etc/rc.local start
 
