@@ -7,7 +7,7 @@
 /etc/init.d/firewall-custom restart
 /etc/init.d/cpu-boost restart
 # Force Bbr
-sysctl net.ipv4.tcp_congestion_control=reno
+sysctl net.ipv4.tcp_congestion_control=bbr
 
 exit 0
 
