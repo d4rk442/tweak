@@ -32,7 +32,7 @@ opkg install htop
 opkg install vsftpd
 
 echo -e "CHANGE-SYS-MODEM"
-uci set cpufreq.cpufreq.governor=performance;
+uci set cpufreq.cpufreq.governor=ondemand;
 uci set cpufreq.cpufreq.minifreq=2208000;
 uci commit cpufreq;
 uci set turboacc.config.bbr_cca=0;
