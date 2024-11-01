@@ -49,8 +49,6 @@ uci commit system.ntp;
 /etc/init.d/sysntpd restart;
 uci set network.wan.ifname='wwan0_1';
 uci commit network.wan;
-uci set network.wan6.ifname='wwan0_1';
-uci commit network.wan6;
 uci set network.lan.dns='1.1.1.1 1.0.0.1';
 uci commit network.lan;
 uci commit firewall;
