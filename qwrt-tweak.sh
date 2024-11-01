@@ -14,6 +14,15 @@ src/gz openwrt_telephony https://downloads.immortalwrt.org/releases/21.02-SNAPSH
 DIST
 chmod +x /etc/opkg/distfeeds.conf;
 
+echo -e "REMOVE-BASIC"
+opkg update
+opkg remove --autoremove luci-i18n-openvpn-server-zh-cn
+opkg remove --autoremove luci-app-openvpn-*
+opkg remove --autoremove luci-i18n-ipsec-server-zh-cn
+opkg remove --autoremove luci-app-ipsec-*
+opkg remove strongswan-full --force-depends
+opkg remove strongswan-* --force-depends
+
 echo -e "INSTALL-BASIC"
 opkg update
 opkg install nano
@@ -23,7 +32,7 @@ opkg install htop
 opkg install vsftpd
 
 echo -e "CHANGE-SYS-MODEM"
-uci set cpufreq.cpufreq.governor=ondemand;
+uci set cpufreq.cpufreq.governor=performance;
 uci set cpufreq.cpufreq.minifreq=2208000;
 uci commit cpufreq;
 uci set turboacc.config.bbr_cca=0;
@@ -76,14 +85,6 @@ chmod +x /etc/dnsmasq.conf
 echo -e "PATCH-BOOT"
 wget -q -O /etc/init.d/boot "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/boot";
 chmod +x /etc/init.d/boot;
-
-echo -e "PATCH-ROOTER"
-wget -q -O /etc/init.d/rooter "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/rooter";
-chmod +x /etc/init.d/rooter;
-
-echo -e "PATCH-INTIALIZE"
-wget -q -O /usr/lib/rooter/initialize.sh "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/initialize.sh";
-chmod +x /usr/lib/rooter/initialize.sh;
 
 echo -e "TWEAK-MODEM"
 wget -q -O /etc/init.d/cpu-boost "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/cpu-boost";
@@ -149,15 +150,11 @@ net.ipv4.tcp_sack=1
 net.ipv4.tcp_dsack=1
 
 net.ipv4.ip_forward=1
-net.ipv6.conf.default.forwarding=1
-net.ipv6.conf.all.forwarding=1
-net.ipv6.conf.all.disable_ipv6=0
-net.ipv6.conf.default.disable_ipv6=0
+net.ipv6.conf.all.disable_ipv6=1
+net.ipv6.conf.default.disable_ipv6=1
 
-net.ipv4.tcp_mtu_probing=1
-net.ipv4.tcp_window_scaling=1
-net.ipv4.tcp_no_metrics_save=1
-net.ipv4.tcp_moderate_rcvbuf=1
+net.ipv4.tcp_rmem=4096 131072 67108864
+net.ipv4.tcp_wmem=4096 131072 67108864
 DEF
 chmod +x /etc/sysctl.d/10-default.conf;
 
@@ -255,9 +252,8 @@ uci commit wireless
 /etc/init.d/cpu-boost start
 /etc/init.d/firewall-custom enable
 /etc/init.d/firewall-custom start
-/etc/init.d/boot enable
-/etc/init.d/boot start
 /etc/init.d/dnsmasq enable
+/etc/init.d/dnsmasq start
 /etc/init.d/openvpn stop
 /etc/init.d/openvpn disable
 /etc/init.d/pppoe-server stop
@@ -266,7 +262,6 @@ uci commit wireless
 /etc/init.d/pppoe-relay disable
 /etc/init.d/pppoe-relay stop
 /etc/init.d/pppoe-relay disable
-/etc/init.d/dnsmasq start
 /etc/rc.local enable
 /etc/rc.local start
 
