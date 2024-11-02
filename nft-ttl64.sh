@@ -177,5 +177,4 @@ chmod 755 /etc/nftables.d/11-mangle-ttl-64.nft
 uci commit firewall
 
 /etc/init.d/firewall restart
-fw4 reload
 rm -rf /root/nft-ttl64.sh
