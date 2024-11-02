@@ -156,14 +156,16 @@ net.ipv6.conf.default.disable_ipv6=1
 DEF
 chmod +x /etc/sysctl.d/10-default.conf;
 
+rm -rf /etc/sysctl.d/12-tcp-bbr.conf
+
 cat > /etc/sysctl.d/tweak-core.conf <<-POPS
-fs.file-max=9223372036854775807
+net.core.default_qdisc=fq_codel
+net.ipv4.tcp_congestion_control=reno
 vm.swappiness=60
 vm.dirty_ratio=20
 vm.dirty_background_ratio=10
 net.ipv4.tcp_synack_retries=5
 net.ipv4.ip_local_port_range=32768 60999
-net.ipv4.tcp_rfc1337=0
 net.core.rmem_default=212992
 net.core.rmem_max=212992
 net.core.wmem_default=212992
