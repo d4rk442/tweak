@@ -1,0 +1,26 @@
+#!/bin/sh /etc/rc.common
+
+START=98
+
+start() {
+
+logger -t tweak-smp "Starting Tweak Smp"
+
+INTERRUPT=$(ls /proc/irq/ | sed '/default/d')
+USB3_NUMBER=$(grep usb3 /proc/interrupts | awk -F: '{print $1}' | sed 's/^ //')
+
+for I in ${INTERRUPT}; do
+	if [[ ${I} = ${USB3_NUMBER} ]]; then
+        	echo f > /proc/irq/${I}/smp_affinity 2>/dev/null
+        else
+        	echo f > /proc/irq/${I}/smp_affinity 2>/dev/null
+        fi
+done
+
+}
+
+stop() {
+
+logger -t tweak smp "Stopping Tweak Smp"
+
+}
