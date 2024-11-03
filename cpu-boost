@@ -15,12 +15,7 @@ for I in ${INTERRUPT}; do
         else
         	echo f > /proc/irq/${I}/smp_affinity 2>/dev/null
         fi
-        printf "%-10s" ${I}:
-        cat /proc/irq/${I}/smp_affinity
 done
-
-default_ps="$(uci get "network.@globals[0].default_ps")"
-[ -z "$default_ps" -o "$default_ps" == 0 ] && exit 0
 
 IFACE=$(ls /sys/class/net)
 	
