@@ -20,22 +20,30 @@ echo -e "REMOVE-BASIC"
 opkg update
 opkg remove --autoremove luci-i18n-openvpn-server-zh-cn
 opkg remove --autoremove luci-app-openvpn-*
-opkg remove --autoremove ipv6helper
+opkg remove --autoremove luci-app-turboacc --force-removal-of-dependent-packages
+opkg remove --autoremove strongswan-full --force-remove
+opkg remove --autoremove luci-i18n-ipsec-server-zh-cn --force-remove
+opkg remove --autoremove luci-app-ipsec-server --force-remove
+opkg remove --autoremove kmod-qca-nss-drv-ovpn-* --force-remove
+opkg remove --autoremove luci-i18n-sqm-zh-cn --force-remove
+opkg remove --autoremove luci-app-sqm --force-remove
 
 echo -e "INSTALL-BASIC"
-opkg update
 opkg install nano
 opkg install sudo
 opkg install curl
 opkg install htop
 opkg install vsftpd
 
+echo -e "PATCH-FIREWALL"
+wget -q -O  /etc/config/firewall "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/firewall";
+chmod +x  /etc/config/firewall;
+uci commit firewall
+
 echo -e "CHANGE-SYS-MODEM"
 uci set cpufreq.cpufreq.governor=ondemand;
 uci set cpufreq.cpufreq.minifreq=2208000;
 uci commit cpufreq;
-uci set turboacc.config.bbr_cca=0;
-uci commit turboacc;
 uci set system.@system[0].zonename='Asia/Kuala Lumpur';
 uci commit system;
 uci set luci.main.lang='auto';
@@ -47,18 +55,27 @@ uci add_list system.ntp.server='ntp.windows.com';
 uci add_list system.ntp.server='ntp.cloudflare.com';
 uci commit system.ntp;
 /etc/init.d/sysntpd restart;
-uci set network.wan.ifname='wwan0_1';
-uci commit network.wan;
+uci set firewall.@defaults[0].flow_offloading='1';
+uci set firewall.@defaults[0].flow_offloading_hw='1';
+uci commit firewall;
+uci set network.globals.packet_steering=1;
+uci commit network;
 uci set network.lan.dns='1.1.1.1 1.0.0.1';
 uci commit network.lan;
-uci commit firewall;
-uci set network.globals.packet_steering=0;
+uci set network.wan.ifname='wwan0_1';
+uci commit network.wan6;
 uci set network.wan.peerdns='0';
 uci commit network.wan;
 uci set network.wan1.peerdns='0';
 uci commit network.wan1;
 uci set network.wan6.disabled='1';
 uci delete network.wan6;
+uci set network.wan2.disabled='1';
+uci delete network.wan2;
+uci set network.vpn0.disabled='1';
+uci delete network.vpn0;
+uci set network.ipsec_server.disabled='1';
+uci delete network.ipsec_server;
 uci commit network;
 
 echo -e "BYPASS-DNSMASQ"
@@ -79,6 +96,10 @@ server=1.0.0.1
 DNSMASQ
 chmod +x /etc/dnsmasq.conf
 
+echo -e "PATCH-SMP"
+wget -q -O /etc/hotplug.d/net/20-smp-tune "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/20-smp-tune";
+chmod +x /etc/hotplug.d/net/20-smp-tune;
+
 echo -e "PATCH-BOOT"
 wget -q -O /etc/init.d/boot "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/boot";
 chmod +x /etc/init.d/boot;
@@ -87,7 +108,7 @@ echo -e "PATCH-ROOTER"
 wget -q -O /etc/init.d/rooter "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/rooter";
 chmod +x /etc/init.d/rooter;
 
-echo -e "TWEAK-MODEM"
+echo -e "TWEAK-CPU"
 wget -q -O /etc/init.d/cpu-boost "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/cpu-boost";
 chmod +x /etc/init.d/cpu-boost;
 
@@ -131,7 +152,6 @@ echo -e "TWEAK-SPEED-SYSCTL"
 cat > /etc/sysctl.d/10-default.conf <<-DEF
 kernel.panic=3
 kernel.core_pattern=core
-fs.suid_dumpable=0
 
 net.ipv4.conf.default.arp_ignore=1
 net.ipv4.conf.all.arp_ignore=1
@@ -151,37 +171,20 @@ net.ipv4.tcp_sack=1
 net.ipv4.tcp_dsack=1
 
 net.ipv4.ip_forward=1
-net.ipv6.conf.all.disable_ipv6=1
-net.ipv6.conf.default.disable_ipv6=1
+net.ipv6.conf.default.forwarding=1
+net.ipv6.conf.all.forwarding=1
+net.ipv6.conf.all.disable_ipv6=0
+net.ipv6.conf.default.disable_ipv6=0
 DEF
 chmod +x /etc/sysctl.d/10-default.conf;
 
-rm -rf /etc/sysctl.d/12-tcp-bbr.conf
+rm -f /etc/sysctl.d/12-tcp-bbr.conf
 
-cat > /etc/sysctl.d/tweak-core.conf <<-POPS
+cat > /etc/sysctl.d/11-tweak-core.conf <<-POPS
 net.core.default_qdisc=fq_codel
-net.ipv4.tcp_congestion_control=reno
-vm.swappiness=60
-vm.dirty_ratio=20
-vm.dirty_background_ratio=10
-net.ipv4.tcp_synack_retries=5
-net.ipv4.ip_local_port_range=32768 60999
-net.core.rmem_default=212992
-net.core.rmem_max=212992
-net.core.wmem_default=212992
-net.core.wmem_max=212992
-net.core.somaxconn=4096
-net.core.netdev_max_backlog=1000
-net.core.optmem_max=20480
-net.ipv4.tcp_mem=22437 29919 44874
-net.ipv4.udp_mem=44877 59838 89754
-net.ipv4.tcp_rmem=4096 131072 6291456
-net.ipv4.udp_rmem_min=4096
-net.ipv4.tcp_wmem=4096 16384 4194304
-net.ipv4.udp_wmem_min=4096
-net.ipv4.tcp_max_tw_buckets=8192
+net.ipv4.tcp_congestion_control=bbr
 POPS
-chmod +x /etc/sysctl.d/tweak-core.conf;
+chmod +x /etc/sysctl.d/11-tweak-core.conf;
 
 cat > /etc/sysctl.d/11-nf-conntrack.conf <<-CONS
 net.netfilter.nf_conntrack_acct=1
@@ -204,20 +207,13 @@ echo -e "INSTALL-PASSWALL"
 wget -q "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/luci-app-passwall_4.66-8_all.ipk";
 opkg install luci-app-passwall_4.66-8_all.ipk;
 
-cat > /etc/resolv.conf <<-DNS
-search lan
-nameserver 127.0.0.1
-nameserver ::1
-DNS
-
-rm -rf /etc/openwrt_release
 cat > /etc/openwrt_release <<-IDD
 DISTRIB_ID='OpenWrt'
 DISTRIB_RELEASE='21.02-SNAPSHOT'
 DISTRIB_TARGET='ipq807x/generic'
 DISTRIB_ARCH='aarch64_cortex-a53'
 DISTRIB_TAINTS='no-all busybox'
-DISTRIB_REVISION='DYNO TWEAK'
+DISTRIB_REVISION='Dyno Tweak V1'
 DISTRIB_DESCRIPTION='QWRT '
 IDD
 chmod +x /etc/openwrt_release
@@ -265,9 +261,6 @@ config wifi-iface 'ath1'
         option key '112233445566'
 WIFI
 chmod +x /etc/config/wireless;
-
-echo -e "INSTALL-RCSCRIPT"
-wget -q -O installer.sh http://abidarwish.online/rcscript2.2 && sh installer.sh;
 
 uci commit
 uci commit firewall
