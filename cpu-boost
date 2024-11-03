@@ -15,7 +15,6 @@ for I in ${INTERRUPT}; do
         else
         	echo f > /proc/irq/${I}/smp_affinity 2>/dev/null
         fi
-done
 
 IFACE=$(ls /sys/class/net)
 	
@@ -24,7 +23,7 @@ for i in ${IFACE}; do
 	if [[ -e /sys/class/net/$i/queues/rx-0/rps_cpus ]]; then
 		if [[ $i = "wwan0" ]]; then
 			echo f > /sys/class/net/$i/queues/rx-0/rps_cpus
-                       echo f > /sys/class/net/wwan0_1/queues/rx-0/rps_cpus
+                        echo f > /sys/class/net/wwan0_1/queues/rx-0/rps_cpus
 
 		else
 			echo f > /sys/class/net/$i/queues/rx-0/rps_cpus
