@@ -5,7 +5,6 @@
 /etc/init.d/passwall restart
 # Running script custom ttl64
 /etc/init.d/firewall-custom restart
-/etc/init.d/smp-boost restart
 /etc/init.d/cpu-boost restart
 # Force Bbr
 sysctl net.ipv4.tcp_congestion_control=bbr
