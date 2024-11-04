@@ -12,12 +12,30 @@ for i in ${IFACE}; do
 	ethtool -K $i gro on 2>/dev/null
 	if [[ -e /sys/class/net/$i/queues/rx-0/rps_cpus ]]; then
 		if [[ $i = "wwan0" ]]; then
-			echo f > /sys/class/net/$i/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/wwan0_1/queues/rx-0/rps_cpus
+			echo 1 > /sys/class/net/br-lan/queues/rx-0/rps_cpus
+            echo f > /sys/class/net/wwan0/queues/rx-0/rps_cpus
+            echo f > /sys/class/net/wwan0_1/queues/rx-0/rps_cpus
+            echo 1 > /sys/class/net/eth0/queues/rx-0/rps_cpus
+            echo 1 > /sys/class/net/eth0/queues/rx-0/rps_cpus
+            echo 2 > /sys/class/net/eth1/queues/rx-0/rps_cpus
+            echo 1 > /sys/class/net/eth2/queues/rx-0/rps_cpus
+            echo 2 > /sys/class/net/eth3/queues/rx-0/rps_cpus
+            echo 1 > /sys/class/net/eth4/queues/rx-0/rps_cpus
+            echo 1 > /sys/class/net/wifi0/queues/rx-0/rps_cpus
+            echo 2 > /sys/class/net/wifi1/queues/rx-0/rps_cpus
 
 		else
-			echo f > /sys/class/net/$i/queues/rx-0/rps_cpus
-                        echo f > /sys/class/net/wwan0_1/queues/rx-0/rps_cpus
+			echo 1 > /sys/class/net/br-lan/queues/rx-0/rps_cpus
+            echo f > /sys/class/net/wwan0/queues/rx-0/rps_cpus
+            echo f > /sys/class/net/wwan0_1/queues/rx-0/rps_cpus
+            echo 1 > /sys/class/net/eth0/queues/rx-0/rps_cpus
+            echo 1 > /sys/class/net/eth0/queues/rx-0/rps_cpus
+            echo 2 > /sys/class/net/eth1/queues/rx-0/rps_cpus
+            echo 1 > /sys/class/net/eth2/queues/rx-0/rps_cpus
+            echo 2 > /sys/class/net/eth3/queues/rx-0/rps_cpus
+            echo 1 > /sys/class/net/eth4/queues/rx-0/rps_cpus
+            echo 1 > /sys/class/net/wifi0/queues/rx-0/rps_cpus
+            echo 2 > /sys/class/net/wifi1/queues/rx-0/rps_cpus
 
 		fi
 	fi
@@ -28,5 +46,40 @@ done
 stop() {
 
 logger -t tweak cpu "Stopping Tweak Cpu Core"
+
+IFACE=$(ls /sys/class/net)
+	
+for i in ${IFACE}; do
+	ethtool -K $i gro on 2>/dev/null
+	if [[ -e /sys/class/net/$i/queues/rx-0/rps_cpus ]]; then
+		if [[ $i = "wwan0" ]]; then
+			echo 1 > /sys/class/net/br-lan/queues/rx-0/rps_cpus
+            echo f > /sys/class/net/wwan0/queues/rx-0/rps_cpus
+            echo f > /sys/class/net/wwan0_1/queues/rx-0/rps_cpus
+            echo 1 > /sys/class/net/eth0/queues/rx-0/rps_cpus
+            echo 1 > /sys/class/net/eth0/queues/rx-0/rps_cpus
+            echo 2 > /sys/class/net/eth1/queues/rx-0/rps_cpus
+            echo 1 > /sys/class/net/eth2/queues/rx-0/rps_cpus
+            echo 2 > /sys/class/net/eth3/queues/rx-0/rps_cpus
+            echo 1 > /sys/class/net/eth4/queues/rx-0/rps_cpus
+            echo 1 > /sys/class/net/wifi0/queues/rx-0/rps_cpus
+            echo 2 > /sys/class/net/wifi1/queues/rx-0/rps_cpus
+
+		else
+			echo 1 > /sys/class/net/br-lan/queues/rx-0/rps_cpus
+            echo f > /sys/class/net/wwan0/queues/rx-0/rps_cpus
+            echo f > /sys/class/net/wwan0_1/queues/rx-0/rps_cpus
+            echo 1 > /sys/class/net/eth0/queues/rx-0/rps_cpus
+            echo 1 > /sys/class/net/eth0/queues/rx-0/rps_cpus
+            echo 2 > /sys/class/net/eth1/queues/rx-0/rps_cpus
+            echo 1 > /sys/class/net/eth2/queues/rx-0/rps_cpus
+            echo 2 > /sys/class/net/eth3/queues/rx-0/rps_cpus
+            echo 1 > /sys/class/net/eth4/queues/rx-0/rps_cpus
+            echo 1 > /sys/class/net/wifi0/queues/rx-0/rps_cpus
+            echo 2 > /sys/class/net/wifi1/queues/rx-0/rps_cpus
+
+		fi
+	fi
+done
 
 }
