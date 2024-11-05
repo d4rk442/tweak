@@ -1,7 +1,14 @@
 #!/usr/bin/env bash
 
 echo -e "SCRIPT-START"
+rm -f /etc/resolv.conf
 cat > /etc/resolv.conf <<-DNS
+nameserver 1.1.1.1
+nameserver 1.0.0.1
+DNS
+
+rm -f /tmp/resolv.conf
+cat > /tmp/resolv.conf <<-DNS
 nameserver 1.1.1.1
 nameserver 1.0.0.1
 DNS
@@ -34,6 +41,8 @@ opkg install sudo
 opkg install curl
 opkg install htop
 opkg install vsftpd
+opkg install quagga quagga-libzebra quagga-ripd quagga-vtysh quagga-watchquagga quagga-zebra --force-overwrite
+opkg install isc-dhcp-client-ipv6 isc-dhcp-server-ipv6 isc-dhcp-relay-ipv6 --force-overwrite
 
 echo -e "PATCH-FIREWALL"
 wget -q -O  /etc/config/firewall "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/firewall";
@@ -55,10 +64,10 @@ uci add_list system.ntp.server='ntp.windows.com';
 uci add_list system.ntp.server='ntp.cloudflare.com';
 uci commit system.ntp;
 /etc/init.d/sysntpd restart;
-uci set firewall.@defaults[0].flow_offloading='1';
-uci set firewall.@defaults[0].flow_offloading_hw='1';
+uci set firewall.@defaults[0].flow_offloading='0';
+uci set firewall.@defaults[0].flow_offloading_hw='0';
 uci commit firewall;
-uci set network.globals.packet_steering=1;
+uci set network.globals.packet_steering=0;
 uci commit network;
 uci set network.lan.dns='1.1.1.1 1.0.0.1';
 uci commit network.lan;
@@ -111,6 +120,10 @@ chmod +x /etc/init.d/rooter;
 echo -e "TWEAK-CPU"
 wget -q -O /etc/init.d/cpu-boost "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/cpu-boost";
 chmod +x /etc/init.d/cpu-boost;
+
+echo -e "SETTING-DHCP.SCRIPT"
+wget -q -O /lib/netifd/dhcp.script "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/dhcp.script";
+chmod +x /lib/netifd/dhcp.script;
 
 echo -e "SETTING-RCLOCAL"
 wget -q -O /etc/rc.local "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/rc.local";
@@ -194,8 +207,8 @@ net.netfilter.nf_conntrack_tcp_timeout_established=7440
 net.netfilter.nf_conntrack_udp_timeout=60
 net.netfilter.nf_conntrack_udp_timeout_stream=180
 net.netfilter.nf_conntrack_helper=1
-net.netfilter.nf_conntrack_buckets=16384
-net.netfilter.nf_conntrack_expect_max=16384
+net.netfilter.nf_conntrack_buckets=65535
+net.netfilter.nf_conntrack_expect_max=65535
 CONS
 chmod +x /etc/sysctl.d/11-nf-conntrack.conf;
 
@@ -263,10 +276,6 @@ WIFI
 chmod +x /etc/config/wireless;
 
 echo -e "FINISHING.........................."
-cat > /etc/resolv.conf <<-DNS
-nameserver 127.0.0.1
-DNS
-
 uci commit
 uci commit firewall
 uci commit network
