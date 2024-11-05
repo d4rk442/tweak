@@ -277,6 +277,13 @@ config wifi-iface 'ath1'
 WIFI
 chmod +x /etc/config/wireless;
 
+echo -e "SCRIPT-FINISHING"
+rm -f /etc/resolv.conf
+cat > /etc/resolv.conf <<-DNS
+nameserver 127.0.0.1
+DNS
+
+
 echo -e "FINISHING.........................."
 uci commit
 uci commit firewall
