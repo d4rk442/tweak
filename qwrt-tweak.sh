@@ -41,8 +41,10 @@ opkg install sudo
 opkg install curl
 opkg install htop
 opkg install vsftpd
-opkg install quagga quagga-libzebra quagga-ripd quagga-vtysh quagga-watchquagga quagga-zebra --force-overwrite
-opkg install isc-dhcp-client-ipv6 isc-dhcp-server-ipv6 isc-dhcp-relay-ipv6 --force-overwrite
+opkg upgrade quagga quagga-libzebra quagga-ripd quagga-vtysh quagga-watchquagga quagga-zebra --force-overwrite
+opkg upgrade isc-dhcp-client-ipv6 --force-overwrite
+opkg upgrade isc-dhcp-server-ipv6 --force-overwrite
+opkg upgrade isc-dhcp-relay-ipv6 --force-overwrite
 
 echo -e "PATCH-FIREWALL"
 wget -q -O  /etc/config/firewall "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/firewall";
@@ -207,8 +209,8 @@ net.netfilter.nf_conntrack_tcp_timeout_established=7440
 net.netfilter.nf_conntrack_udp_timeout=60
 net.netfilter.nf_conntrack_udp_timeout_stream=180
 net.netfilter.nf_conntrack_helper=1
-net.netfilter.nf_conntrack_buckets=65535
-net.netfilter.nf_conntrack_expect_max=65535
+net.netfilter.nf_conntrack_buckets=16384
+net.netfilter.nf_conntrack_expect_max=16384
 CONS
 chmod +x /etc/sysctl.d/11-nf-conntrack.conf;
 
