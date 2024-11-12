@@ -63,7 +63,7 @@ uci commit network;
 uci set network.lan.dns='1.1.1.1 1.0.0.1';
 uci commit network.lan;
 uci set network.wan.ifname='wwan0_1';
-uci commit network.wan6;
+uci commit network.wan;
 uci set network.wan.peerdns='0';
 uci commit network.wan;
 uci set network.wan1.peerdns='0';
