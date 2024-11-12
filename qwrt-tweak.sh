@@ -7,12 +7,6 @@ nameserver 1.1.1.1
 nameserver 1.0.0.1
 DNS
 
-rm -f /tmp/resolv.conf
-cat > /tmp/resolv.conf <<-DNS
-nameserver 1.1.1.1
-nameserver 1.0.0.1
-DNS
-
 echo -e "CHANGE-FEEDS"
 cat > /etc/opkg/distfeeds.conf <<-DIST
 src/gz openwrt_base https://downloads.immortalwrt.org/releases/21.02-SNAPSHOT/packages/aarch64_cortex-a53/base
@@ -28,10 +22,6 @@ opkg update
 opkg remove --autoremove luci-i18n-openvpn-server-zh-cn
 opkg remove --autoremove luci-app-openvpn-*
 opkg remove --autoremove luci-app-turboacc --force-removal-of-dependent-packages
-opkg remove --autoremove strongswan-full --force-remove
-opkg remove --autoremove luci-i18n-ipsec-server-zh-cn --force-remove
-opkg remove --autoremove luci-app-ipsec-server --force-remove
-opkg remove --autoremove kmod-qca-nss-drv-ovpn-* --force-remove
 opkg remove --autoremove luci-i18n-sqm-zh-cn --force-remove
 opkg remove --autoremove luci-app-sqm --force-remove
 
@@ -41,10 +31,9 @@ opkg install sudo
 opkg install curl
 opkg install htop
 opkg install vsftpd
-opkg upgrade quagga quagga-libzebra quagga-ripd quagga-vtysh quagga-watchquagga quagga-zebra --force-overwrite
-opkg upgrade isc-dhcp-client-ipv6 --force-overwrite
-opkg upgrade isc-dhcp-server-ipv6 --force-overwrite
-opkg upgrade isc-dhcp-relay-ipv6 --force-overwrite
+opkg install isc-dhcp-client-ipv6 --force-overwrite
+opkg install isc-dhcp-server-ipv6 --force-overwrite
+opkg install isc-dhcp-relay-ipv6 --force-overwrite
 
 echo -e "PATCH-FIREWALL"
 wget -q -O  /etc/config/firewall "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/firewall";
