@@ -111,6 +111,7 @@ config rule
 	option name 'Allow-ISAKMP'
 	option src 'wan'
 	option dest 'lan'
+        option src_port '500'
 	option dest_port '500'
 	option proto 'udp'
 	option target 'ACCEPT'
