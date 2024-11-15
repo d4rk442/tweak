@@ -6,8 +6,22 @@ start() {
 
 logger -t tweak-cpu "Starting Tweak Cpu Core"
 	
-echo 2048 > /proc/sys/dev/nss/n2hcfg/n2h_queue_limit_core0
-echo 2048 > /proc/sys/dev/nss/n2hcfg/n2h_queue_limit_core1
+IFACE=$(ls /sys/class/net)
+	
+for i in ${IFACE}; do
+	ethtool -K $i gro on 2>/dev/null
+	if [[ -e /sys/class/net/$i/queues/rx-0/rps_cpus ]]; then
+		if [[ $i = "wwan0" ]]; then
+			echo f > /sys/class/net/$i/queues/rx-0/rps_cpus
+			echo 2048 > /proc/sys/dev/nss/n2hcfg/n2h_queue_limit_core0
+                        echo 2048 > /proc/sys/dev/nss/n2hcfg/n2h_queue_limit_core1
+		else
+			echo f > /sys/class/net/$i/queues/rx-0/rps_cpus
+			echo 2048 > /proc/sys/dev/nss/n2hcfg/n2h_queue_limit_core0
+                        echo 2048 > /proc/sys/dev/nss/n2hcfg/n2h_queue_limit_core1
+		fi
+	fi
+done
 
 }
 
@@ -15,7 +29,21 @@ stop() {
 
 logger -t tweak cpu "Stopping Tweak Cpu Core"
 
-echo 2048 > /proc/sys/dev/nss/n2hcfg/n2h_queue_limit_core0
-echo 2048 > /proc/sys/dev/nss/n2hcfg/n2h_queue_limit_core1
+IFACE=$(ls /sys/class/net)
+	
+for i in ${IFACE}; do
+	ethtool -K $i gro on 2>/dev/null
+	if [[ -e /sys/class/net/$i/queues/rx-0/rps_cpus ]]; then
+		if [[ $i = "wwan0" ]]; then
+			echo f > /sys/class/net/$i/queues/rx-0/rps_cpus
+			echo 2048 > /proc/sys/dev/nss/n2hcfg/n2h_queue_limit_core0
+                        echo 2048 > /proc/sys/dev/nss/n2hcfg/n2h_queue_limit_core1
+		else
+			echo f > /sys/class/net/$i/queues/rx-0/rps_cpus
+			echo 2048 > /proc/sys/dev/nss/n2hcfg/n2h_queue_limit_core0
+                        echo 2048 > /proc/sys/dev/nss/n2hcfg/n2h_queue_limit_core1
+		fi
+	fi
+done
 
 }
