@@ -139,6 +139,10 @@ echo -e "CPU-NSS"
 wget -q -O /etc/init.d/nss-cpu "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/cpu-boost";
 chmod +x /etc/init.d/nss-cpu;
 
+echo -e "NSS-INIT"
+wget -q -O /etc/init.d/qca-nss-ecm "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/qca-nss-ecm.init";
+chmod +x /etc/init.d/qca-nss-ecm;
+
 echo -e "FIREWALL-NSS"
 wget -q -O /etc/firewall.d/qca-nss-ecm "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/qca-nss-ecm";
 chmod +x /etc/firewall.d/qca-nss-ecm;
@@ -302,6 +306,15 @@ uci commit wireless
 /etc/init.d/firewall-custom start
 /etc/init.d/dnsmasq enable
 /etc/init.d/dnsmasq start
+/etc/init.d/openclash disable
+/etc/init.d/pppoe-server disable
+rm -f /etc/init.d/pppoe-server
+/etc/init.d/pppoe-relay disable
+rm -f /etc/init.d/pppoe-relay
+/etc/init.d/qca-nss-ipsec disable
+rm -f /etc/init.d/qca-nss-ipsec
+/etc/init.d/qca-nss-ovpn disable
+rm -f /etc/init.d/qca-nss-ovpn
 /etc/rc.local enable
 /etc/rc.local start
 
