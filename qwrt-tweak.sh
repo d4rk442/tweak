@@ -100,10 +100,12 @@ uci set network.wan.ifname='wwan0_1';
 uci commit network.wan;
 uci set network.wan.peerdns='0';
 uci commit network.wan;
+uci set network.wan6.ifname='wwan0_1';
+uci commit network.wan6;
+uci set network.wan6.peerdns='0';
+uci commit network.wan6;
 uci set network.wan1.peerdns='0';
 uci commit network.wan1;
-uci set network.wan6.disabled='1';
-uci delete network.wan6;
 uci set network.wan2.disabled='1';
 uci delete network.wan2;
 uci set network.vpn0.disabled='1';
@@ -135,10 +137,6 @@ chmod +x /etc/firewall.d/qca-nss-ecm;
 echo -e "SETTING-DHCP.SCRIPT"
 wget -q -O /lib/netifd/dhcp.script "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/dhcp.script";
 chmod +x /lib/netifd/dhcp.script;
-
-echo -e "CPU-BOOST"
-wget -q -O /etc/init.d/cpu-boost "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/cpu-boost";
-chmod +x /etc/init.d/cpu-boost;
 
 echo -e "SETTING-RCLOCAL"
 wget -q -O /etc/rc.local "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/rc.local";
