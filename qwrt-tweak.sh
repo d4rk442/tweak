@@ -8,6 +8,7 @@ nameserver 1.0.0.1
 DNS
 
 echo -e "MANAGE-SYSTEM"
+rm -f /etc/config/system
 cat > /etc/config/system <<-SYST
 config system
         option hostname 'QWRT'
@@ -28,6 +29,7 @@ SYST
 chmod +x /etc/config/system;
 
 echo -e "CHANGE-FEEDS"
+rm -f /etc/opkg/distfeeds.conf
 cat > /etc/opkg/distfeeds.conf <<-DIST
 src/gz openwrt_base https://downloads.immortalwrt.org/releases/21.02-SNAPSHOT/packages/aarch64_cortex-a53/base
 src/gz openwrt_luci https://downloads.immortalwrt.org/releases/21.02-SNAPSHOT/packages/aarch64_cortex-a53/luci
@@ -48,9 +50,9 @@ opkg remove luci-i18n-turboacc-* --autoremove
 opkg remove luci-app-turboacc --autoremove
 
 echo -e "BYPASS-DNSMASQ"
-rm -rf /etc/config/dhcp-opkg
-rm -rf /etc/config/dhcp.save
-rm -rf /etc/dnsmasq.conf
+rm -f /etc/config/dhcp-opkg
+rm -f /etc/config/dhcp.save
+rm -f /etc/dnsmasq.conf
 cat > /etc/dnsmasq.conf <<-DNSMASQ
 #!/usr/bin/env bash
 bind-dynamic
@@ -73,6 +75,7 @@ opkg install isc-dhcp-server-ipv6 --force-overwrite
 opkg install isc-dhcp-relay-ipv6 --force-overwrite
 
 echo -e "PATCH-FIREWALL"
+rm -f /etc/config/firewall
 wget -q -O  /etc/config/firewall "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/firewall";
 chmod +x  /etc/config/firewall;
 uci commit firewall
@@ -117,38 +120,47 @@ uci delete network.ipsec_server;
 uci commit network;
 
 echo -e "PATCH-SMP"
+rm -f /etc/hotplug.d/net/20-smp-tune
 wget -q -O /etc/hotplug.d/net/20-smp-tune "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/20-smp-tune";
 chmod +x /etc/hotplug.d/net/20-smp-tune;
 
 echo -e "PATCH-BOOT"
+rm -f /etc/init.d/boot
 wget -q -O /etc/init.d/boot "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/boot";
 chmod +x /etc/init.d/boot;
 
 echo -e "PATCH-ROOTER"
+rm -f /etc/init.d/rooter
 wget -q -O /etc/init.d/rooter "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/rooter";
 chmod +x /etc/init.d/rooter;
 
 echo -e "NSS-INIT"
+rm -f /etc/init.d/qca-nss-ecm
 wget -q -O /etc/init.d/qca-nss-ecm "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/qca-nss-ecm.init";
 chmod +x /etc/init.d/qca-nss-ecm;
 
 echo -e "FIREWALL-NSS"
+rm -f /etc/firewall.d/qca-nss-ecm
 wget -q -O /etc/firewall.d/qca-nss-ecm "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/qca-nss-ecm";
 chmod +x /etc/firewall.d/qca-nss-ecm;
 
 echo -e "SETTING-DHCP.SCRIPT"
+rm -f /lib/netifd/dhcp.script
 wget -q -O /lib/netifd/dhcp.script "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/dhcp.script";
 chmod +x /lib/netifd/dhcp.script;
 
 echo -e "SETTING-RCLOCAL"
+rm -f /etc/rc.local
 wget -q -O /etc/rc.local "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/rc.local";
 chmod +x /etc/rc.local;
 
 echo -e "BYPASS-TTL"
+rm -f /etc/init.d/firewall-custom
 wget -q -O /etc/init.d/firewall-custom "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/firewall-custom";
 chmod +x /etc/init.d/firewall-custom;
 
 echo -e "INSTALL-OOKLA"
+rm -f /usr/bin/speedtest
 wget -q -O /usr/bin/speedtest "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/speedtest"
 chmod +x /usr/bin/speedtest;
 
@@ -231,6 +243,7 @@ echo -e "INSTALL-PASSWALL"
 wget -q "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/luci-app-passwall_4.66-8_all.ipk";
 opkg install luci-app-passwall_4.66-8_all.ipk;
 
+rm -f /etc/openwrt_release
 cat > /etc/openwrt_release <<-IDD
 DISTRIB_ID='OpenWrt'
 DISTRIB_RELEASE='21.02-SNAPSHOT'
@@ -243,6 +256,7 @@ IDD
 chmod +x /etc/openwrt_release
 
 echo -e "MANAGE-WIFI"
+rm -f /etc/config/wireless
 cat > /etc/config/wireless <<-WIFI
 config wifi-device 'wifi0'
         option type 'qcawificfg80211'
@@ -314,6 +328,6 @@ rm -f /etc/init.d/qca-nss-ovpn
 /etc/rc.local enable
 /etc/rc.local start
 
-rm -rf /root/*
+rm -f /root/*
 echo -e "FINISH SCRIPT REBOOT............"
 reboot
