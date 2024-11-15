@@ -51,15 +51,6 @@ opkg remove luci-app-openvpn-* --autoremove
 opkg remove luci-i18n-sqm-zh-cn --autoremove
 opkg remove luci-app-sqm --autoremove
 opkg remove sqm-scripts --autoremove
-opkg remove luci-i18n-turboacc-zh-cn --autoremove
-opkg remove luci-app-turboacc --autoremove
-opkg remove ddns-scripts_aliyun --autoremove
-opkg remove ddns-scripts_cloudflare.com-v4 --autoremove
-opkg remove ddns-scripts_dnspod --autoremove
-opkg remove ddns-scripts_freedns_42_pl --autoremove
-opkg remove ddns-scripts_godaddy.com-v1 --autoremove
-opkg remove ddns-scripts_no-ip_com --autoremove
-opkg remove ddns-scripts_nsupdate --autoremove
 
 echo -e "PATCH-FIREWALL"
 wget -q -O  /etc/config/firewall "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/firewall";
@@ -188,42 +179,52 @@ wget -q -O /usr/lib/lua/luci/view/rooter/custom.htm "https://raw.githubuserconte
 chmod +x /usr/lib/lua/luci/view/rooter/custom.htm;
 
 echo -e "TWEAK-SPEED-SYSCTL"
-rm -rf /etc/sysctl.d/*
-rm -f /etc/sysctl.d/*
+rm -f /etc/sysctl.d/10-default.conf
 cat > /etc/sysctl.d/10-default.conf <<-DEF
 kernel.panic=3
+kernel.core_pattern=/tmp/%e.%t.%p.%s.core
+
 net.ipv4.conf.default.arp_ignore=1
 net.ipv4.conf.all.arp_ignore=1
-net.ipv4.ip_forward=1
 net.ipv4.icmp_echo_ignore_broadcasts=1
 net.ipv4.icmp_ignore_bogus_error_responses=1
-net.ipv4.tcp_ecn=0
+net.ipv4.icmp_echo_ignore_all=1
+net.ipv4.icmp_errors_use_inbound_ifaddr=0
+net.ipv4.tcp_ecn=2
 net.ipv4.tcp_fin_timeout=30
 net.ipv4.tcp_keepalive_time=120
+net.ipv4.tcp_keepalive_intvl=30
+net.ipv4.tcp_keepalive_probes=5
 net.ipv4.tcp_syncookies=1
-net.ipv4.tcp_timestamps=0
-net.ipv6.conf.all.forwarding=1
+net.ipv4.tcp_timestamps=1
+net.ipv4.tcp_sack=1
+net.ipv4.tcp_dsack=1
 
+net.ipv4.ip_forward=1
+net.ipv6.conf.all.forwarding=1
+net.ipv6.conf.default.forwarding=1
+DEF
+chmod +x /etc/sysctl.d/10-default.conf;
+
+rm -f /etc/sysctl.d/11-nf-conntrack.conf
+cat > /etc/sysctl.d/11-nf-conntrack.conf <<-DNF
 net.netfilter.nf_conntrack_acct=1
 net.netfilter.nf_conntrack_checksum=0
 net.netfilter.nf_conntrack_max=16384
+net.netfilter.nf_conntrack_expect_max=16384
 net.netfilter.nf_conntrack_tcp_no_window_check=1
 net.netfilter.nf_conntrack_tcp_timeout_established=3600
 net.netfilter.nf_conntrack_udp_timeout=60
 net.netfilter.nf_conntrack_udp_timeout_stream=180
+DNF
+chmod +x /etc/sysctl.d/11-nf-conntrack.conf;
 
-# disable bridge firewalling by default
-net.bridge.bridge-nf-call-arptables=0
-net.bridge.bridge-nf-call-ip6tables=0
-net.bridge.bridge-nf-call-iptables=0
-DEF
-chmod +x /etc/sysctl.d/10-default.conf;
-
-cat > /etc/sysctl.d/11-tweak-core.conf <<-POPS
+rm -f /etc/sysctl.d/12-tcp-bbr.conf
+cat > /etc/sysctl.d/12-tcp-bbr.conf <<-POPS
 net.core.default_qdisc=fq_codel
 net.ipv4.tcp_congestion_control=bbr
 POPS
-chmod +x /etc/sysctl.d/11-tweak-core.conf;
+chmod +x /etc/sysctl.d/12-tcp-bbr.conf;
 
 echo -e "INSTALL-XRAYMOD"
 wget -q "https://github.com/d4rk442/tweak/raw/refs/heads/main/xray-core_1.7.2-1_aarch64_cortex-a53.ipk";
