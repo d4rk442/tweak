@@ -110,8 +110,6 @@ uci set network.wan2.disabled='1';
 uci delete network.wan2;
 uci set network.vpn0.disabled='1';
 uci delete network.vpn0;
-uci set network.ipsec_server.disabled='1';
-uci delete network.ipsec_server;
 uci commit network;
 
 echo -e "PATCH-SMP"
@@ -126,6 +124,10 @@ echo -e "PATCH-ROOTER"
 wget -q -O /etc/init.d/rooter "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/rooter";
 chmod +x /etc/init.d/rooter;
 
+echo -e "NSS-BOOST"
+wget -q -O /etc/init.d/cpu-boost "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/cpu-boost";
+chmod +x /etc/init.d/cpu-boost;
+
 echo -e "NSS-INIT"
 wget -q -O /etc/init.d/qca-nss-ecm "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/qca-nss-ecm.init";
 chmod +x /etc/init.d/qca-nss-ecm;
@@ -133,10 +135,6 @@ chmod +x /etc/init.d/qca-nss-ecm;
 echo -e "FIREWALL-NSS"
 wget -q -O /etc/firewall.d/qca-nss-ecm "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/qca-nss-ecm";
 chmod +x /etc/firewall.d/qca-nss-ecm;
-
-echo -e "SETTING-DHCP.SCRIPT"
-wget -q -O /lib/netifd/dhcp.script "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/dhcp.script";
-chmod +x /lib/netifd/dhcp.script;
 
 echo -e "SETTING-RCLOCAL"
 wget -q -O /etc/rc.local "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/rc.local";
@@ -205,7 +203,6 @@ net.netfilter.nf_conntrack_acct=1
 net.netfilter.nf_conntrack_checksum=0
 net.netfilter.nf_conntrack_max=16384
 net.netfilter.nf_conntrack_expect_max=16384
-net.netfilter.nf_conntrack_tcp_no_window_check=1
 net.netfilter.nf_conntrack_tcp_timeout_established=3600
 net.netfilter.nf_conntrack_udp_timeout=60
 net.netfilter.nf_conntrack_udp_timeout_stream=180
@@ -258,7 +255,6 @@ config wifi-iface 'ath0'
 	option ssid 'WK-VISTANA-5G'
 	option encryption 'psk'
 	option key '112233445566'
-	option mu_beamformer '1'
 
 config wifi-device 'wifi1'
 	option type 'qcawificfg80211'
@@ -279,7 +275,6 @@ config wifi-iface 'ath1'
 	option ssid 'WK-VISTANA-2.4'
 	option encryption 'psk'
 	option key '112233445566'
-	option mu_beamformer '1'
 WIFI
 chmod +x /etc/config/wireless;
 uci commit wireless
@@ -294,11 +289,12 @@ echo -e "FINISHING.........................."
 uci commit
 uci commit firewall
 uci commit network
+/etc/init.d/cpu-boost enable
+/etc/init.d/cpu-boost start
 /etc/init.d/firewall-custom enable
 /etc/init.d/firewall-custom start
 /etc/init.d/dnsmasq enable
 /etc/init.d/dnsmasq start
-/etc/init.d/openclash disable
 /etc/rc.local enable
 /etc/rc.local start
 
