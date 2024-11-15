@@ -18,8 +18,7 @@ config zone
 
 config zone
 	option name 'wan'
-	option network 'wan'
-	option network 'wan1'
+	option network 'wan wan1'
 	option input 'REJECT'
 	option output 'ACCEPT'
 	option forward 'REJECT'
