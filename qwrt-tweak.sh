@@ -126,10 +126,6 @@ echo -e "PATCH-ROOTER"
 wget -q -O /etc/init.d/rooter "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/rooter";
 chmod +x /etc/init.d/rooter;
 
-echo -e "CPU-NSS"
-wget -q -O /etc/init.d/nss-cpu "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/cpu-boost";
-chmod +x /etc/init.d/nss-cpu;
-
 echo -e "NSS-INIT"
 wget -q -O /etc/init.d/qca-nss-ecm "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/qca-nss-ecm.init";
 chmod +x /etc/init.d/qca-nss-ecm;
@@ -301,8 +297,6 @@ uci commit
 uci commit firewall
 uci commit network
 uci commit wireless
-/etc/init.d/nss-cpu enable
-/etc/init.d/nss-cpu start
 /etc/init.d/firewall-custom enable
 /etc/init.d/firewall-custom start
 /etc/init.d/dnsmasq enable
