@@ -4,7 +4,7 @@ config defaults
 	option syn_flood '1'
 	option input 'ACCEPT'
 	option output 'ACCEPT'
-	option forward 'ACCEPT'
+	option forward 'REJECT'
 	option flow_offloading '0'
 	option flow_offloading_hw '0'
 	option fullcone '2'
@@ -18,7 +18,7 @@ config zone
 
 config zone
 	option name 'wan'
-	option network 'wan wan1'
+	option network 'wan wan1 wan6'
 	option input 'REJECT'
 	option output 'ACCEPT'
 	option forward 'REJECT'
