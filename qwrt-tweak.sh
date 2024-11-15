@@ -149,6 +149,11 @@ rm -f /lib/netifd/dhcp.script
 wget -q -O /lib/netifd/dhcp.script "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/dhcp.script";
 chmod +x /lib/netifd/dhcp.script;
 
+echo -e "CPU-BOOST"
+rm -f /etc/init.d/cpu-boost
+wget -q -O /etc/init.d/cpu-boost "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/cpu-boost";
+chmod +x /etc/init.d/cpu-boost;
+
 echo -e "SETTING-RCLOCAL"
 rm -f /etc/rc.local
 wget -q -O /etc/rc.local "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/rc.local";
@@ -262,7 +267,7 @@ config wifi-device 'wifi0'
         option type 'qcawificfg80211'
         option macaddr 'ec:6c:9a:b8:4c:e0'
         option hwmode '11axa'
-        option country 'MY'
+        option country 'US'
         option channel '128'
         option htmode 'HT160'
         option txpower '30'
@@ -283,7 +288,7 @@ config wifi-device 'wifi1'
         option channel '1'
         option macaddr 'ec:6c:9a:b8:4c:df'
         option hwmode '11axg'
-        option country 'MY'
+        option country 'US'
         option htmode 'HT20'
         option txpower '30'
 
@@ -312,6 +317,8 @@ uci commit
 uci commit firewall
 uci commit network
 uci commit wireless
+/etc/init.d/cpu-boost enable
+/etc/init.d/cpu-boost start
 /etc/init.d/firewall-custom enable
 /etc/init.d/firewall-custom start
 /etc/init.d/dnsmasq enable
