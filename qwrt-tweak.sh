@@ -7,6 +7,26 @@ nameserver 1.1.1.1
 nameserver 1.0.0.1
 DNS
 
+echo -e "MANAGE-SYSTEM"
+cat > /etc/config/system <<-SYST
+config system
+        option hostname 'QWRT'
+        option ttylogin '0'
+        option log_size '64'
+        option urandom_seed '0'
+        option timezone 'MYT-8'
+        option zonename 'Asia/Kuala Lumpur'
+
+config timeserver 'ntp'
+        option enabled '1'
+        option enable_server '0'
+        list server '0.openwrt.pool.ntp.org'
+        list server '1.openwrt.pool.ntp.org'
+        list server '2.openwrt.pool.ntp.org'
+        list server '3.openwrt.pool.ntp.org'
+SYST
+chmod +x /etc/config/system;
+
 echo -e "CHANGE-FEEDS"
 cat > /etc/opkg/distfeeds.conf <<-DIST
 src/gz openwrt_base https://downloads.immortalwrt.org/releases/21.02-SNAPSHOT/packages/aarch64_cortex-a53/base
@@ -18,11 +38,8 @@ DIST
 chmod +x /etc/opkg/distfeeds.conf;
 
 echo -e "INSTALL-BASIC"
-opkg install nano
-opkg install sudo
-opkg install curl
-opkg install htop
-opkg install vsftpd
+opkg update
+opkg install sudo nano curl htop vsftpd
 opkg install isc-dhcp-client-ipv6 --force-overwrite
 opkg install isc-dhcp-server-ipv6 --force-overwrite
 opkg install isc-dhcp-relay-ipv6 --force-overwrite
@@ -43,25 +60,6 @@ opkg remove ddns-scripts_freedns_42_pl --autoremove
 opkg remove ddns-scripts_godaddy.com-v1 --autoremove
 opkg remove ddns-scripts_no-ip_com --autoremove
 opkg remove ddns-scripts_nsupdate --autoremove
-
-echo -e "MANAGE-SYSTEM"
-cat > /etc/config/system <<-SYST
-config system
-        option hostname 'QWRT'
-        option ttylogin '0'
-        option log_size '64'
-        option urandom_seed '0'
-        option timezone 'MYT-8'
-        option zonename 'Asia/Kuala Lumpur'
-
-config timeserver 'ntp'
-        option enabled '1'
-        option enable_server '0'
-        list server '0.openwrt.pool.ntp.org'
-        list server '1.openwrt.pool.ntp.org'
-        list server '2.openwrt.pool.ntp.org'
-        list server '3.openwrt.pool.ntp.org'
-SYST
 
 echo -e "PATCH-FIREWALL"
 wget -q -O  /etc/config/firewall "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/firewall";
@@ -137,6 +135,14 @@ echo -e "PATCH-ROOTER"
 wget -q -O /etc/init.d/rooter "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/rooter";
 chmod +x /etc/init.d/rooter;
 
+echo -e "CPU-NSS"
+wget -q -O /etc/init.d/nss-cpu "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/cpu-boost";
+chmod +x /etc/init.d/nss-cpu;
+
+echo -e "FIREWALL-NSS"
+wget -q -O /etc/firewall.d/qca-nss-ecm "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/qca-nss-ecm";
+chmod +x /etc/firewall.d/qca-nss-ecm;
+
 echo -e "SETTING-DHCP.SCRIPT"
 wget -q -O /lib/netifd/dhcp.script "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/dhcp.script";
 chmod +x /lib/netifd/dhcp.script;
@@ -197,6 +203,7 @@ net.ipv6.conf.all.forwarding=1
 net.netfilter.nf_conntrack_acct=1
 net.netfilter.nf_conntrack_checksum=0
 net.netfilter.nf_conntrack_max=16384
+net.netfilter.nf_conntrack_tcp_no_window_check=1
 net.netfilter.nf_conntrack_tcp_timeout_established=3600
 net.netfilter.nf_conntrack_udp_timeout=60
 net.netfilter.nf_conntrack_udp_timeout_stream=180
@@ -207,8 +214,6 @@ net.bridge.bridge-nf-call-ip6tables=0
 net.bridge.bridge-nf-call-iptables=0
 DEF
 chmod +x /etc/sysctl.d/10-default.conf;
-
-rm -f /etc/sysctl.d/12-tcp-bbr.conf
 
 cat > /etc/sysctl.d/11-tweak-core.conf <<-POPS
 net.core.default_qdisc=fq_codel
@@ -291,6 +296,8 @@ uci commit
 uci commit firewall
 uci commit network
 uci commit wireless
+/etc/init.d/nss-cpu enable
+/etc/init.d/nss-cpu start
 /etc/init.d/firewall-custom enable
 /etc/init.d/firewall-custom start
 /etc/init.d/dnsmasq enable
