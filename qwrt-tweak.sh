@@ -301,14 +301,6 @@ uci commit network
 /etc/init.d/dnsmasq enable
 /etc/init.d/dnsmasq start
 /etc/init.d/openclash disable
-/etc/init.d/pppoe-server disable
-rm -f /etc/init.d/pppoe-server
-/etc/init.d/pppoe-relay disable
-rm -f /etc/init.d/pppoe-relay
-/etc/init.d/qca-nss-ipsec disable
-rm -f /etc/init.d/qca-nss-ipsec
-/etc/init.d/qca-nss-ovpn disable
-rm -f /etc/init.d/qca-nss-ovpn
 /etc/rc.local enable
 /etc/rc.local start
 
