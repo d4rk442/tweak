@@ -1,13 +1,13 @@
-#TWEAK DYNO
+#Dyno Fw Tweak
 
 config defaults
 	option syn_flood '1'
 	option input 'ACCEPT'
 	option output 'ACCEPT'
-	option forward 'REJECT'
-	option fullcone '2'
+	option forward 'ACCEPT'
 	option flow_offloading '0'
 	option flow_offloading_hw '0'
+	option fullcone '2'
 
 config zone
 	option name 'lan'
@@ -18,12 +18,13 @@ config zone
 
 config zone
 	option name 'wan'
+	option network 'wan'
+	option network 'wan1'
 	option input 'REJECT'
 	option output 'ACCEPT'
 	option forward 'REJECT'
 	option masq '1'
 	option mtu_fix '1'
-	option network 'wan wan1'
 
 config forwarding
 	option src 'lan'
@@ -118,26 +119,10 @@ config rule
 config include
 	option path '/etc/firewall.user'
 
-config include 'zerotier'
-	option type 'script'
-	option path '/etc/zerotier.start'
-	option reload '1'
-
-config include 'miniupnpd'
-	option type 'script'
-	option path '/usr/share/miniupnpd/firewall.include'
-	option family 'any'
-	option reload '1'
-
 config include 'qcanssecm'
 	option type 'script'
 	option path '/etc/firewall.d/qca-nss-ecm'
 	option family 'any'
-	option reload '1'
-
-config include 'openclash'
-	option type 'script'
-	option path '/var/etc/openclash.include'
 	option reload '1'
 
 config include 'passwall'
