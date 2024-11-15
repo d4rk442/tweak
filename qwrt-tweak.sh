@@ -37,20 +37,40 @@ src/gz openwrt_telephony https://downloads.immortalwrt.org/releases/21.02-SNAPSH
 DIST
 chmod +x /etc/opkg/distfeeds.conf;
 
+echo -e "REMOVE-BASIC"
+opkg update
+opkg remove luci-i18n-openvpn-server-zh-cn --autoremove
+opkg remove luci-app-openvpn-* --autoremove
+opkg remove luci-i18n-sqm-* --autoremove
+opkg remove luci-app-sqm --autoremove
+opkg remove sqm-scripts --autoremove
+opkg remove luci-i18n-turboacc-* --autoremove
+opkg remove luci-app-turboacc --autoremove
+
+echo -e "BYPASS-DNSMASQ"
+rm -rf /etc/config/dhcp-opkg
+rm -rf /etc/config/dhcp.save
+rm -rf /etc/dnsmasq.conf
+cat > /etc/dnsmasq.conf <<-DNSMASQ
+#!/usr/bin/env bash
+bind-dynamic
+bogus-priv
+no-resolv
+strict-order
+log-facility=-
+local-ttl=60
+interface=*
+server=1.1.1.1
+server=1.0.0.1
+DNSMASQ
+chmod +x /etc/dnsmasq.conf
+
 echo -e "INSTALL-BASIC"
 opkg update
 opkg install sudo nano curl htop vsftpd
 opkg install isc-dhcp-client-ipv6 --force-overwrite
 opkg install isc-dhcp-server-ipv6 --force-overwrite
 opkg install isc-dhcp-relay-ipv6 --force-overwrite
-
-echo -e "REMOVE-BASIC"
-opkg update
-opkg remove luci-i18n-openvpn-server-zh-cn --autoremove
-opkg remove luci-app-openvpn-* --autoremove
-opkg remove luci-i18n-sqm-zh-cn --autoremove
-opkg remove luci-app-sqm --autoremove
-opkg remove sqm-scripts --autoremove
 
 echo -e "PATCH-FIREWALL"
 wget -q -O  /etc/config/firewall "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/firewall";
@@ -95,24 +115,6 @@ uci delete network.vpn0;
 uci set network.ipsec_server.disabled='1';
 uci delete network.ipsec_server;
 uci commit network;
-
-echo -e "BYPASS-DNSMASQ"
-rm -rf /etc/config/dhcp-opkg
-rm -rf /etc/config/dhcp.save
-rm -rf /etc/dnsmasq.conf
-cat > /etc/dnsmasq.conf <<-DNSMASQ
-#!/usr/bin/env bash
-bind-dynamic
-bogus-priv
-no-resolv
-strict-order
-log-facility=-
-local-ttl=60
-interface=*
-server=1.1.1.1
-server=1.0.0.1
-DNSMASQ
-chmod +x /etc/dnsmasq.conf
 
 echo -e "PATCH-SMP"
 wget -q -O /etc/hotplug.d/net/20-smp-tune "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/20-smp-tune";
