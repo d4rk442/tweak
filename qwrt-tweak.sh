@@ -186,7 +186,6 @@ net.ipv4.icmp_echo_ignore_broadcasts=1
 net.ipv4.icmp_ignore_bogus_error_responses=1
 net.ipv4.icmp_echo_ignore_all=1
 net.ipv4.icmp_errors_use_inbound_ifaddr=0
-net.ipv4.tcp_ecn=2
 net.ipv4.tcp_fin_timeout=30
 net.ipv4.tcp_keepalive_time=120
 net.ipv4.tcp_keepalive_intvl=30
