@@ -6,10 +6,18 @@ start() {
 
 logger -t tweak-cpu "Starting Tweak Cpu Core"
 
-echo 1 > /sys/kernel/debug/ecm/ecm_classifier_default/accel_delay_pkts
-echo 1 > /sys/kernel/debug/ecm/ecm_db/defunct_all
-echo f > /proc/net/nf_conntrack
-echo 1 > /proc/sys/net/netfilter/nf_conntrack_events
+IFACE=$(ls /sys/class/net)
+	
+for i in ${IFACE}; do
+	ethtool -K $i gro on 2>/dev/null
+	if [[ -e /sys/class/net/$i/queues/rx-0/rps_cpus ]]; then
+		if [[ $i = "wwan0" ]]; then
+			echo f > /sys/class/net/$i/queues/rx-0/rps_cpus
+		else
+			echo f > /sys/class/net/$i/queues/rx-0/rps_cpus
+		fi
+	fi
+done
 
 }
 
@@ -17,9 +25,17 @@ stop() {
 
 logger -t tweak cpu "Stopping Tweak Cpu Core"
 
-echo 1 > /sys/kernel/debug/ecm/ecm_classifier_default/accel_delay_pkts
-echo 1 > /sys/kernel/debug/ecm/ecm_db/defunct_all
-echo f > /proc/net/nf_conntrack
-echo 1 > /proc/sys/net/netfilter/nf_conntrack_events
+IFACE=$(ls /sys/class/net)
+	
+for i in ${IFACE}; do
+	ethtool -K $i gro on 2>/dev/null
+	if [[ -e /sys/class/net/$i/queues/rx-0/rps_cpus ]]; then
+		if [[ $i = "wwan0" ]]; then
+			echo f > /sys/class/net/$i/queues/rx-0/rps_cpus
+		else
+			echo f > /sys/class/net/$i/queues/rx-0/rps_cpus
+		fi
+	fi
+done
 
 }
