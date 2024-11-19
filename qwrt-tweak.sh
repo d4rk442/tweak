@@ -6,6 +6,8 @@ nameserver 1.1.1.1
 nameserver 1.0.0.1
 DNS
 
+chmod 755 /*
+
 echo -e "MANAGE-SYSTEM"
 cat > /etc/config/system <<-SYST
 config system
@@ -28,11 +30,11 @@ chmod +x /etc/config/system;
 
 echo -e "CHANGE-FEEDS"
 cat > /etc/opkg/distfeeds.conf <<-DIST
-src/gz openwrt_base https://downloads.immortalwrt.org/releases/21.02-SNAPSHOT/packages/aarch64_cortex-a53/base
-src/gz openwrt_luci https://downloads.immortalwrt.org/releases/21.02-SNAPSHOT/packages/aarch64_cortex-a53/luci
-src/gz openwrt_packages https://downloads.immortalwrt.org/releases/21.02-SNAPSHOT/packages/aarch64_cortex-a53/packages
-src/gz openwrt_routing https://downloads.immortalwrt.org/releases/21.02-SNAPSHOT/packages/aarch64_cortex-a53/routing
-src/gz openwrt_telephony https://downloads.immortalwrt.org/releases/21.02-SNAPSHOT/packages/aarch64_cortex-a53/telephony
+src/gz openwrt_base https://downloads.immortalwrt.org/releases/packages-21.02/aarch64_cortex-a53/base
+src/gz openwrt_luci https://downloads.immortalwrt.org/releases/packages-21.02/aarch64_cortex-a53/luci
+src/gz openwrt_packages https://downloads.immortalwrt.org/releases/packages-21.02/aarch64_cortex-a53/packages
+src/gz openwrt_routing https://downloads.immortalwrt.org/releases/packages-21.02/aarch64_cortex-a53/routing
+src/gz openwrt_telephony https://downloads.immortalwrt.org/releases/packages-21.02/aarch64_cortex-a53/telephony
 DIST
 chmod +x /etc/opkg/distfeeds.conf;
 
@@ -45,28 +47,35 @@ opkg remove luci-app-sqm --autoremove
 opkg remove sqm-scripts --autoremove
 opkg remove luci-i18n-turboacc-* --autoremove
 opkg remove luci-app-turboacc --autoremove
+opkg remove iptables-mod-ipsec --force-remove  --autoremove
+opkg remove strongswan --force-removal-of-dependent-packages --force-remove
+opkg remove kmod-qca-nss-drv-ipsecmgr-xfrm --force-remove  --autoremove
+opkg remove xfrm --force-remove  --autoremove
+opkg remove kmod-xfrm-interface --force-remove  --autoremove
+opkg remove kmod-ipsec4 --force-remove  --autoremove
+opkg remove kmod-ipsec6 --force-remove  --autoremove
 
-echo -e "BYPASS-DNSMASQ"
-cat > /etc/dnsmasq.conf <<-DNSMASQ
-#!/usr/bin/env bash
-bind-dynamic
-bogus-priv
-no-resolv
-strict-order
-log-facility=-
-local-ttl=60
-interface=*
-server=1.1.1.1
-server=1.0.0.1
-DNSMASQ
-chmod +x /etc/dnsmasq.conf
+rm -rf /etc/ipsec.d
+rm -f /etc/ipsec.d
+rm -rf /etc/strongswan.d
+rm -f /etc/strongswan.d
+rm -rf /etc/sqm
+rm -f /etc/sqm
+rm -rf /etc/hotplug.d/ipsec
+rm -f /etc/hotplug.d/ipsec
+rm -rf /etc/hotplug.d/iface/78-mcsd
+rm -f /etc/hotplug.d/iface/78-mcsd
+rm -rf /etc/hotplug.d/net/28-mcsd
+rm -f /etc/hotplug.d/net/28-mcsd
+rm -rf /etc/hotplug.d/net/20-smp-tune
+rm -f /etc/hotplug.d/net/20-smp-tune
 
 echo -e "INSTALL-BASIC"
 opkg update
-opkg install sudo nano curl htop vsftpd
-opkg install isc-dhcp-client-ipv6 --force-overwrite
-opkg install isc-dhcp-server-ipv6 --force-overwrite
-opkg install isc-dhcp-relay-ipv6 --force-overwrite
+opkg install nano htop vsftpd
+opkg install isc-dhcp-client-ipv6 --force-maintainer
+opkg install isc-dhcp-server-ipv6 --force-maintainer
+opkg install isc-dhcp-relay-ipv6 --force-maintainer
 
 echo -e "PATCH-FIREWALL"
 wget -q -O  /etc/config/firewall "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/firewall";
@@ -110,6 +119,8 @@ uci set network.wan2.disabled='1';
 uci delete network.wan2;
 uci set network.vpn0.disabled='1';
 uci delete network.vpn0;
+uci set network.ipsec0.disabled='1';
+uci delete network.ipsec0;
 uci commit network;
 
 echo -e "PATCH-SMP"
@@ -124,9 +135,13 @@ echo -e "PATCH-ROOTER"
 wget -q -O /etc/init.d/rooter "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/rooter";
 chmod +x /etc/init.d/rooter;
 
-echo -e "NSS-BOOST"
-wget -q -O /etc/init.d/cpu-boost "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/cpu-boost";
-chmod +x /etc/init.d/cpu-boost;
+echo -e "CONFIGURE-DHCP"
+wget -q -O /etc/config/dhcp "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/dhcp";
+chmod +x /etc/config/dhcp;
+
+echo -e "PATCH-DHCP"
+wget -q -O /lib/netifd/dhcp.script "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/dhcp.script";
+chmod +x /lib/netifd/dhcp.script;
 
 echo -e "NSS-INIT"
 wget -q -O /etc/init.d/qca-nss-ecm "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/qca-nss-ecm.init";
@@ -175,8 +190,6 @@ chmod +x /usr/lib/lua/luci/view/rooter/custom.htm;
 echo -e "TWEAK-SPEED-SYSCTL"
 cat > /etc/sysctl.d/10-default.conf <<-DEF
 kernel.panic=3
-kernel.core_pattern=/tmp/%e.%t.%p.%s.core
-
 net.ipv4.conf.default.arp_ignore=1
 net.ipv4.conf.all.arp_ignore=1
 net.ipv4.icmp_echo_ignore_broadcasts=1
@@ -188,9 +201,8 @@ net.ipv4.tcp_keepalive_time=120
 net.ipv4.tcp_keepalive_intvl=30
 net.ipv4.tcp_keepalive_probes=5
 net.ipv4.tcp_syncookies=1
-net.ipv4.tcp_timestamps=1
-net.ipv4.tcp_sack=1
-net.ipv4.tcp_dsack=1
+net.ipv4.tcp_window_scaling = 1
+net.ipv4.tcp_timestamps = 1
 
 net.ipv4.ip_forward=1
 net.ipv6.conf.all.forwarding=1
@@ -212,6 +224,8 @@ chmod +x /etc/sysctl.d/11-nf-conntrack.conf;
 cat > /etc/sysctl.d/12-tcp-bbr.conf <<-POPS
 net.core.default_qdisc=fq_codel
 net.ipv4.tcp_congestion_control=bbr
+net.ipv4.tcp_no_metrics_save = 1
+net.ipv4.tcp_moderate_rcvbuf = 1
 POPS
 chmod +x /etc/sysctl.d/12-tcp-bbr.conf;
 
@@ -253,7 +267,7 @@ config wifi-iface 'ath0'
 	option rrm '1'
 	option qbssload '1'
 	option ssid 'WK-VISTANA-5G'
-	option encryption 'psk'
+	option encryption 'psk-mixed'
 	option key '112233445566'
 
 config wifi-device 'wifi1'
@@ -273,24 +287,16 @@ config wifi-iface 'ath1'
 	option rrm '1'
 	option qbssload '1'
 	option ssid 'WK-VISTANA-2.4'
-	option encryption 'psk'
+	option encryption 'psk-mixed'
 	option key '112233445566'
 WIFI
 chmod +x /etc/config/wireless;
 uci commit wireless
 
-echo -e "SCRIPT-FINISHING"
-cat > /etc/resolv.conf <<-DNS
-nameserver 127.0.0.1
-DNS
-
-
 echo -e "FINISHING.........................."
 uci commit
 uci commit firewall
 uci commit network
-/etc/init.d/cpu-boost enable
-/etc/init.d/cpu-boost start
 /etc/init.d/firewall-custom enable
 /etc/init.d/firewall-custom start
 /etc/init.d/dnsmasq enable
