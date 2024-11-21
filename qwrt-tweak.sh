@@ -47,8 +47,8 @@ opkg remove luci-app-sqm --autoremove
 opkg remove sqm-scripts --autoremove
 opkg remove luci-i18n-turboacc-* --autoremove
 opkg remove luci-app-turboacc --autoremove
-opkg remove iptables-mod-ipsec --force-remove  --autoremove
 opkg remove strongswan --force-removal-of-dependent-packages --force-remove
+opkg remove iptables-mod-ipsec --force-remove  --autoremove
 opkg remove kmod-qca-nss-drv-ipsecmgr-xfrm --force-remove  --autoremove
 opkg remove xfrm --force-remove  --autoremove
 opkg remove kmod-xfrm-interface --force-remove  --autoremove
@@ -143,6 +143,10 @@ echo -e "PATCH-DHCP"
 wget -q -O /lib/netifd/dhcp.script "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/dhcp.script";
 chmod +x /lib/netifd/dhcp.script;
 
+echo -e "NSS-BOOST"
+wget -q -O /etc/init.d/cpu-boost "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/cpu-boost";
+chmod +x /etc/init.d/cpu-boost;
+
 echo -e "NSS-INIT"
 wget -q -O /etc/init.d/qca-nss-ecm "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/qca-nss-ecm.init";
 chmod +x /etc/init.d/qca-nss-ecm;
@@ -190,6 +194,8 @@ chmod +x /usr/lib/lua/luci/view/rooter/custom.htm;
 echo -e "TWEAK-SPEED-SYSCTL"
 cat > /etc/sysctl.d/10-default.conf <<-DEF
 kernel.panic=3
+kernel.core.pattern=/tmp/%e.%t.%p.%s.core
+
 net.ipv4.conf.default.arp_ignore=1
 net.ipv4.conf.all.arp_ignore=1
 net.ipv4.icmp_echo_ignore_broadcasts=1
@@ -201,7 +207,7 @@ net.ipv4.tcp_keepalive_time=120
 net.ipv4.tcp_keepalive_intvl=30
 net.ipv4.tcp_keepalive_probes=5
 net.ipv4.tcp_syncookies=1
-net.ipv4.tcp_window_scaling = 1
+net.ipv4.tcp_window_scaling=1
 net.ipv4.tcp_timestamps = 1
 
 net.ipv4.ip_forward=1
@@ -224,8 +230,8 @@ chmod +x /etc/sysctl.d/11-nf-conntrack.conf;
 cat > /etc/sysctl.d/12-tcp-bbr.conf <<-POPS
 net.core.default_qdisc=fq_codel
 net.ipv4.tcp_congestion_control=bbr
-net.ipv4.tcp_no_metrics_save = 1
-net.ipv4.tcp_moderate_rcvbuf = 1
+net.ipv4.tcp_no_metrics_save=1
+net.ipv4.tcp_moderate_rcvbuf=1
 POPS
 chmod +x /etc/sysctl.d/12-tcp-bbr.conf;
 
@@ -267,7 +273,7 @@ config wifi-iface 'ath0'
 	option rrm '1'
 	option qbssload '1'
 	option ssid 'WK-VISTANA-5G'
-	option encryption 'psk-mixed'
+	option encryption 'psk'
 	option key '112233445566'
 
 config wifi-device 'wifi1'
@@ -287,13 +293,18 @@ config wifi-iface 'ath1'
 	option rrm '1'
 	option qbssload '1'
 	option ssid 'WK-VISTANA-2.4'
-	option encryption 'psk-mixed'
+	option encryption 'psk'
 	option key '112233445566'
 WIFI
 chmod +x /etc/config/wireless;
 uci commit wireless
 
 echo -e "FINISHING.........................."
+cat > /etc/resolv.conf <<-DNS
+nameserver 127.0.0.1
+nameserver ::1
+DNS
+
 uci commit
 uci commit firewall
 uci commit network
