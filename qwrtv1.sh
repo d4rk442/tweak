@@ -54,6 +54,21 @@ opkg remove xfrm --force-remove  --autoremove
 opkg remove kmod-xfrm-interface --force-remove  --autoremove
 opkg remove kmod-ipsec4 --force-remove  --autoremove
 opkg remove kmod-ipsec6 --force-remove  --autoremove
+####
+opkg remove luci-i18n-openvpn-server-zh-cn --autoremove
+opkg remove luci-app-openvpn-* --autoremove
+opkg remove luci-i18n-sqm-* --autoremove
+opkg remove luci-app-sqm --autoremove
+opkg remove sqm-scripts --autoremove
+opkg remove luci-i18n-turboacc-* --autoremove
+opkg remove luci-app-turboacc --autoremove
+opkg remove strongswan --force-removal-of-dependent-packages --force-remove
+opkg remove iptables-mod-ipsec --force-remove  --autoremove
+opkg remove kmod-qca-nss-drv-ipsecmgr-xfrm --force-remove  --autoremove
+opkg remove xfrm --force-remove  --autoremove
+opkg remove kmod-xfrm-interface --force-remove  --autoremove
+opkg remove kmod-ipsec4 --force-remove  --autoremove
+opkg remove kmod-ipsec6 --force-remove  --autoremove
 
 rm -rf /etc/ipsec.d
 rm -f /etc/ipsec.d
@@ -103,7 +118,7 @@ uci commit network
 uci set firewall.@defaults[0].flow_offloading='0';
 uci set firewall.@defaults[0].flow_offloading_hw='0';
 uci commit firewall;
-uci set network.lan.dns='1.1.1.1 1.0.0.1';
+uci set network.lan.dns='1.1.1.1 1.0.0.1 2606:4700:4700::1111 2606:4700:4700::1001';
 uci commit network.lan;
 uci set network.wan.ifname='wwan0_1';
 uci commit network.wan;
@@ -134,6 +149,10 @@ chmod +x /etc/init.d/boot;
 echo -e "PATCH-ROOTER"
 wget -q -O /etc/init.d/rooter "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/rooter";
 chmod +x /etc/init.d/rooter;
+
+echo -e "PATCH-MBIM"
+wget -q -O /lib/netifd/proto/mbim.sh "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/mbim.sh";
+chmod +x /lib/netifd/proto/mbim.sh;
 
 echo -e "CONFIGURE-DHCP"
 wget -q -O /etc/config/dhcp "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/dhcp";
