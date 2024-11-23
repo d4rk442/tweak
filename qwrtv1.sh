@@ -118,7 +118,7 @@ uci commit network
 uci set firewall.@defaults[0].flow_offloading='0';
 uci set firewall.@defaults[0].flow_offloading_hw='0';
 uci commit firewall;
-uci set network.lan.dns='1.1.1.1 1.0.0.1 2606:4700:4700::1111 2606:4700:4700::1001';
+uci set network.lan.dns='1.1.1.1 1.0.0.1';
 uci commit network.lan;
 uci set network.wan.ifname='wwan0_1';
 uci commit network.wan;
