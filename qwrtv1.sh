@@ -268,7 +268,7 @@ DISTRIB_RELEASE='21.02-SNAPSHOT'
 DISTRIB_TARGET='ipq807x/generic'
 DISTRIB_ARCH='aarch64_cortex-a53'
 DISTRIB_TAINTS='no-all busybox'
-DISTRIB_REVISION='Dyno Tweak V1'
+DISTRIB_REVISION='Qwrt Tweak v1'
 DISTRIB_DESCRIPTION='QWRT '
 IDD
 chmod +x /etc/openwrt_release
