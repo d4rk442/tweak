@@ -6,9 +6,8 @@
 
 set_classless_routes() {
 	local max=128
-	local type
 	while [ -n "$1" -a -n "$2" -a $max -gt 0 ]; do
-		proto_add_ipv4_route "${1%%/*}" "${1##*/}" "$2"
+		proto_add_ipv4_route "${1%%/*}" "${1##*/}" "$2" "$ip"
 		max=$(($max-1))
 		shift 2
 	done
@@ -19,24 +18,54 @@ setup_interface () {
 	proto_add_ipv4_address "$ip" "${subnet:-255.255.255.0}"
 	# TODO: apply $broadcast
 
+	local ip_net
+	eval "$(ipcalc.sh "$ip/$mask")";ip_net="$NETWORK"
+
+	local i
 	for i in $router; do
-		proto_add_ipv4_route 0.0.0.0 0 "$i"
-		route add -net 0.0.0.0/0 gw "$i"
+		local gw_net
+		eval "$(ipcalc.sh "$i/$mask")";gw_net="$NETWORK"
+
+		[ "$ip_net" != "$gw_net" ] && proto_add_ipv4_route "$i" 32 "" "$ip"
+		proto_add_ipv4_route 0.0.0.0 0 "$i" "$ip"
+
+		local r
+		for r in $CUSTOMROUTES; do
+			proto_add_ipv4_route "${r%%/*}" "${r##*/}" "$i" "$ip"
+		done
 	done
 
 	# CIDR STATIC ROUTES (rfc3442)
 	[ -n "$staticroutes" ] && set_classless_routes $staticroutes
 	[ -n "$msstaticroutes" ] && set_classless_routes $msstaticroutes
 
-	for dns in $dns; do
-		proto_add_dns_server "$dns"
+	for i in $dns; do
+		proto_add_dns_server "$i"
 	done
-	for domain in $domain; do
-		proto_add_dns_search "$domain"
+	for i in $domain; do
+		proto_add_dns_search "$i"
 	done
+
+	# TODO: Deprecate timesvr in favor of timesrv
+	if [ -n "$timesvr" -a -z "$timesrv" ]; then
+		timesrv="$timesvr"
+		echo "Environment variable 'timesvr' will be deprecated; use 'timesrv' instead."
+	fi
+
+	proto_add_data
+	[ -n "$ZONE" ]     && json_add_string zone "$ZONE"
+	[ -n "$ntpsrv" ]   && json_add_string ntpserver "$ntpsrv"
+	[ -n "$timesrv" ]  && json_add_string timeserver "$timesrv"
+	[ -n "$hostname" ] && json_add_string hostname "$hostname"
+	[ -n "$message" ]  && json_add_string message "$message"
+	[ -n "$timezone" ] && json_add_int timezone "$timezone"
+	[ -n "$lease" ]    && json_add_int leasetime "$lease"
+	proto_close_data
+
 	proto_send_update "$INTERFACE"
 
-	if [ -n "$IFACE6RD" -a -n "$ip6rd" ]; then
+
+	if [ "$IFACE6RD" != 0 -a -n "$ip6rd" ]; then
 		local v4mask="${ip6rd%% *}"
 		ip6rd="${ip6rd#* }"
 		local ip6rdprefixlen="${ip6rd%% *}"
@@ -45,26 +74,26 @@ setup_interface () {
 		ip6rd="${ip6rd#* }"
 		local ip6rdbr="${ip6rd%% *}"
 
-uci -q batch <<-EOF >/dev/null
-set network.$IFACE6RD.proto=6rd
-set network.$IFACE6RD.auto=0
-set network.$IFACE6RD.peeraddr=$ip6rdbr
-set network.$IFACE6RD.ip4prefixlen=$v4mask
-set network.$IFACE6RD.ip6prefix=$ip6rdprefix
-set network.$IFACE6RD.ip6prefixlen=$ip6rdprefixlen
-commit network
-EOF
+		[ -n "$ZONE" ] || ZONE=$(fw3 -q network $INTERFACE 2>/dev/null)
+		[ -z "$IFACE6RD" -o "$IFACE6RD" = 1 ] && IFACE6RD=${INTERFACE}_6
 
-		ifdown "$IFACE6RD"
-		/etc/init.d/network reload
-		ifup "$IFACE6RD"
+		json_init
+		json_add_string name "$IFACE6RD"
+		json_add_string ifname "@$INTERFACE"
+		json_add_string proto "6rd"
+		json_add_string peeraddr "$ip6rdbr"
+		json_add_int ip4prefixlen "$v4mask"
+		json_add_string ip6prefix "$ip6rdprefix"
+		json_add_int ip6prefixlen "$ip6rdprefixlen"
+		json_add_string tunlink "$INTERFACE"
+		[ -n "$IFACE6RD_DELEGATE" ] && json_add_boolean delegate "$IFACE6RD_DELEGATE"
+		[ -n "$ZONE6RD" ] || ZONE6RD=$ZONE
+		[ -n "$ZONE6RD" ] && json_add_string zone "$ZONE6RD"
+		[ -n "$MTU6RD" ] && json_add_string mtu "$MTU6RD"
+		json_close_object
+
+		ubus call network add_dynamic "$(json_dump)"
 	fi
-
-	# TODO
-	# [ -n "$ntpsrv" ] && 	change_state network "$ifc" lease_ntpsrv "$ntpsrv"
-	# [ -n "$timesvr" ] && 	change_state network "$ifc" lease_timesrv "$timesvr"
-	# [ -n "$hostname" ] &&	change_state network "$ifc" lease_hostname "$hostname"
-	# [ -n "$timezone" ] && 	change_state network "$ifc" lease_timezone "$timezone"
 }
 
 deconfig_interface() {
@@ -82,6 +111,9 @@ case "$1" in
 esac
 
 # user rules
-[ -f /etc/udhcpc.user ] && . /etc/udhcpc.user
+[ -f /etc/udhcpc.user ] && . /etc/udhcpc.user "$@"
+for f in /etc/udhcpc.user.d/*; do
+	[ -f "$f" ] && (. "$f" "$@")
+done
 
 exit 0
