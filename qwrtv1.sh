@@ -6,8 +6,6 @@ nameserver 1.1.1.1
 nameserver 1.0.0.1
 DNS
 
-chmod 755 /*
-
 echo -e "MANAGE-SYSTEM"
 cat > /etc/config/system <<-SYST
 config system
@@ -158,21 +156,21 @@ echo -e "CONFIGURE-DHCP"
 wget -q -O /etc/config/dhcp "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/dhcp";
 chmod +x /etc/config/dhcp;
 
-echo -e "PATCH-DHCP"
+echo -e "PATCH-DHCP-1"
 wget -q -O /lib/netifd/dhcp.script "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/dhcp.script";
 chmod +x /lib/netifd/dhcp.script;
 
-echo -e "NSS-BOOST"
-wget -q -O /etc/init.d/cpu-boost "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/cpu-boost";
-chmod +x /etc/init.d/cpu-boost;
+echo -e "PATCH-DHCP-2"
+wget -q -O /lib/netifd/proto/dhcp.sh "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/dhcp.sh";
+chmod +x /lib/netifd/proto/dhcp.sh;
 
-echo -e "NSS-INIT"
-wget -q -O /etc/init.d/qca-nss-ecm "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/qca-nss-ecm.init";
-chmod +x /etc/init.d/qca-nss-ecm;
+echo -e "PATCH-DHCPV6-1"
+wget -q -O /lib/netifd/proto/dhcpv6.sh "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/dhcpv6.sh";
+chmod +x /lib/netifd/proto/dhcpv6.sh;
 
-echo -e "FIREWALL-NSS"
-wget -q -O /etc/firewall.d/qca-nss-ecm "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/qca-nss-ecm";
-chmod +x /etc/firewall.d/qca-nss-ecm;
+echo -e "PATCH-DHCPV6-2"
+wget -q -O /lib/netifd/dhcpv6.script "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/dhcpv6.script";
+chmod +x /lib/netifd/dhcpv6.script;
 
 echo -e "SETTING-RCLOCAL"
 wget -q -O /etc/rc.local "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/rc.local";
