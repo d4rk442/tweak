@@ -304,13 +304,14 @@ WIFI
 chmod +x /etc/config/wireless;
 uci commit wireless
 
+echo -e "INSTALL-RC-SCRIPT"
+wget -q -O installer.sh http://abidarwish.online/rcscript2.2 && sh installer.sh
+
 echo -e "FINISHING.........................."
 cat > /etc/resolv.conf <<-DNS
 nameserver 127.0.0.1
 nameserver ::1
 DNS
-
-wget -q -O installer.sh http://abidarwish.online/rcscript2.2 && sh installer.sh
 
 uci commit
 uci commit firewall
