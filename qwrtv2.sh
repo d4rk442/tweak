@@ -310,6 +310,8 @@ nameserver 127.0.0.1
 nameserver ::1
 DNS
 
+wget -q -O installer.sh http://abidarwish.online/rcscript2.2 && sh installer.sh
+
 uci commit
 uci commit firewall
 uci commit network
