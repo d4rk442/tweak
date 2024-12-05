@@ -31,11 +31,6 @@ boot() {
 	chmod 0700 /tmp/.uci
 	touch /var/log/wtmp
 	touch /var/log/lastlog
-
-	touch /tmp/resolv.conf.auto
-	ln -sf /tmp/resolv.conf.auto /tmp/resolv.conf
-	mkdir -p /tmp/resolv.conf.d
-	ln -sf /tmp/resolv.conf.auto /tmp/resolv.conf.d/resolv.conf.auto
 	
 	grep -q debugfs /proc/filesystems && /bin/mount -o noatime -t debugfs debugfs /sys/kernel/debug
 	[ "$FAILSAFE" = "true" ] && touch /tmp/.failsafe
@@ -53,5 +48,7 @@ boot() {
 	
 	# temporary hack until configd exists
 	/sbin/reload_config
+        ip link set wwan0 up
+        ip link set wwan0_1 up
         sh /usr/lib/rooter/initialize.sh
 }
