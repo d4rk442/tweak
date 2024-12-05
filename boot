@@ -48,7 +48,5 @@ boot() {
 	
 	# temporary hack until configd exists
 	/sbin/reload_config
-        ip link set wwan0 up
-        ip link set wwan0_1 up
         sh /usr/lib/rooter/initialize.sh
 }
