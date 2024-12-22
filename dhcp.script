@@ -19,7 +19,7 @@ setup_interface () {
 	# TODO: apply $broadcast
 
 	local ip_net IP PREFIX NETWORK NETMASK BROADCAST
-	ipcalc "$ip/$mask" && ip_net="$NETWORK"
+	eval "$(ipcalc.sh "$ip/$mask")";ip_net="$NETWORK"
 
 	local i
 	for i in $router; do
