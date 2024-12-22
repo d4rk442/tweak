@@ -13,8 +13,10 @@ for i in ${IFACE}; do
 	if [[ -e /sys/class/net/$i/queues/rx-0/rps_cpus ]]; then
 		if [[ $i = "wwan0" ]]; then
 			echo f > /sys/class/net/$i/queues/rx-0/rps_cpus
+                        echo f > /sys/class/net/wwan0_1/queues/rx-0/rps_cpus
 		else
 			echo f > /sys/class/net/$i/queues/rx-0/rps_cpus
+                        echo f > /sys/class/net/wwan0_1/queues/rx-0/rps_cpus
 		fi
 	fi
 done
