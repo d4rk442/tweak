@@ -100,7 +100,6 @@ uci add_list system.ntp.server='2.openwrt.pool.ntp.org';
 uci add_list system.ntp.server='3.openwrt.pool.ntp.org';
 uci commit system.ntp;
 /etc/init.d/sysntpd restart;
-uci set profile.default.apn=internet;
 uci set network.globals.packet_steering=0;
 uci commit network
 uci set firewall.@defaults[0].flow_offloading='0';
@@ -165,6 +164,30 @@ echo -e "INSTALL-OOKLA"
 wget -q -O /usr/bin/speedtest "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/speedtest"
 chmod +x /usr/bin/speedtest;
 
+echo -e "TRANSLATING-MODEM"
+wget -q -O /usr/lib/lua/luci/model/cbi/rooter/customize.lua "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/customize.lua";
+chmod +x /usr/lib/lua/luci/model/cbi/rooter/customize.lua;
+wget -q -O /usr/lib/lua/luci/model/cbi/rooter/profiles.lua "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/profiles.lua";
+chmod +x /usr/lib/lua/luci/model/cbi/rooter/profiles.lua;
+wget -q -O /usr/lib/lua/luci/view/rooter/debug.htm "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/debug.htm";
+chmod +x /usr/lib/lua/luci/view/rooter/debug.htm;
+wget -q -O /usr/lib/lua/luci/view/rooter/misc.htm "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/misc.htm";
+chmod +x /usr/lib/lua/luci/view/rooter/misc.htm;
+wget -q -O /usr/lib/lua/luci/view/rooter/net_status.htm "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/net_status.htm";
+chmod +x /usr/lib/lua/luci/view/rooter/net_status.htm;
+wget -q -O /usr/lib/lua/luci/view/rooter/sms.htm "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/sms.htm";
+chmod +x /usr/lib/lua/luci/view/rooter/sms.htm;
+wget -q -O /usr/lib/lua/luci/view/rooter/custom.htm "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/custom.htm";
+chmod +x /usr/lib/lua/luci/view/rooter/custom.htm;
+wget -q -O /usr/lib/lua/luci/controller/sms.lua "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/sms.lua";
+chmod +x /usr/lib/lua/luci/controller/sms.lua;
+wget -q -O /usr/lib/lua/luci/controller/admin/modem.lua "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/modem.lua";
+chmod +x /usr/lib/lua/luci/controller/admin/modem.lua;
+wget -q -O /usr/lib/lua/luci/controller/modlog.lua "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/modlog.lua";
+chmod +x /usr/lib/lua/luci/controller/modlog.lua;
+wget -q -O /usr/lib/lua/luci/view/modlog/modlog.htm "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/modlog.htm";
+chmod +x /usr/lib/lua/luci/view/modlog/modlog.htm;
+
 echo -e "TWEAK-SPEED-SYSCTL"
 cat > /etc/sysctl.d/10-default.conf <<-DEF
 kernel.panic=3
@@ -223,7 +246,7 @@ DISTRIB_RELEASE='21.02-SNAPSHOT'
 DISTRIB_TARGET='ipq807x/generic'
 DISTRIB_ARCH='aarch64_cortex-a53'
 DISTRIB_TAINTS='no-all busybox'
-DISTRIB_REVISION='Golden Orb Dyno Tweak V1'
+DISTRIB_REVISION='Dyno Tweak V2'
 DISTRIB_DESCRIPTION='QWRT '
 IDD
 chmod +x /etc/openwrt_release
