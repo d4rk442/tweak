@@ -100,6 +100,7 @@ uci add_list system.ntp.server='2.openwrt.pool.ntp.org';
 uci add_list system.ntp.server='3.openwrt.pool.ntp.org';
 uci commit system.ntp;
 /etc/init.d/sysntpd restart;
+uci set profile.default.apn=internet;
 uci set network.globals.packet_steering=0;
 uci commit network
 uci set firewall.@defaults[0].flow_offloading='0';
