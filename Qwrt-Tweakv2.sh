@@ -13,7 +13,7 @@ config system
         option ttylogin '0'
         option log_size '64'
         option urandom_seed '0'
-        option timezone 'MYT-8'
+        option timezone '<+08>-8'
         option zonename 'Asia/Kuala Lumpur'
 
 config timeserver 'ntp'
@@ -25,6 +25,7 @@ config timeserver 'ntp'
         list server '3.openwrt.pool.ntp.org'
 SYST
 chmod +x /etc/config/system;
+uci commit system.ntp;
 
 echo -e "CHANGE-FEEDS"
 cat > /etc/opkg/distfeeds.conf <<-DIST
@@ -45,12 +46,6 @@ opkg remove --autoremove luci-app-sqm --force-depends
 opkg remove --autoremove sqm-scripts --force-depends
 opkg remove --autoremove luci-i18n-turboacc-* --force-depends
 opkg remove --autoremove luci-app-turboacc --force-depends
-opkg remove --autoremove strongswan-mod-* --force-depends
-opkg remove --autoremove strongswan-* --force-depends
-opkg remove --autoremove xl2tpd --force-depends
-opkg remove --autoremove kmod-l2tp --force-depends
-opkg remove --autoremove kmod-pppol2tp --force-depends
-opkg remove --autoremove kmod-qca-nss-drv-l2tpv2 --force-depends
 ####
 opkg remove --autoremove luci-i18n-openvpn-server-zh-cn --force-depends
 opkg remove --autoremove luci-app-openvpn-* --force-depends
@@ -59,21 +54,11 @@ opkg remove --autoremove luci-app-sqm --force-depends
 opkg remove --autoremove sqm-scripts --force-depends
 opkg remove --autoremove luci-i18n-turboacc-* --force-depends
 opkg remove --autoremove luci-app-turboacc --force-depends
-opkg remove --autoremove strongswan-mod-* --force-depends
-opkg remove --autoremove strongswan-* --force-depends
-opkg remove --autoremove xl2tpd --force-depends
-opkg remove --autoremove kmod-l2tp --force-depends
-opkg remove --autoremove kmod-pppol2tp --force-depends
-opkg remove --autoremove kmod-qca-nss-drv-l2tpv2 --force-depends
 
 rm -rf /etc/ipsec.d
 rm -f /etc/ipsec.d
-rm -rf /etc/strongswan.d
-rm -f /etc/strongswan.d
 rm -rf /etc/sqm
 rm -f /etc/sqm
-rm -rf /etc/hotplug.d/ipsec
-rm -f /etc/hotplug.d/ipsec
 
 echo -e "INSTALL-BASIC"
 opkg update
@@ -85,21 +70,14 @@ chmod +x  /etc/config/firewall;
 uci commit firewall
 
 echo -e "CHANGE-SYS-MODEM"
+uci set system.@system[0].timezone='Asia/Kuala Lumpur';
+uci set system.@system[0].zonename='<+08>-8';
+uci commit system;
 uci set cpufreq.cpufreq.governor=ondemand;
 uci set cpufreq.cpufreq.minifreq=2208000;
 uci commit cpufreq;
-uci set system.@system[0].zonename='Asia/Kuala Lumpur';
-uci set system.@system[0].timezone='MYT-8';
-uci commit system;
 uci set luci.main.lang='auto';
 uci commit luci.main;
-uci -q delete system.ntp.server;
-uci add_list system.ntp.server='0.openwrt.pool.ntp.org';
-uci add_list system.ntp.server='1.openwrt.pool.ntp.org';
-uci add_list system.ntp.server='2.openwrt.pool.ntp.org';
-uci add_list system.ntp.server='3.openwrt.pool.ntp.org';
-uci commit system.ntp;
-/etc/init.d/sysntpd restart;
 uci set network.globals.packet_steering=0;
 uci commit network
 uci set firewall.@defaults[0].flow_offloading='0';
@@ -141,16 +119,8 @@ wget -q -O /etc/init.d/cpu-boost "https://raw.githubusercontent.com/d4rk442/twea
 chmod +x /etc/init.d/cpu-boost;
 
 echo -e "PATCH-ROOTER"
-wget -q -O /lib/netifd/dhcp.script "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/dhcp.script";
-chmod +x /lib/netifd/dhcp.script;
-
-echo -e "PATCH-ROOTER"
 wget -q -O /etc/init.d/rooter "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/rooter";
 chmod +x /etc/init.d/rooter;
-
-echo -e "PATCH-CONNECT"
-wget -q -O /usr/lib/rooter/connect/postconnect.sh "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/postconnect.sh";
-chmod +x /usr/lib/rooter/connect/postconnect.sh;
 
 echo -e "SETTING-RCLOCAL"
 wget -q -O /etc/rc.local "https://raw.githubusercontent.com/d4rk442/tweak/refs/heads/main/rc.local";
@@ -197,19 +167,23 @@ net.ipv4.conf.default.arp_ignore=1
 net.ipv4.conf.all.arp_ignore=1
 net.ipv4.icmp_echo_ignore_broadcasts=1
 net.ipv4.icmp_ignore_bogus_error_responses=1
-net.ipv4.icmp_echo_ignore_all=1
-net.ipv4.icmp_errors_use_inbound_ifaddr=0
+net.ipv4.igmp_max_memberships=100
 net.ipv4.tcp_fin_timeout=30
 net.ipv4.tcp_keepalive_time=120
-net.ipv4.tcp_keepalive_intvl=30
-net.ipv4.tcp_keepalive_probes=5
 net.ipv4.tcp_syncookies=1
-net.ipv4.tcp_window_scaling=1
-net.ipv4.tcp_timestamps = 1
+net.ipv4.tcp_timestamps=1
+net.ipv4.tcp_sack=1
+net.ipv4.tcp_dsack=1
 
 net.ipv4.ip_forward=1
-net.ipv6.conf.all.forwarding=1
 net.ipv6.conf.default.forwarding=1
+net.ipv6.conf.all.forwarding=1
+
+
+# disable bridge firewalling by default
+net.bridge.bridge-nf-call-arptables=0
+net.bridge.bridge-nf-call-ip6tables=0
+net.bridge.bridge-nf-call-iptables=0
 DEF
 chmod +x /etc/sysctl.d/10-default.conf;
 
@@ -217,8 +191,7 @@ cat > /etc/sysctl.d/11-nf-conntrack.conf <<-DNF
 net.netfilter.nf_conntrack_acct=1
 net.netfilter.nf_conntrack_checksum=0
 net.netfilter.nf_conntrack_max=16384
-net.netfilter.nf_conntrack_expect_max=16384
-net.netfilter.nf_conntrack_tcp_timeout_established=3600
+net.netfilter.nf_conntrack_tcp_timeout_established=7440
 net.netfilter.nf_conntrack_udp_timeout=60
 net.netfilter.nf_conntrack_udp_timeout_stream=180
 DNF
@@ -227,8 +200,6 @@ chmod +x /etc/sysctl.d/11-nf-conntrack.conf;
 cat > /etc/sysctl.d/12-tcp-bbr.conf <<-POPS
 net.core.default_qdisc=fq_codel
 net.ipv4.tcp_congestion_control=bbr
-net.ipv4.tcp_no_metrics_save=1
-net.ipv4.tcp_moderate_rcvbuf=1
 POPS
 chmod +x /etc/sysctl.d/12-tcp-bbr.conf;
 
@@ -242,12 +213,12 @@ opkg install luci-app-passwall_4.66-8_all.ipk;
 
 cat > /etc/openwrt_release <<-IDD
 DISTRIB_ID='OpenWrt'
-DISTRIB_RELEASE='21.02-SNAPSHOT'
+DISTRIB_RELEASE='SNAPSHOT'
 DISTRIB_TARGET='ipq807x/generic'
 DISTRIB_ARCH='aarch64_cortex-a53'
 DISTRIB_TAINTS='no-all busybox'
-DISTRIB_REVISION='Dyno Tweak V2'
-DISTRIB_DESCRIPTION='QWRT '
+DISTRIB_REVISION='Dyno Qwrt Lite'
+DISTRIB_DESCRIPTION='Dyno Qwrt Lite '
 IDD
 chmod +x /etc/openwrt_release
 
@@ -257,8 +228,8 @@ config wifi-device 'wifi0'
 	option type 'qcawificfg80211'
 	option macaddr 'ec:6c:9a:b8:4c:e0'
 	option hwmode '11axa'
-	option channel '128'
-	option htmode 'HT160'
+	option channel '149'
+	option htmode 'HT80'
 	option txpower '30'
 	option country 'US'
 
@@ -269,17 +240,17 @@ config wifi-iface 'ath0'
 	option wmm '1'
 	option rrm '1'
 	option qbssload '1'
-	option ssid 'WK-VISTANA-5G'
+	option ssid 'QWRT-5G'
 	option encryption 'psk'
 	option key '112233445566'
 
 config wifi-device 'wifi1'
 	option type 'qcawificfg80211'
-	option channel '1'
+	option channel '2'
 	option macaddr 'ec:6c:9a:b8:4c:df'
 	option hwmode '11axg'
 	option htmode 'HT20'
-	option txpower '30'
+	option txpower '25'
 	option country 'US'
 
 config wifi-iface 'ath1'
@@ -289,7 +260,7 @@ config wifi-iface 'ath1'
 	option wmm '1'
 	option rrm '1'
 	option qbssload '1'
-	option ssid 'WK-VISTANA-2.4'
+	option ssid 'QWRT-2.4'
 	option encryption 'psk'
 	option key '112233445566'
 WIFI
@@ -313,6 +284,8 @@ uci commit network
 /etc/init.d/dnsmasq start
 /etc/rc.local enable
 /etc/rc.local start
+/etc/init.d/system reload
+/etc/init.d/sysntpd restart
 
 rm -f /root/*
 echo -e "FINISH SCRIPT REBOOT............"
