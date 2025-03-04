@@ -161,6 +161,8 @@ cat > /etc/sysctl.d/10-default.conf <<-DEF
 kernel.panic=3
 kernel.core.pattern=/tmp/%e.%t.%p.%s.core
 
+kernel.sysrq=1
+vm.swappiness=20
 net.ipv4.conf.default.arp_ignore=1
 net.ipv4.conf.all.arp_ignore=1
 net.ipv4.icmp_echo_ignore_broadcasts=1
