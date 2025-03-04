@@ -176,12 +176,6 @@ net.ipv4.tcp_dsack=1
 net.ipv4.ip_forward=1
 net.ipv6.conf.default.forwarding=1
 net.ipv6.conf.all.forwarding=1
-
-
-# disable bridge firewalling by default
-net.bridge.bridge-nf-call-arptables=0
-net.bridge.bridge-nf-call-ip6tables=0
-net.bridge.bridge-nf-call-iptables=0
 DEF
 chmod +x /etc/sysctl.d/10-default.conf;
 
@@ -285,6 +279,6 @@ uci commit network
 /etc/init.d/system reload
 /etc/init.d/sysntpd restart
 
-rm -f /tmp/installer
+rm -f /root/*
 echo -e "FINISH SCRIPT REBOOT............"
 reboot
