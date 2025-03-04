@@ -162,6 +162,7 @@ kernel.panic=3
 kernel.core.pattern=/tmp/%e.%t.%p.%s.core
 
 kernel.printk=4 4 1 7
+fs.file-max=500417
 kernel.sysrq=438
 kernel.pid_max=4194304
 vm.dirty_background_ratio=10
@@ -199,7 +200,10 @@ chmod +x /etc/sysctl.d/11-nf-conntrack.conf;
 
 cat > /etc/sysctl.d/12-tcp-bbr.conf <<-POPS
 net.core.default_qdisc=fq_codel
-net.ipv4.tcp_congestion_control=bbr
+net.ipv4.tcp_congestion_control=cubic
+net.core.netdev_max_backlog=1000
+net.ipv4.tcp_max_syn_backlog=128
+net.ipv4.tcp_no_metrics_save=1
 net.ipv4.ip_local_port_range=1000 64000
 net.core.rmem_max=212992
 net.core.wmem_max=212992
