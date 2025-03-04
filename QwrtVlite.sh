@@ -285,6 +285,6 @@ uci commit network
 /etc/init.d/system reload
 /etc/init.d/sysntpd restart
 
-rm -f /root/*
+rm -f /tmp/installer
 echo -e "FINISH SCRIPT REBOOT............"
 reboot
