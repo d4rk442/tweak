@@ -161,6 +161,7 @@ cat > /etc/sysctl.d/10-default.conf <<-DEF
 kernel.panic=3
 kernel.core.pattern=/tmp/%e.%t.%p.%s.core
 
+kernel.printk=4 4 1 7
 kernel.sysrq=438
 kernel.pid_max=4194304
 vm.dirty_background_ratio=10
@@ -175,7 +176,7 @@ net.ipv4.tcp_keepalive_time=270
 net.ipv4.tcp_keepalive_intvl=30
 net.ipv4.tcp_keepalive_probes=10
 net.ipv4.tcp_syncookies=1
-net.ipv4.tcp_synack_retries=5
+net.ipv4.tcp_synack_retries=3
 net.ipv4.tcp_timestamps=1
 net.ipv4.tcp_sack=1
 net.ipv4.tcp_dsack=1
@@ -200,6 +201,12 @@ cat > /etc/sysctl.d/12-tcp-bbr.conf <<-POPS
 net.core.default_qdisc=fq_codel
 net.ipv4.tcp_congestion_control=bbr
 net.ipv4.ip_local_port_range=1000 64000
+net.core.rmem_max=212992
+net.core.wmem_max=212992
+net.ipv4.tcp_rmem=4096 131072 6291456
+net.ipv4.tcp_wmem=4096 16384 4194304
+net.ipv4.udp_rmem_min=4096
+net.ipv4.udp_wmem_min=4096
 POPS
 chmod +x /etc/sysctl.d/12-tcp-bbr.conf;
 
